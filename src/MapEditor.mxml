@@ -17,6 +17,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
+			
 			import mx.events.FlexEvent;
 			
 			import application.AppReg;
@@ -25,18 +26,19 @@
 			import gframeWork.FrameWork;
 			import gframeWork.uiController.UserInterfaceManager;
 			
+			import org.puremvc.as3.patterns.facade.Facade;
+			
+			//功能模块注册
 			private var app:AppReg;
 			protected function windowedapplication1_applicationCompleteHandler(event:FlexEvent):void
 			{
 				FrameWork.getInstance().setLayout(this,this,this);
 				StarlingMain.init(stage,starlingStarup);
-				app = new AppReg();
-				
-				UserInterfaceManager.open(AppReg.TOP_UI_PANEL);
 			}
 			
 			private function starlingStarup():void {
-				
+				app = new AppReg();
+				UserInterfaceManager.open(AppReg.TOP_UI_PANEL);
 			}
 		]]>
 	</fx:Script>
