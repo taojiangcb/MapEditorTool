@@ -14,7 +14,7 @@ package application.db
 		/*城市节点的文件数据 {textureName:String,fileStream:ByteArray} */
 		public var cityNodeFiles:Array = [];
 		/*城市节点bitmapdata数据 {textureName:String,bitData:BitmapData}*/
-		public var cityNodeBits:Array = [];
+		public var cityNodeBitmapdatas:Array = [];
 		/*城市节点模板数据CityNodeTempVO*/
 		public var cityNodeTemps:Array = [];
 		/*城市节点图片的目录地址*/
