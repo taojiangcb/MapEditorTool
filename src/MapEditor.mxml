@@ -17,6 +17,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
+			
 			import mx.events.FlexEvent;
 			
 			import application.AppReg;
@@ -43,6 +44,7 @@
 			/*应用程序正式启动*/
 			public function appStart():void {
 				trace("appStart");
+				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);
 			}
 		]]>
 	</fx:Script>

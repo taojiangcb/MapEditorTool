@@ -66,6 +66,10 @@ package application.mainUI
 		}
 		
 		public override function dispose():void {
+			ui.btnCancel.removeEventListener(MouseEvent.CLICK,cancelHandler);
+			ui.btnOk.removeEventListener(MouseEvent.CLICK,okHandler);
+			ui.btnMapbrowser.removeEventListener(MouseEvent.CLICK,selectMapFileHandler);
+			ui.btnNodesbrowser.removeEventListener(MouseEvent.CLICK,selectNodeHandler);
 			super.dispose();
 		}
 		

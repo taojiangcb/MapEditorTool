@@ -13,6 +13,9 @@ package application.db
 		public var virutalLabel:Boolean = true;
 		public var virtualFiree:Boolean = true;
 		
+		//显示的纹理名称
+		public var textureName:String = "";
+		
 		public function CityNodeTempVO()
 		{
 		}

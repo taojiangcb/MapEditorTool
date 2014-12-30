@@ -1,5 +1,7 @@
 package application
 {
+	import application.mainUI.CityNodeLibaryPanel;
+	import application.mainUI.CityNodeLibaryPanelController;
 	import application.mainUI.CreateNewMapPanel;
 	import application.mainUI.CreateNewMapPanelController;
 	import application.mainUI.TopUIPanel;
@@ -20,6 +22,11 @@ package application
 		public static const TOP_UI_PANEL:int = 1;
 		
 		/**
+		 * 城市节点库 
+		 */		
+		public static const CITY_NODE_TEMP_PANEL:int = 2;
+		
+		/**
 		 * 创建地图面版 
 		 */		
 		public static const CREATE_NEW_MAP:int = 201;
@@ -37,6 +44,7 @@ package application
 		private function installUIMoudle():void {
 			UserInterfaceManager.registerGUI(TOP_UI_PANEL,TopUIPanel,TopUIPanelControler);
 			UserInterfaceManager.registerGUI(CREATE_NEW_MAP,CreateNewMapPanel,CreateNewMapPanelController);
+			UserInterfaceManager.registerGUI(CITY_NODE_TEMP_PANEL,CityNodeLibaryPanel,CityNodeLibaryPanelController);
 		}
 		
 		private function installDataMediator():void {

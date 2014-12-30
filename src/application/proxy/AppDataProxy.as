@@ -1,6 +1,7 @@
 package application.proxy
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -11,6 +12,7 @@ package application.proxy
 	import flash.utils.getQualifiedClassName;
 	
 	import application.ApplicationMediator;
+	import application.db.CityNodeTempVO;
 	import application.utils.appData;
 	
 	import gframeWork.url.URLFileReference;
@@ -19,6 +21,12 @@ package application.proxy
 	
 	public class AppDataProxy extends Proxy
 	{
+	
+		//关键字段
+		public static const TEXTURE_NAME_FIELD:String = "textureName";	//纹理名称
+		public static const BITMAP_DATE_FIELD:String = "bitmapData";		//位图数据
+		public static const FILE_STREAM_FIELD:String = "stream";			//文件数据
+		
 		//默认的城市节点
 		private var defaultCityNodeFile:URLFileReference;
 		private var defaultCityNodeLoad:Loader;
@@ -88,26 +96,33 @@ package application.proxy
 						if(!fileStream) fileStream = new FileStream();
 						fileStream.open(nf,FileMode.READ);
 						fileStream.readBytes(fileBytes);
-						appData.cityNodeFiles.push({textureName:nf.name,stream:fileBytes});
+						var objData:Object = new Object();
+						objData[TEXTURE_NAME_FIELD] = nf.name;
+						objData[FILE_STREAM_FIELD] = fileBytes;
+						appData.cityNodeFiles.push(objData);
 					}
 				}
 			};
 			
 			var nodesRoot:File = new File(cityNodesPath);		
 			ansyslizerCityNode(nodesRoot);
+			//当前装载的城市节点图片
 			nowNodeLoadCount = 0;
 			loadNode();
 			
 			return false;
 		}
 		
+		/**
+		 * 加载城市节点图片 
+		 */		
 		private function loadNode():void {
 			
 			if(nowNodeLoadCount < appData.cityNodeFiles.length) {
 				clearNodeLoad();
 				defaultCityNodeLoad = new Loader();
 				defaultCityNodeLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,nodeLoadComplete);
-				var node_fs:ByteArray = appData.cityNodeFiles[nowNodeLoadCount].stream;
+				var node_fs:ByteArray = appData.cityNodeFiles[nowNodeLoadCount][FILE_STREAM_FIELD];
 				defaultCityNodeLoad.loadBytes(node_fs);
 			} else {
 				clearNodeLoad();
@@ -119,7 +134,15 @@ package application.proxy
 		private function nodeLoadComplete(event:Event):void {
 			//缓存位图数据
 			var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
-			appData.cityNodeBitmapdatas.push({textureName:fileData.textureName,bitmapData:Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData});
+			var objData:Object = new Object();
+			objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
+			objData[BITMAP_DATE_FIELD] = Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData;
+			appData.cityNodeBitmapdatas.push(objData);
+			
+			//创建节点模板数据
+			var cityNodeTemp:CityNodeTempVO = new CityNodeTempVO();
+			cityNodeTemp.textureName = fileData.textureName;
+			appData.cityNodeTemps.push(cityNodeTemp);
 			
 			nowNodeLoadCount++;
 			loadNode();
@@ -131,6 +154,24 @@ package application.proxy
 				defaultCityNodeLoad.unloadAndStop(false);
 				defaultCityNodeLoad = null;
 			}
+		}
+		
+		/**
+		 * 根据texture纹理名获取一个BitmapData数据 
+		 * @param textureName
+		 * @return 
+		 */		
+		public function getCityNodeBitDataByName(textureName:String):BitmapData {
+			var i:int = 0;
+			var len:int = appData.cityNodeBitmapdatas.length;
+			var crtBitmapData:Object;
+			for(i = 0;  i!=len; i++) {
+				crtBitmapData = appData.cityNodeBitmapdatas[i];
+				if(crtBitmapData[TEXTURE_NAME_FIELD] == textureName) {
+					return crtBitmapData[BITMAP_DATE_FIELD];
+				}
+			}
+			return null;
 		}
 		
 		/**
