@@ -4,6 +4,9 @@ package application
 	
 	import flash.display.Stage;
 	
+	import application.utils.appData;
+	import application.utils.appDataProxy;
+	
 	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -16,12 +19,15 @@ package application
 	public class StarlingMain extends Sprite
 	{
 		private static var sl:Starling;
+		/*功能模块快速注册*/
+		private static var app:AppReg;
 		public static function init(stage:Stage,onCompleteHandler:Function):void
 		{
 			var startComplete:Function = onCompleteHandler;
 			//starling成功启动了回调处理
 			var stage3dComplete:Function = function(event:Event):void {
 				GTween.staticInit();	//启动GT
+				internalInit();
 				if(startComplete != null) startComplete();	//回调处理
 			};
 			
@@ -33,13 +39,20 @@ package application
 		
 		public function StarlingMain() {
 			super();
-			internalInit();
 		}
 		
-		private function internalInit():void {
-			//test starling
-//			var quad:Quad = new Quad(200,200,0xFFFF0000);
-//			addChild(quad);
+		private static function internalInit():void {
+			app = new AppReg();
+			appDataProxy.internalInit();
+			appData.textureManager.enqueue("assets/default_city_node.png");
+			appData.textureManager.enqueue("assets/WarEffect.png");
+			appData.textureManager.enqueue("assets/WarEffect.xml");
+			appData.textureManager.loadQueue(function(ratio:Number):void{
+				if(ratio == 1) {
+					trace("load textures complete");
+					trace("=============================")
+				}
+			});
 		}
 	}
 }

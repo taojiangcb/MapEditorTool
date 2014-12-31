@@ -115,7 +115,7 @@ package application.utils
 			var fileStream:FileStream = new FileStream();
 			var file:File = new File(path);
 			fileStream.open(file,FileMode.WRITE);
-			fileStream.writeUTFBytes(xmlData);
+			fileStream.writeUTFBytes('<?xml version="1.0" encoding="UTF-16"?>' + xmlData);
 			fileStream.close();
 		}
 	}

@@ -1,4 +1,4 @@
-package application.mainUI
+package application.appui
 {
 	import com.frameWork.uiComponent.Alert;
 	
@@ -56,7 +56,6 @@ package application.mainUI
 			fileSelect.addEventListener(Event.SELECT,chrooseFolder);
 			fileSelect.browseForDirectory("选择要导出的纹理目录");
 			
-				
 		}
 		
 		public override function dispose():void {

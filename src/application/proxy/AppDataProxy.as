@@ -38,10 +38,9 @@ package application.proxy
 		
 		public function AppDataProxy(proxyName:String=null, data:Object=null){
 			super(proxyName, data);
-			internalInit();
 		}
 		
-		private function internalInit():void {
+		public function internalInit():void {
 			
 			//装载默认的城市节点图片
 			var loadBitmapSucceed:Function = function(event:Event):void {
@@ -104,7 +103,9 @@ package application.proxy
 				}
 			};
 			
-			var nodesRoot:File = new File(cityNodesPath);		
+			var nodesRoot:File = new File(cityNodesPath);
+			trace("begin load cityNodeImages");
+			trace("===================================");
 			ansyslizerCityNode(nodesRoot);
 			trace("===================================");
 			//当前装载的城市节点图片

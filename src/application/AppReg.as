@@ -1,11 +1,11 @@
 package application
 {
-	import application.mainUI.CityNodeLibaryPanel;
-	import application.mainUI.CityNodeLibaryPanelController;
-	import application.mainUI.CreateNewMapPanel;
-	import application.mainUI.CreateNewMapPanelController;
-	import application.mainUI.TopUIPanel;
-	import application.mainUI.TopUIPanelControler;
+	import application.appui.CityNodeLibaryPanel;
+	import application.appui.CityNodeLibaryPanelController;
+	import application.appui.CreateNewMapPanel;
+	import application.appui.CreateNewMapPanelController;
+	import application.appui.TopUIPanel;
+	import application.appui.TopUIPanelControler;
 	import application.proxy.AppDataProxy;
 	import application.utils.appData;
 	

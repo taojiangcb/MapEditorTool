@@ -4,6 +4,8 @@ package application.db
 	
 	import flash.display.BitmapData;
 	import flash.utils.ByteArray;
+	
+	import starling.utils.AssetManager;
 
 	public class AppDataVO
 	{
@@ -27,6 +29,8 @@ package application.db
 		public var mapFileStream:ByteArray = null;
 		/*大地图的图片数据*/
 		public var mapBit:BitmapData = null;
+		//纹理集管理
+		public var textureManager:AssetManager = new AssetManager();
 		
 		public function AppDataVO() {
 			

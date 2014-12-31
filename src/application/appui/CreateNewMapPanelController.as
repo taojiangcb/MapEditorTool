@@ -1,4 +1,4 @@
-package application.mainUI
+package application.appui
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
