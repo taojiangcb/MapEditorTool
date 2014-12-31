@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+				xmlns:mx="library://ns.adobe.com/flex/mx" width="258" height="162">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Image id="nodeImage"/>
+	<s:Image id="nodeImage" horizontalCenter="0" verticalCenter="0"/>
 	<fx:Script>
 		<![CDATA[
 			import application.db.CityNodeTempVO;
@@ -13,7 +13,7 @@
 			import application.utils.appDataProxy;
 			protected override function createChildren():void {
 				super.createChildren();
-				if(labelDisplay) removeElement(labelDisplay);
+				//if(labelDisplay) removeElement(labelDisplay);
 			}
 			
 			protected override function commitProperties():void {
@@ -23,6 +23,11 @@
 					var bitData:BitmapData = appDataProxy.getCityNodeBitDataByName(cityNodeTemp.textureName);
 					nodeImage.source = bitData;
 				}
+			}
+			
+			public override function set data(value:Object):void {
+				super.data = value;
+				invalidateProperties();
 			}
 		]]>
 	</fx:Script>

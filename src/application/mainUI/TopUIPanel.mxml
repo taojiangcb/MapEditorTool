@@ -17,5 +17,6 @@
 		<s:Button label="新建" id="btnNew"/>
 		<s:Button label="打开" id="btnOpen"/>
 		<s:Button label="导出" id="btnExport"/>
+		<s:Button label="导出纹理集" id="btnExportTextures"/>
 	</s:HGroup>
 </s:Group>

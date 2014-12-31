@@ -59,7 +59,7 @@ package application.proxy
 			
 			//打开默认的城市节点图片文件
 			if(!defaultCityNodeFile) defaultCityNodeFile = new URLFileReference();
-			defaultCityNodeFile.openFile(openFileSucceedFun,null,null,new URLRequest("assets/ManorFlag.png"));
+			defaultCityNodeFile.openFile(openFileSucceedFun,null,null,new URLRequest("assets/default_city_node.png"));
 		}
 		
 		/**
@@ -82,8 +82,6 @@ package application.proxy
 			clearAppData();
 			
 			var fileStream:FileStream;
-			var fileBytes:ByteArray = new ByteArray();
-			
 			var ansyslizerCityNode:Function = function(rootFile:File):void {
 				var nodeFiles:Array = rootFile.getDirectoryListing();
 				var nf:File = null;
@@ -91,11 +89,13 @@ package application.proxy
 					if(nf.isDirectory) {
 						ansyslizerCityNode(nf);
 					} else {
-						fileBytes.clear();
-						fileBytes.position = 0;
-						if(!fileStream) fileStream = new FileStream();
+						var fileBytes:ByteArray = new ByteArray();
+						if		(!fileStream) fileStream = new FileStream();
+						else	fileStream.close();
 						fileStream.open(nf,FileMode.READ);
 						fileStream.readBytes(fileBytes);
+						
+						trace("cityNodeFile:",nf.nativePath);
 						var objData:Object = new Object();
 						objData[TEXTURE_NAME_FIELD] = nf.name;
 						objData[FILE_STREAM_FIELD] = fileBytes;
@@ -106,6 +106,7 @@ package application.proxy
 			
 			var nodesRoot:File = new File(cityNodesPath);		
 			ansyslizerCityNode(nodesRoot);
+			trace("===================================");
 			//当前装载的城市节点图片
 			nowNodeLoadCount = 0;
 			loadNode();
@@ -122,6 +123,7 @@ package application.proxy
 				clearNodeLoad();
 				defaultCityNodeLoad = new Loader();
 				defaultCityNodeLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,nodeLoadComplete);
+				
 				var node_fs:ByteArray = appData.cityNodeFiles[nowNodeLoadCount][FILE_STREAM_FIELD];
 				defaultCityNodeLoad.loadBytes(node_fs);
 			} else {
@@ -131,7 +133,14 @@ package application.proxy
 			}
 		}
 		
+		/**
+		 * 城市节点装载完成 
+		 * @param event
+		 */		
 		private function nodeLoadComplete(event:Event):void {
+			
+			defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
+			
 			//缓存位图数据
 			var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
 			var objData:Object = new Object();
@@ -148,6 +157,9 @@ package application.proxy
 			loadNode();
 		}
 		
+		/**
+		 * 清除节点装载 
+		 */		
 		private function clearNodeLoad():void {
 			if(defaultCityNodeLoad) {
 				defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
