@@ -13,11 +13,15 @@ package application.proxy
 	
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
+	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	
 	import gframeWork.url.URLFileReference;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
+	
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 	
 	public class AppDataProxy extends Proxy
 	{
@@ -201,6 +205,18 @@ package application.proxy
 			appData.mapFileStream = null;
 			appData.mapFileUrl = "";
 			appData.mapCityNodes = [];
+		}
+		
+		/**
+		 * 初始化纹理集上传给gpu 
+		 */		
+		public function updateTextureToGPU():void {
+			appData.textureManager.removeTexture("mapTexture");
+			appData.textureManager.removeTextureAtlas("mapTexture");
+			appData.texturepack = ExportTexturesUtils.getTextureAtls(true);
+			var texture:Texture = Texture.fromBitmapData(appData.texturepack.bitData);
+			var textureAtls:TextureAtlas = new TextureAtlas(texture,appData.texturepack.atls);
+			appData.textureManager.addTextureAtlas("mapTexture",textureAtls);
 		}
 		
 		public static function get NAME():String{

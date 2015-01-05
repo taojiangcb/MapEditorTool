@@ -4,13 +4,18 @@ package application
 	
 	import flash.display.Stage;
 	
+	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
+	
+	import source.feathers.themes.MetalWorksMobileTheme;
 	
 	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 	
 	/**
 	 * Starling启动的主类 
@@ -21,14 +26,15 @@ package application
 		private static var sl:Starling;
 		/*功能模块快速注册*/
 		private static var app:AppReg;
+		
+		private static var appBeginFunc:Function;
 		public static function init(stage:Stage,onCompleteHandler:Function):void
 		{
-			var startComplete:Function = onCompleteHandler;
+			appBeginFunc = onCompleteHandler;
 			//starling成功启动了回调处理
 			var stage3dComplete:Function = function(event:Event):void {
 				GTween.staticInit();	//启动GT
 				internalInit();
-				if(startComplete != null) startComplete();	//回调处理
 			};
 			
 			//启动starling
@@ -51,6 +57,8 @@ package application
 				if(ratio == 1) {
 					trace("load textures complete");
 					trace("=============================")
+					appData.skin = new MetalWorksMobileTheme();
+					if(appBeginFunc != null) appBeginFunc();	
 				}
 			});
 		}

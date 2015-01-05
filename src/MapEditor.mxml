@@ -4,7 +4,7 @@
 					   showStatusBar="false"
 					   backgroundAlpha="0"
 					   title="BZSG-MapEditor"
-					   width="1024" height="768" 
+					   width="1224" height="768"
 					   applicationComplete="windowedapplication1_applicationCompleteHandler(event)"
 					   xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Style>
@@ -22,28 +22,31 @@
 			
 			import application.AppReg;
 			import application.StarlingMain;
+			import application.utils.appData;
+			import application.utils.appDataProxy;
 			
 			import gframeWork.FrameWork;
 			import gframeWork.uiController.UserInterfaceManager;
 			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
-			//功能模块注册
-			private var app:AppReg;
+			import source.feathers.themes.MetalWorksMobileTheme;
+			
 			protected function windowedapplication1_applicationCompleteHandler(event:FlexEvent):void
 			{
 				FrameWork.getInstance().setLayout(this,this,this);
-				StarlingMain.init(stage,starlingStarup);
+				StarlingMain.init(stage,appInitComplete);
 			}
 			
-			private function starlingStarup():void {
-				app = new AppReg();
+			//app启动初始化完成
+			private function appInitComplete():void {
+				//打开菜单栏
 				UserInterfaceManager.open(AppReg.TOP_UI_PANEL);
 			}
 			
 			/*应用程序正式启动*/
 			public function appStart():void {
-				trace("appStart");
+				appDataProxy.updateTextureToGPU();
 				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);
 			}
 		]]>

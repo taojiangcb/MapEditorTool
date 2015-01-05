@@ -6,14 +6,25 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:Image id="nodeImage" horizontalCenter="0" verticalCenter="0"/>
+	<s:Label id="txtTextureName" horizontalCenter="0" bottom="5"/>
 	<fx:Script>
 		<![CDATA[
+			import com.frameWork.uiControls.UIMoudleManager;
+			
+			import application.AppReg;
 			import application.db.CityNodeTempVO;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
 			protected override function createChildren():void {
 				super.createChildren();
+				doubleClickEnabled = true;
+				addEventListener(MouseEvent.DOUBLE_CLICK,doubleClickHandler,false,0,true);
 				//if(labelDisplay) removeElement(labelDisplay);
+			}
+			
+			private function doubleClickHandler(event:Event):void {
+				appData.editorCityNode = data as CityNodeTempVO;
+				UIMoudleManager.openUIByid(AppReg.EDITOR_CITY_NODE_PANEL);
 			}
 			
 			protected override function commitProperties():void {
@@ -22,6 +33,7 @@
 					var cityNodeTemp:CityNodeTempVO = CityNodeTempVO(data);
 					var bitData:BitmapData = appDataProxy.getCityNodeBitDataByName(cityNodeTemp.textureName);
 					nodeImage.source = bitData;
+					txtTextureName.text = cityNodeTemp.textureName;
 				}
 			}
 			

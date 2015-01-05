@@ -1,11 +1,15 @@
 package application
 {
+	import com.frameWork.uiControls.UIMoudleManager;
+	
 	import application.appui.CityNodeLibaryPanel;
 	import application.appui.CityNodeLibaryPanelController;
 	import application.appui.CreateNewMapPanel;
 	import application.appui.CreateNewMapPanelController;
 	import application.appui.TopUIPanel;
 	import application.appui.TopUIPanelControler;
+	import application.cityNode.ui.NodeEditorPanel;
+	import application.cityNode.ui.NodeEditorPanelController;
 	import application.proxy.AppDataProxy;
 	import application.utils.appData;
 	
@@ -31,9 +35,14 @@ package application
 		 */		
 		public static const CREATE_NEW_MAP:int = 201;
 		
+		/**
+		 * 编辑城市节点的面板 
+		 */		
+		public static const EDITOR_CITY_NODE_PANEL:int = 301;
+		
 		public function AppReg() {
 			installDataProxy();
-			installUIMoudle();
+			installUIMoudle(); 
 			installDataMediator();
 		}
 		
@@ -45,6 +54,8 @@ package application
 			UserInterfaceManager.registerGUI(TOP_UI_PANEL,TopUIPanel,TopUIPanelControler);
 			UserInterfaceManager.registerGUI(CREATE_NEW_MAP,CreateNewMapPanel,CreateNewMapPanelController);
 			UserInterfaceManager.registerGUI(CITY_NODE_TEMP_PANEL,CityNodeLibaryPanel,CityNodeLibaryPanelController);
+			
+			UIMoudleManager.registerUIMoudle(EDITOR_CITY_NODE_PANEL,NodeEditorPanelController,NodeEditorPanel);
 		}
 		
 		private function installDataMediator():void {

@@ -23,9 +23,23 @@ package application.utils
 		 * @param toPath
 		 * @param chrooseMap
 		 * @return 
-		 * 
 		 */		
 		public static function exportTextures(savePath:String,chrooseMap:Boolean = false,chrooseDefaultNode:Boolean = false):Boolean {
+			var textureData:Object = appData.texturepack;
+			if(textureData) {
+				saveTextures(savePath + "/mapTexture.png",textureData.bitData);
+				saveData(savePath + "/mapTexture.xml",textureData.atls.toXMLString());
+				return true;
+			}
+			return false;
+		}
+		
+		/**
+		 * 获取纹理数据 
+		 * @param chrooseDefaultNode
+		 * @return 
+		 */		
+		public static function getTextureAtls(chrooseDefaultNode:Boolean):Object {
 			var rectMap:Object = {};
 			var i:int = 0;
 			var len:int = appData.cityNodeBitmapdatas.length;
@@ -85,7 +99,7 @@ package application.utils
 					offsetPoint.y = elementRect.y;
 					
 					childXml = <SubTexture />;
-					childXml.@name = "default_city_node";
+					childXml.@name = textureName;
 					childXml.@x = offsetPoint.x;
 					childXml.@y = offsetPoint.y;
 					childXml.@width = tempRect.width;
@@ -94,11 +108,8 @@ package application.utils
 					textureBitmapdata.copyPixels(elementBit,tempRect,offsetPoint);
 				}
 				xml.@imagePath = "mapTexture.png";
-				saveTextures(savePath + "/mapTexture.png",textureBitmapdata);
-				saveData(savePath + "/mapTexture.xml",xml.toXMLString());
-				return true;
 			}
-			return false;
+			return {bitData:textureBitmapdata,atls:xml};
 		}
 		
 		private static function saveTextures(path:String,bitData:BitmapData):void {

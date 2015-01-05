@@ -1,9 +1,10 @@
 package application.db
 {
-	import com.coffeebean.common.lang.Map;
 	
 	import flash.display.BitmapData;
 	import flash.utils.ByteArray;
+	
+	import feathers.themes.StyleNameFunctionTheme;
 	
 	import starling.utils.AssetManager;
 
@@ -31,6 +32,12 @@ package application.db
 		public var mapBit:BitmapData = null;
 		//纹理集管理
 		public var textureManager:AssetManager = new AssetManager();
+		//当前上传给gpu和要导出的纹理集数据包
+		public var texturepack:Object = null;
+		//当前正在编辑的城市节点
+		public var editorCityNode:CityNodeTempVO;
+		//
+		public var skin:StyleNameFunctionTheme;
 		
 		public function AppDataVO() {
 			
