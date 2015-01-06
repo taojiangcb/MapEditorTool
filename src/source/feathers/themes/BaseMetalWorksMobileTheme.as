@@ -113,7 +113,7 @@ package source.feathers.themes
 		[Embed(source="assets/fonts/SourceSansPro-Semibold.ttf",fontFamily="SourceSansPro",fontWeight="bold",unicodeRange="U+0030-U+0039",mimeType="application/x-font",embedAsCFF="false")]
 		protected static const SOURCE_SANS_PRO_SEMIBOLD_NUMBERS:Class;
 
-		protected static const FONT_NAME:String = "simsun";
+		public static const FONT_NAME:String = "simsun";
 
 		protected static const PRIMARY_BACKGROUND_COLOR:uint = 0x4a4137;
 		protected static const LIGHT_TEXT_COLOR:uint = 0xe5e5e5;

@@ -10,6 +10,7 @@ package application.appui
 	
 	import application.AppReg;
 	import application.utils.ExportTexturesUtils;
+	import application.utils.appDataProxy;
 	
 	import gframeWork.uiController.MainUIControllerBase;
 	import gframeWork.uiController.UserInterfaceManager;
@@ -31,6 +32,11 @@ package application.appui
 			ui.btnOpen.addEventListener(MouseEvent.CLICK,openClickHandler,false,0,true);
 			ui.btnExport.addEventListener(MouseEvent.CLICK,exportClickHandler,false,0,true);
 			ui.btnExportTextures.addEventListener(MouseEvent.CLICK,exportTexturesHandler,false,0,true);
+			ui.saveFile.addEventListener(MouseEvent.CLICK,saveClickHandler,false,0,true);
+		}
+		
+		private function saveClickHandler(event:MouseEvent):void {
+			appDataProxy.saveMapEditorFile();
 		}
 		
 		private function newClickHandler(event:Event):void {
@@ -38,7 +44,7 @@ package application.appui
 		}
 		
 		private function openClickHandler(event:Event):void {
-			
+			appDataProxy.openFileData();
 		}
 		
 		private function exportClickHandler(event:Event):void {

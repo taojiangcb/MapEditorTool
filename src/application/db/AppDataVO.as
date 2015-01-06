@@ -2,6 +2,8 @@ package application.db
 {
 	
 	import flash.display.BitmapData;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.GlowFilter;
 	import flash.utils.ByteArray;
 	
 	import feathers.themes.StyleNameFunctionTheme;
@@ -14,9 +16,9 @@ package application.db
 		public var defaultNodeFileStream:ByteArray = null;
 		/*默认的城市节点图片数据*/
 		public var defaultNodeBitdata:BitmapData = null;
-		/*城市节点的文件数据 {textureName:String,fileStream:ByteArray} */
+		/*城市节点的文件数据{textureName:String,fileStream:ByteArray}*/
 		public var cityNodeFiles:Array = [];
-		/*城市节点bitmapdata数据 {textureName:String,bitData:BitmapData}*/
+		/*城市节点bitmapdata数据{textureName:String,bitData:BitmapData}*/
 		public var cityNodeBitmapdatas:Array = [];
 		/*城市节点模板数据CityNodeTempVO*/
 		public var cityNodeTemps:Array = [];
@@ -36,11 +38,10 @@ package application.db
 		public var texturepack:Object = null;
 		//当前正在编辑的城市节点
 		public var editorCityNode:CityNodeTempVO;
-		//
+		//feathers ui 皮肤
 		public var skin:StyleNameFunctionTheme;
-		
+		public var GLOW_BLACK:GlowFilter = new GlowFilter(0x000000,1,2,2,8, BitmapFilterQuality.HIGH);
 		public function AppDataVO() {
-			
 		}
 	}
 }

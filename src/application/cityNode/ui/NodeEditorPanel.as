@@ -8,15 +8,25 @@ package application.cityNode.ui
 	import feathers.controls.Button;
 	import feathers.controls.Label;
 	
+	import source.feathers.themes.BaseMetalWorksMobileTheme;
+	
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
+	import starling.display.Sprite;
 	import starling.extensions.CustomFeathersControls;
 	import starling.extensions.graphicPack.Graphics;
 	import starling.extensions.graphicPack.graphicsEx.ShapeEx;
+	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
+	/**
+	 * 城市节点编辑面板 
+	 * @author JiangTao
+	 */	
 	public class NodeEditorPanel extends CustomFeathersControls
 	{
 		//原点
@@ -24,15 +34,16 @@ package application.cityNode.ui
 		//==========================================
 		private var graphics:Graphics;
 		private var shape:ShapeEx;
-		
 		//关闭按钮
 		public var btnClose:Button;
 		//名字
-		public var txtName:Label;
-		//点
+		public var txtName:TextField;
+		//火
 		public var free:MovieClip;
-		
-		public var image:Image;
+		//城市节点图片
+		public var nodeImage:Image;
+		//内容
+		public var contentSprite:Sprite;
 		
 		public function NodeEditorPanel() {
 			super();
@@ -40,30 +51,33 @@ package application.cityNode.ui
 		
 		protected override function initialize():void {
 			super.initialize();
+			
 			btnClose = new Button();
 			btnClose.width = 30;
 			btnClose.label = "x";
 			addChild(btnClose);
 			
+			contentSprite = new Sprite();
+			addChild(contentSprite);
+			
 			var textureName:String = appData.editorCityNode.textureName;
 			var nodeTexture:Texture = appData.textureManager.getTexture(textureName);
-			image = new Image(nodeTexture);
-			addChild(image);
+			nodeImage = new Image(nodeTexture);
+			contentSprite.addChild(nodeImage);
 			
-			txtName = new Label();
-			txtName.text = "名称标签";
-			txtName.x = 100;
-			txtName.y = 15;
-			addChild(txtName);
+			txtName = new TextField(150,20,"名称标签",BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
+			txtName.fontName = BaseMetalWorksMobileTheme.FONT_NAME;
+			txtName.hAlign = HAlign.CENTER;
+			txtName.vAlign = VAlign.CENTER;
+			txtName.nativeFilters = [appData.GLOW_BLACK];
+			contentSprite.addChild(txtName);
 			
 			var textures:Vector.<Texture> = new Vector.<Texture>();
 			var atls:TextureAtlas = appData.textureManager.getTextureAtlas("WarEffect");
 			textures = atls.getTextures("war_firee_");
 			
 			free = new MovieClip(textures,24);
-			free.x = 100;
-			free.y = 100;
-			addChild(free);
+			contentSprite.addChild(free);
 			Starling.juggler.add(free);
 		}
 		
@@ -90,7 +104,7 @@ package application.cityNode.ui
 		}
 		
 		public override function dispose():void {
-			if(image) image.removeFromParent(true);
+			if(nodeImage) nodeImage.removeFromParent(true);
 			if(free) {
 				Starling.juggler.remove(free);
 				free.removeFromParent(true);

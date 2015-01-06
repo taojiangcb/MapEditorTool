@@ -4,6 +4,8 @@ package application.db
 	{
 		public var cityName:String = "";
 		
+		public var cityId:int = 0;
+		
 		//大地图中的坐标
 		public var worldX:int = 0;
 		public var worldY:int = 0;
@@ -16,8 +18,10 @@ package application.db
 		public var labelY:int = 0;
 		
 		//着火状态坐标
-		public var fireeX:int = 0;
-		public var fireeY:int = 0;
+		public var freeX:int = 0;
+		public var freeY:int = 0;
+		
+		public var textureName:String;
 		
 		//显示标题
 		public var visualLabel:Boolean = true;

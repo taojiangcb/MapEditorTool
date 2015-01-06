@@ -15,6 +15,7 @@ package application.appui
 		public function CityNodeLibaryPanelController()
 		{
 			super();
+			mDieTime = 1;
 		}
 		
 		protected override function uiCreateComplete(event:FlexEvent):void {
