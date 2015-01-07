@@ -79,13 +79,14 @@ package application.proxy
 		 */		
 		public function openFileData():void {
 			var openFunc:Function = function(event:Event):void {
-				
 				UserInterfaceManager.close(AppReg.CITY_NODE_TEMP_PANEL);
+				clearAppData();
 				
 				var mapFileByte:ByteArray = new ByteArray();
 				var fileStream:FileStream = new FileStream();
 				fileStream.open(openFile,FileMode.READ);
 				fileStream.readBytes(mapFileByte);
+				fileStream.close();
 				
 				//解城市节点模板数据
 				var nodeObjTemps:Array = mapFileByte.readObject() as Array;
@@ -144,7 +145,6 @@ package application.proxy
 				var mapFile:ByteArray = new ByteArray();
 				mapFileByte.readBytes(mapFile,mapFileByte.position,mapLen);
 				appData.mapFileStream = mapFile;
-				
 				appData.cityImagesUrl = mapFileByte.readUTF();
 				appData.mapFileUrl = mapFileByte.readUTF();
 				
@@ -152,7 +152,8 @@ package application.proxy
 				nowNodeLoadCount = 0;
 				loadNode();
 				
-				fileStream.close();
+				//保存文件的句柄引用
+				saveFile = openFile;
 			};
 			
 			var openFile:File = new File();
@@ -171,6 +172,7 @@ package application.proxy
 			if(!cityNodesPath) return false;
 			if(!mapPath) return false;
 			clearAppData();
+			appData.mapFileUrl = mapPath;
 			
 			var fileStream:FileStream;
 			var ansyslizerCityNode:Function = function(rootFile:File):void {
@@ -203,15 +205,6 @@ package application.proxy
 			//当前装载的城市节点图片
 			nowNodeLoadCount = 0;
 			loadNode();
-			
-			//大地图的文件数据
-			fileStream.close();
-			var mapFile:File = new File(mapPath);
-			var mapBytes:ByteArray = new ByteArray();
-			fileStream.open(mapFile,FileMode.READ);
-			fileStream.readBytes(mapBytes);
-			appData.mapFileStream = mapBytes;
-			appData.mapFileUrl = mapFile.nativePath;
 			return false;
 		}
 		
@@ -228,8 +221,8 @@ package application.proxy
 				defaultCityNodeLoad.loadBytes(node_fs);
 			} else {
 				clearNodeLoad();
-				//新建一个数据文件完成
-				sendNotification(ApplicationMediator.NEW_MAP_DATA_INIT);
+				//装载大地图数据
+				installMapFile();
 			}
 		}
 		
@@ -302,12 +295,13 @@ package application.proxy
 		}
 		
 		/**
-		 * 初始化纹理集上传给gpu 
+		 * 初始化纹理集上传给gpu
 		 */		
 		public function updateTextureToGPU():void {
 			appData.textureManager.removeTexture("mapTexture");
 			appData.textureManager.removeTextureAtlas("mapTexture");
 			appData.texturepack = ExportTexturesUtils.getTextureAtls(true);
+			
 			var texture:Texture = Texture.fromBitmapData(appData.texturepack.bitData);
 			var textureAtls:TextureAtlas = new TextureAtlas(texture,appData.texturepack.atls);
 			appData.textureManager.addTextureAtlas("mapTexture",textureAtls);
@@ -316,52 +310,94 @@ package application.proxy
 		/**
 		 * 保存地图编辑文件 
 		 */		
-		public function saveMapEditorFile():void {
-			
+		public function saveMapEditorFile(quickSave:Boolean = false):void {
 			var saveFunc:Function = function(event:Event):void {
-				if(saveFile.name == null ||StringUtil.trim(saveFile.name).length == 0) return;
-				if(saveFile.name.indexOf(".bzTmx") == -1) {
-					saveFile.nativePath += ".bzTmx";
-				}
-				
-				var writeBytes:ByteArray = new ByteArray();
-				var writeFile:FileStream = new FileStream();
-				writeFile.open(saveFile,FileMode.WRITE);
-				
-				//写入城市节点的模板数据
-				var nodeTempList:Array = getWriteNodeTemps();
-				writeBytes.writeObject(nodeTempList);
-				
-				//写入地图上的城市节点实例数据
-				var mapNodeDatas:Array = getWriteMapNodes();
-				writeBytes.writeObject(mapNodeDatas);
-				
-				var i:int = 0;
-				var len:int = appData.cityNodeFiles.length;
-				var nodeFileData:Object = null;
-				//写入城市节点模板的文件个数
-				writeBytes.writeDouble(len);
-				for(i = 0; i != len; i++) {
-					nodeFileData = appData.cityNodeFiles[i];
-					var fileName:String = nodeFileData[TEXTURE_NAME_FIELD];
-					var fileLen:int = ByteArray(nodeFileData[FILE_STREAM_FIELD]).bytesAvailable;
-					writeBytes.writeUTF(nodeFileData[TEXTURE_NAME_FIELD]);						//写入文理名称
-					writeBytes.writeInt(fileLen);	//写入文件byteArray的长度
-					writeBytes.writeBytes(nodeFileData[FILE_STREAM_FIELD]);								//写入文件
-				}
-				writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);							//写入大地文件数据长度
-				writeBytes.writeBytes(appData.mapFileStream);									//写入大地图文件
-				
-				writeBytes.writeUTF(appData.cityImagesUrl);
-				writeBytes.writeUTF(appData.mapFileUrl);
-				
-				writeFile.writeBytes(writeBytes);												//写入文件
-				writeFile.close();
+				saveData();
+			};
+			
+			var cancelFunc:Function = function(event:Event):void {
+				saveFile = null;
 			}
 			
-			if(!saveFile) saveFile = new File();
-			saveFile.addEventListener(Event.SELECT,saveFunc,false,0,true);
-			saveFile.browseForSave("保存编辑文件");
+			if(quickSave) {
+				saveData();
+			} else {
+				if(!saveFile) saveFile = new File();
+				saveFile.addEventListener(Event.SELECT,saveFunc,false,0,true);
+				saveFile.addEventListener(Event.CANCEL,cancelFunc,false,0,true);
+				saveFile.browseForSave("保存编辑文件");
+			}
+		}
+		
+		/**
+		 * 装载大地图文件数据 
+		 */		
+		private function installMapFile():void {
+			//大地图的文件数据
+			var mapFile:File = new File(appData.mapFileUrl);
+			var mapBytes:ByteArray = new ByteArray();
+			var fileStream:FileStream = new FileStream();
+			
+			fileStream.open(mapFile,FileMode.READ);
+			fileStream.readBytes(mapBytes);
+			appData.mapFileStream = mapBytes;
+			
+			var mapLoaderFunc:Function = function(event:Event):void {
+				appData.mapBit = Bitmap(mapLoad.contentLoaderInfo.content).bitmapData;
+				//新建一个数据文件完成
+				sendNotification(ApplicationMediator.NEW_MAP_DATA_INIT);
+			};
+			
+			var mapLoad:Loader = new Loader();
+			mapLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,mapLoaderFunc);
+			mapLoad.loadBytes(mapBytes);
+		}
+		
+		/**
+		 * 保存地图数据 
+		 */		
+		private function saveData():void {
+			if(!saveFile) return;
+			if(saveFile.name == null || StringUtil.trim(saveFile.name).length == 0) return;
+			if(saveFile.name.indexOf(".bzTmx") == -1) {
+				saveFile.nativePath += ".bzTmx";
+			}
+			
+			var writeBytes:ByteArray = new ByteArray();
+			var writeFile:FileStream = new FileStream();
+			writeFile.open(saveFile,FileMode.WRITE);
+			
+			//写入城市节点的模板数据
+			var nodeTempList:Array = getWriteNodeTemps();
+			writeBytes.writeObject(nodeTempList);
+			
+			//写入地图上的城市节点实例数据
+			var mapNodeDatas:Array = getWriteMapNodes();
+			writeBytes.writeObject(mapNodeDatas);
+			
+			var i:int = 0;
+			var len:int = appData.cityNodeFiles.length;
+			var nodeFileData:Object = null;
+			
+			//写入城市节点模板的文件个数
+			writeBytes.writeDouble(len);
+			for(i = 0; i != len; i++) {
+				nodeFileData = appData.cityNodeFiles[i];
+				var fileName:String = nodeFileData[TEXTURE_NAME_FIELD];
+				var fileLen:int = ByteArray(nodeFileData[FILE_STREAM_FIELD]).bytesAvailable;
+				writeBytes.writeUTF(nodeFileData[TEXTURE_NAME_FIELD]);						//写入文理名称
+				writeBytes.writeInt(fileLen);												//写入文件byteArray的长度
+				writeBytes.writeBytes(nodeFileData[FILE_STREAM_FIELD]);						//写入文件
+			}
+			
+			writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
+			writeBytes.writeBytes(appData.mapFileStream);									//写入大地图文件
+			
+			writeBytes.writeUTF(appData.cityImagesUrl);
+			writeBytes.writeUTF(appData.mapFileUrl);
+			
+			writeFile.writeBytes(writeBytes);												//写入文件
+			writeFile.close();
 		}
 		
 		/**

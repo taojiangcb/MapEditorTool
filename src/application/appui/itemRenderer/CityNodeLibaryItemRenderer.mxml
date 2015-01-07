@@ -9,22 +9,38 @@
 	<s:Label id="txtTextureName" horizontalCenter="0" bottom="5"/>
 	<fx:Script>
 		<![CDATA[
+			import com.frameWork.uiControls.UIConstant;
 			import com.frameWork.uiControls.UIMoudleManager;
 			
 			import application.AppReg;
+			import application.cityNode.ui.NodeEditorPanelController;
 			import application.db.CityNodeTempVO;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
+			
+			import gframeWork.appDrag.AppDragMgr;
+			
 			protected override function createChildren():void {
 				super.createChildren();
 				doubleClickEnabled = true;
 				addEventListener(MouseEvent.DOUBLE_CLICK,doubleClickHandler,false,0,true);
-				//if(labelDisplay) removeElement(labelDisplay);
+				nodeImage.addEventListener(MouseEvent.MOUSE_DOWN,imageDownHandler,false,0,true);
 			}
 			
 			private function doubleClickHandler(event:Event):void {
 				appData.editorCityNode = data as CityNodeTempVO;
+				var nodeEditorUI:NodeEditorPanelController = UIMoudleManager.getUIMoudleById(AppReg.EDITOR_CITY_NODE_PANEL) as NodeEditorPanelController;
+				if(nodeEditorUI) {
+					if(nodeEditorUI.uiState == UIConstant.OPEN) {
+						nodeEditorUI.refhresh();
+						return;
+					}
+				}
 				UIMoudleManager.openUIByid(AppReg.EDITOR_CITY_NODE_PANEL);
+			}
+			
+			private function imageDownHandler(event:MouseEvent):void {
+				AppDragMgr.clingyItem(nodeImage,data,null,AppDragMgr.DRAG);
 			}
 			
 			protected override function commitProperties():void {

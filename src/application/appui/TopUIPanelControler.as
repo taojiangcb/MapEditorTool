@@ -33,10 +33,15 @@ package application.appui
 			ui.btnExport.addEventListener(MouseEvent.CLICK,exportClickHandler,false,0,true);
 			ui.btnExportTextures.addEventListener(MouseEvent.CLICK,exportTexturesHandler,false,0,true);
 			ui.saveFile.addEventListener(MouseEvent.CLICK,saveClickHandler,false,0,true);
+			ui.QuickSaveFile.addEventListener(MouseEvent.CLICK,quickSaveClickHandler,false,0,true);
 		}
 		
 		private function saveClickHandler(event:MouseEvent):void {
 			appDataProxy.saveMapEditorFile();
+		}
+		
+		private function quickSaveClickHandler(event:MouseEvent):void {
+			appDataProxy.saveMapEditorFile(true);
 		}
 		
 		private function newClickHandler(event:Event):void {

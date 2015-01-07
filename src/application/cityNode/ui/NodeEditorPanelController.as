@@ -26,10 +26,13 @@ package application.cityNode.ui
 	 */	
 	public class NodeEditorPanelController extends UIMoudle
 	{
+		//中心线原点
 		private var pt:Point = new Point(150,200);
 		private var uiSize:Rectangle = null;
 		
+		//label拖拽
 		private var labelMoveGesture:DragGestures;
+		//火拖拽
 		private var freeMoveGesture:DragGestures;
 		
 		public function NodeEditorPanelController() {
@@ -45,19 +48,31 @@ package application.cityNode.ui
 			uiSize = getSize();
 			ui.setSize(uiSize.width,uiSize.height);
 			ui.drawBackground(uiSize,pt);
+			ui.drawImage();
 			ui.btnClose.addEventListener(Event.TRIGGERED,closeClickHandler);
 			Starling.current.stage.addEventListener(Event.RESIZE,onResizeHandler);
 			layoutUpdate();
-			
 			labelMoveGesture = new DragGestures(ui.txtName,labelDragOver);
 			freeMoveGesture = new DragGestures(ui.free,freeDragOver);
 		}
 		
+		//刷新显示
+		public function refhresh():void {
+			layoutUpdate();
+			ui.drawImage();
+		}
+		
+		/**
+		 * label标签拖拽处理 
+		 */		
 		private function labelDragOver():void {
 			appData.editorCityNode.labelX = ui.txtName.x;
 			appData.editorCityNode.labelY = ui.txtName.y;
 		}
 		
+		/**
+		 * 火拖拽处理  
+		 */		
 		private function freeDragOver():void {
 			appData.editorCityNode.freeX = ui.free.x;
 			appData.editorCityNode.freeY = ui.free.y;
@@ -73,6 +88,8 @@ package application.cityNode.ui
 		
 		public override function dispose():void {
 			Starling.current.stage.removeEventListener(Event.RESIZE,onResizeHandler);
+			if(labelMoveGesture) labelMoveGesture.dispose();
+			if(freeMoveGesture) freeMoveGesture.dispose();
 			super.dispose();
 		}
 		

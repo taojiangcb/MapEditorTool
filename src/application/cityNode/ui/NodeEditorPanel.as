@@ -60,11 +60,6 @@ package application.cityNode.ui
 			contentSprite = new Sprite();
 			addChild(contentSprite);
 			
-			var textureName:String = appData.editorCityNode.textureName;
-			var nodeTexture:Texture = appData.textureManager.getTexture(textureName);
-			nodeImage = new Image(nodeTexture);
-			contentSprite.addChild(nodeImage);
-			
 			txtName = new TextField(150,20,"名称标签",BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
 			txtName.fontName = BaseMetalWorksMobileTheme.FONT_NAME;
 			txtName.hAlign = HAlign.CENTER;
@@ -79,6 +74,14 @@ package application.cityNode.ui
 			free = new MovieClip(textures,24);
 			contentSprite.addChild(free);
 			Starling.juggler.add(free);
+		}
+		
+		public function drawImage():void {
+			var textureName:String = appData.editorCityNode.textureName;
+			var nodeTexture:Texture = appData.textureManager.getTexture(textureName);
+			if(nodeImage) nodeImage.removeFromParent(true);
+			nodeImage = new Image(nodeTexture);
+			contentSprite.addChildAt(nodeImage,0);
 		}
 		
 		public function drawBackground(resize:Rectangle,oldPt:Point):void {
