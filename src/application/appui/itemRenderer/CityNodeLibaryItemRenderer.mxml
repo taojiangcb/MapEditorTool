@@ -13,34 +13,27 @@
 			import com.frameWork.uiControls.UIMoudleManager;
 			
 			import application.AppReg;
+			import application.ApplicationMediator;
 			import application.cityNode.ui.NodeEditorPanelController;
 			import application.db.CityNodeTempVO;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
 			
 			import gframeWork.appDrag.AppDragMgr;
+			import gframeWork.appDrag.utils.DragBinds;
+			
+			import org.puremvc.as3.patterns.facade.Facade;
+			
+			private var dragBind:DragBinds;
 			
 			protected override function createChildren():void {
 				super.createChildren();
 				doubleClickEnabled = true;
 				addEventListener(MouseEvent.DOUBLE_CLICK,doubleClickHandler,false,0,true);
-				nodeImage.addEventListener(MouseEvent.MOUSE_DOWN,imageDownHandler,false,0,true);
 			}
 			
 			private function doubleClickHandler(event:Event):void {
-				appData.editorCityNode = data as CityNodeTempVO;
-				var nodeEditorUI:NodeEditorPanelController = UIMoudleManager.getUIMoudleById(AppReg.EDITOR_CITY_NODE_PANEL) as NodeEditorPanelController;
-				if(nodeEditorUI) {
-					if(nodeEditorUI.uiState == UIConstant.OPEN) {
-						nodeEditorUI.refhresh();
-						return;
-					}
-				}
-				UIMoudleManager.openUIByid(AppReg.EDITOR_CITY_NODE_PANEL);
-			}
-			
-			private function imageDownHandler(event:MouseEvent):void {
-				AppDragMgr.clingyItem(nodeImage,data,null,AppDragMgr.DRAG);
+				Facade.getInstance().sendNotification(ApplicationMediator.EDIT_CITY_TEMP,data);
 			}
 			
 			protected override function commitProperties():void {
@@ -50,6 +43,16 @@
 					var bitData:BitmapData = appDataProxy.getCityNodeBitDataByName(cityNodeTemp.textureName);
 					nodeImage.source = bitData;
 					txtTextureName.text = cityNodeTemp.textureName;
+					
+					if(dragBind && dragBind.dragData != data) {
+						dragBind.dispose();
+						dragBind = null;
+					}
+					
+					if(!dragBind) {
+						dragBind = new DragBinds();
+						dragBind.bind(nodeImage,data);
+					}
 				}
 			}
 			

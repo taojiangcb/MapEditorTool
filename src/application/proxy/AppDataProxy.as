@@ -80,6 +80,7 @@ package application.proxy
 		public function openFileData():void {
 			var openFunc:Function = function(event:Event):void {
 				UserInterfaceManager.close(AppReg.CITY_NODE_TEMP_PANEL);
+				UserInterfaceManager.close(AppReg.EDITOR_MAP_PANEL);
 				clearAppData();
 				
 				var mapFileByte:ByteArray = new ByteArray();
@@ -114,18 +115,18 @@ package application.proxy
 					var mapCityNode:MapCityNodeVO = new MapCityNodeVO();
 					mapCityNode.worldX = mapCityNodeData[0];
 					mapCityNode.worldY = mapCityNodeData[1];
-					mapCityNode.faction = mapCityNodeData[2];
-					mapCityNode.labelX = mapCityNodeData[3];
-					mapCityNode.labelY = mapCityNodeData[4];
-					mapCityNode.freeX = mapCityNodeData[5];
-					mapCityNode.freeY = mapCityNodeData[6];
-					mapCityNode.textureName = mapCityNodeData[7];
-					mapCityNode.cityId = mapCityNodeData[8];
+//					mapCityNode.faction = mapCityNodeData[2];
+//					mapCityNode.labelX = mapCityNodeData[3];
+//					mapCityNode.labelY = mapCityNodeData[4];
+//					mapCityNode.freeX = mapCityNodeData[5];
+//					mapCityNode.freeY = mapCityNodeData[6];
+					mapCityNode.textureName = mapCityNodeData[2];
+					mapCityNode.cityId = mapCityNodeData[3];
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
 				
-				//城市节点文件
+				//城市节点纹理文件
 				var nodeTempFileCount:int = mapFileByte.readDouble();
 				len = nodeTempFileCount;
 				var nodeFiles:Array = [];
@@ -317,7 +318,7 @@ package application.proxy
 			
 			var cancelFunc:Function = function(event:Event):void {
 				saveFile = null;
-			}
+			};
 			
 			if(quickSave) {
 				saveData();
@@ -430,14 +431,31 @@ package application.proxy
 			var mapNodeDatas:Array = [];
 			for(i = 0; i != len; i++) {
 				mapCityNode = appData.mapCityNodes[i];
-				//数据格式 [0 worldX 1 worldY 2 factionId 3 labelX 4 labelY 5 freeX 6 freeY 7 textureName 8 cityId]
-				var mapCityNodeData:Array = [mapCityNode.worldX,mapCityNode.worldY,mapCityNode.faction,
-					mapCityNode.labelX,mapCityNode.labelY,
-					mapCityNode.freeX,mapCityNode.freeY,
-					mapCityNode.textureName,mapCityNode.cityId];
+				//数据格式 [0 worldX 1 worldY 2 textureName 3 cityId]
+				var mapCityNodeData:Array = [mapCityNode.worldX,
+					mapCityNode.worldY,
+					mapCityNode.textureName,
+					mapCityNode.cityId];
 				mapNodeDatas.push(mapCityNodeData);
 			}
 			return mapNodeDatas;
+		}
+		
+		/**
+		 *  
+		 * @param textureName
+		 * @return 
+		 * 
+		 */		
+		public function getCityNodeTempByName(textureName:String):CityNodeTempVO {
+			var i:int = 0;
+			var len:int = appData.cityNodeTemps.length;
+			for(i = 0; i != len; i++) {
+				if(CityNodeTempVO(appData.cityNodeTemps[i]).textureName == textureName) {
+					return appData.cityNodeTemps[i];
+				}
+			}
+			return null;
 		}
 		
 		public static function get NAME():String{

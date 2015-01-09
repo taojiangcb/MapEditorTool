@@ -37,8 +37,10 @@ package application
 				internalInit();
 			};
 			
+			Starling.multitouchEnabled = true;
 			//启动starling
 			sl = new Starling(StarlingMain,stage);
+			sl.simulateMultitouch = true;
 			sl.addEventListener(Event.ROOT_CREATED,stage3dComplete);
 			sl.start();
 		}

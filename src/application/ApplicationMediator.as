@@ -1,5 +1,8 @@
 package application
 {
+	import com.frameWork.uiControls.UIConstant;
+	import com.frameWork.uiControls.UIMoudleManager;
+	
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
@@ -7,7 +10,11 @@ package application
 	
 	import spark.components.Application;
 	
+	import application.cityNode.ui.NodeEditorPanelController;
+	import application.db.CityNodeTempVO;
 	import application.extendsCore.MediatorExpert;
+	import application.mapEditor.ui.MapEditorPanelConstroller;
+	import application.utils.appData;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -15,7 +22,20 @@ package application
 	public class ApplicationMediator extends MediatorExpert
 	{
 		
+		/**
+		 * 新建一个地图数据文件 
+		 */		
 		public static const NEW_MAP_DATA_INIT:String = "newMapDataInit";
+		
+		/**
+		 * 刷新当前地图上所有城市的节点显示 
+		 */		
+		public static const UPDATE_MAP_ALL_CITY:String = "updateMapAllCity";
+		
+		/**
+		 * 编辑一个城市的模板 
+		 */		
+		public static const EDIT_CITY_TEMP:String = "editCityTemp";
 		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
@@ -23,11 +43,32 @@ package application
 		
 		protected override function installNoficationHandler():void {
 			super.installNoficationHandler();
-			putNotifiacion(NEW_MAP_DATA_INIT,appNewDataInitComplete);
+			putNotification(NEW_MAP_DATA_INIT,appNewDataInitComplete);
+			putNotification(UPDATE_MAP_ALL_CITY,updateMapAllCity);
+			putNotification(EDIT_CITY_TEMP,editorCityTemp);
 		}
 		
 		private function appNewDataInitComplete(notification:INotification):void {
 			MapEditor(FlexGlobals.topLevelApplication).appStart();
+		}
+		
+		private function updateMapAllCity(notification:INotification):void {
+			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			if(mapEditor) {
+				mapEditor.refreshAllCity();
+			}
+		}
+		
+		private function editorCityTemp(notification:INotification):void {
+			appData.editorCityNode = notification.getBody() as CityNodeTempVO;
+			var nodeEditorUI:NodeEditorPanelController = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_CITY_NODE_PANEL) as NodeEditorPanelController;
+			if(nodeEditorUI) {
+				if(nodeEditorUI.uiState == UIConstant.OPEN) {
+					nodeEditorUI.refhresh();
+					return;
+				}
+			}
+			UIMoudleManager.openUIByid(AppReg.EDITOR_CITY_NODE_PANEL);
 		}
 		
 		public static function get NAME():String {

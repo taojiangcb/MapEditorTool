@@ -17,9 +17,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
-			
 			import mx.events.FlexEvent;
-			
 			import application.AppReg;
 			import application.StarlingMain;
 			import application.utils.appData;
@@ -48,6 +46,7 @@
 			public function appStart():void {
 				appDataProxy.updateTextureToGPU();
 				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);
+				UIMoudleManager.openUIByid(AppReg.EDITOR_MAP_PANEL);
 			}
 		]]>
 	</fx:Script>

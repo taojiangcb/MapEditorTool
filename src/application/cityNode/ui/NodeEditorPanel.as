@@ -54,7 +54,7 @@ package application.cityNode.ui
 			
 			btnClose = new Button();
 			btnClose.width = 30;
-			btnClose.label = "x";
+			btnClose.label = "退出";
 			addChild(btnClose);
 			
 			contentSprite = new Sprite();

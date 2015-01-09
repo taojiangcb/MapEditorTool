@@ -37,7 +37,7 @@ package application.extendsCore
 		 * @param name
 		 * @param callFunc
 		 */		
-		protected function putNotifiacion(name:String,callFunc:Function):void {
+		protected function putNotification(name:String,callFunc:Function):void {
 			if(!name || name.length == 0) return;
 			if(!callFunc) return;
 			if(noti$map == null) return;

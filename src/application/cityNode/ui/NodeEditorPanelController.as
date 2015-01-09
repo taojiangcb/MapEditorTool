@@ -11,9 +11,12 @@ package application.cityNode.ui
 	import mx.core.FlexGlobals;
 	
 	import application.AppReg;
+	import application.ApplicationMediator;
 	import application.utils.appData;
 	
 	import gframeWork.uiController.UserInterfaceManager;
+	
+	import org.puremvc.as3.patterns.facade.Facade;
 	
 	import starling.core.Starling;
 	import starling.events.Event;
@@ -111,6 +114,11 @@ package application.cityNode.ui
 			
 			ui.btnClose.x = uiSize.width - ui.btnClose.width - 5;
 			ui.btnClose.y = 5;
+		}
+		
+		public override function close():void {
+			super.close();
+			Facade.getInstance().sendNotification(ApplicationMediator.UPDATE_MAP_ALL_CITY);
 		}
 		
 		private function get ui():NodeEditorPanel {
