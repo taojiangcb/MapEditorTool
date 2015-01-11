@@ -60,6 +60,8 @@ $RECYCLE.BIN/
 .actionScriptProperties
 .flexProperties
 .project
+.bzTmx
+
 bin-debug/MapEditor-app.xml
 src/MapEditor-app.xml
 bin-debug/MapEditor.swf
