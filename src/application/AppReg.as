@@ -5,6 +5,8 @@ package application
 	
 	import application.appui.CityNodeLibaryPanel;
 	import application.appui.CityNodeLibaryPanelController;
+	import application.appui.CityPropertieController;
+	import application.appui.CityPropertiePanel;
 	import application.appui.CreateNewMapPanel;
 	import application.appui.CreateNewMapPanelController;
 	import application.appui.TopUIPanel;
@@ -29,9 +31,14 @@ package application
 		public static const TOP_UI_PANEL:int = 1;
 		
 		/**
-		 * 城市节点库 
+		 * 城市模板库
 		 */		
 		public static const CITY_NODE_TEMP_PANEL:int = 2;
+		
+		/**
+		 * 城市节点编辑
+		 */		
+		public static const CITY_EDIT_PROPERTIES:int = 3;
 		
 		/**
 		 * 创建地图面版 
@@ -62,6 +69,7 @@ package application
 			UserInterfaceManager.registerGUI(TOP_UI_PANEL,TopUIPanel,TopUIPanelControler);
 			UserInterfaceManager.registerGUI(CREATE_NEW_MAP,CreateNewMapPanel,CreateNewMapPanelController);
 			UserInterfaceManager.registerGUI(CITY_NODE_TEMP_PANEL,CityNodeLibaryPanel,CityNodeLibaryPanelController);
+			UserInterfaceManager.registerGUI(CITY_EDIT_PROPERTIES,CityPropertiePanel,CityPropertieController);
 			
 			UIMoudleManager.registerUIMoudle(EDITOR_CITY_NODE_PANEL,NodeEditorPanelController,NodeEditorPanel);
 			UIMoudleManager.registerUIMoudle(EDITOR_MAP_PANEL,MapEditorPanelConstroller,MapEditorPanel);

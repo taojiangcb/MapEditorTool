@@ -18,6 +18,7 @@ package application.mapEditor.ui
 	
 	import starling.core.Starling;
 	import starling.events.Event;
+	import starling.filters.BlurFilter;
 	
 	public class MapEditorPanelConstroller extends UIMoudle
 	{
@@ -27,6 +28,11 @@ package application.mapEditor.ui
 		 * 大地图城市节点信息 
 		 */		
 		private var mapCitys:Vector.<MapCityNodeComp>;
+		
+		/**
+		 * 当前选中的城市节点 
+		 */		
+		private var crtSelectCity:MapCityNodeComp;
 		
 		/**
 		 * 地图拖拽功能 
@@ -74,8 +80,8 @@ package application.mapEditor.ui
 			var city:MapCityNodeComp = new MapCityNodeComp(mapNodeInfo);
 			ui.citySpace.addChild(city);
 			
-			city.x = mapNodeInfo.worldX;
-			city.y = mapNodeInfo.worldY;
+			city.x = Math.round(mapNodeInfo.worldX);
+			city.y = Math.round(mapNodeInfo.worldY);
 			
 			mapCitys.push(city);
 			appData.mapCityNodes.push(mapNodeInfo);
@@ -95,6 +101,27 @@ package application.mapEditor.ui
 			while(--i > -1) mapCitys[i].invalidateUpdateList();
 		}
 		
+		public function setChrooseCity(cityComp:MapCityNodeComp):void {
+			if(crtSelectCity) {
+				crtSelectCity.filter = null;
+			}
+			crtSelectCity = cityComp;
+			crtSelectCity.filter = BlurFilter.createGlow();
+		}
+		
+		public function getChrroseCity():MapCityNodeComp {
+			return crtSelectCity;
+		}
+		
+		public override function dispose():void {
+			crtSelectCity.filter = null;
+			super.dispose();
+		}
+		
+		/**
+		 * 获取当前编辑场中的大小 
+		 * @return 
+		 */		
 		private function getSize():Rectangle {
 			var w:int = Starling.current.stage.stageWidth - left - right;
 			var h:int = Starling.current.stage.stageHeight - top - bottom;

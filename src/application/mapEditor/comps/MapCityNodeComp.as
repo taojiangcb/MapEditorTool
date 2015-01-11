@@ -2,6 +2,7 @@ package application.mapEditor.comps
 {
 	import com.frameWork.gestures.DoubleTapGestures;
 	import com.frameWork.gestures.DragGestures;
+	import com.frameWork.gestures.TapGestures;
 	
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
@@ -10,7 +11,11 @@ package application.mapEditor.comps
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
+	import feathers.core.IFocusDisplayObject;
+	import feathers.events.FeathersEventType;
+	
 	import org.puremvc.as3.patterns.facade.Facade;
+	
 	import source.feathers.themes.BaseMetalWorksMobileTheme;
 	
 	import starling.core.Starling;
@@ -25,7 +30,7 @@ package application.mapEditor.comps
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
-	public class MapCityNodeComp extends CustomFeathersControls
+	public class MapCityNodeComp extends CustomFeathersControls implements IFocusDisplayObject
 	{
 		private var ctImage:Image;
 		private var free:MovieClip;
@@ -45,6 +50,11 @@ package application.mapEditor.comps
 		 * 双击 
 		 */		
 		private var doubleGuester:DoubleTapGestures;
+		
+		/**
+		 * 单击 
+		 */		
+		private var tapGuester:TapGestures;
 		
 		public function MapCityNodeComp(cityNode:MapCityNodeVO) {
 			super(true);
@@ -76,8 +86,15 @@ package application.mapEditor.comps
 			
 			dragGuester = new DragCityGestures(this,dragOverHandler);
 			doubleGuester = new DoubleTapGestures(this,doubleTabHandler);
+			tapGuester = new TapGestures(this,tapGuesterHandler);
 			invalidateUpdateList();
+			
 		}
+		
+		private function tapGuesterHandler(touch:Touch):void {
+			Facade.getInstance().sendNotification(ApplicationMediator.CHROOSE_MAP_CITY,this);
+		}
+	
 		
 		private function doubleTabHandler(event:Touch):void {
 			Facade.getInstance().sendNotification(ApplicationMediator.EDIT_CITY_TEMP,nodeTemp);
@@ -85,6 +102,8 @@ package application.mapEditor.comps
 		
 		private function dragOverHandler():void {
 			updateNodeInfo();
+			x = Math.round(x);
+			y = Math.round(y);
 		}
 		
 		protected override function layout():void {
@@ -108,8 +127,8 @@ package application.mapEditor.comps
 			mapNodeInfo.cityId = 0;
 			mapNodeInfo.cityName = "";
 			
-			mapNodeInfo.worldX = x;
-			mapNodeInfo.worldY = y;
+			mapNodeInfo.worldX = Math.round(x);
+			mapNodeInfo.worldY = Math.round(y);
 		}
 		
 		

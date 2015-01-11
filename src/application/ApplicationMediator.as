@@ -13,8 +13,11 @@ package application
 	import application.cityNode.ui.NodeEditorPanelController;
 	import application.db.CityNodeTempVO;
 	import application.extendsCore.MediatorExpert;
+	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.utils.appData;
+	
+	import gframeWork.uiController.UserInterfaceManager;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -37,6 +40,11 @@ package application
 		 */		
 		public static const EDIT_CITY_TEMP:String = "editCityTemp";
 		
+		/**
+		 * 选中地图上的一个城市 
+		 */		
+		public static const CHROOSE_MAP_CITY:String = "chrooseMapCity";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -46,6 +54,7 @@ package application
 			putNotification(NEW_MAP_DATA_INIT,appNewDataInitComplete);
 			putNotification(UPDATE_MAP_ALL_CITY,updateMapAllCity);
 			putNotification(EDIT_CITY_TEMP,editorCityTemp);
+			putNotification(CHROOSE_MAP_CITY,chrooseMapCity);
 		}
 		
 		private function appNewDataInitComplete(notification:INotification):void {
@@ -69,6 +78,15 @@ package application
 				}
 			}
 			UIMoudleManager.openUIByid(AppReg.EDITOR_CITY_NODE_PANEL);
+		}
+		
+		private function chrooseMapCity(notification:INotification):void {
+			var cityComp:MapCityNodeComp = notification.getBody() as MapCityNodeComp;
+			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			if(mapEditor) {
+				mapEditor.setChrooseCity(cityComp);
+			}
+			UserInterfaceManager.open(AppReg.CITY_EDIT_PROPERTIES);
 		}
 		
 		public static function get NAME():String {

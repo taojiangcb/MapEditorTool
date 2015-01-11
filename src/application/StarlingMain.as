@@ -16,6 +16,8 @@ package application
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	/**
 	 * Starling启动的主类 
@@ -43,6 +45,8 @@ package application
 			sl.simulateMultitouch = true;
 			sl.addEventListener(Event.ROOT_CREATED,stage3dComplete);
 			sl.start();
+			sl.showStats = true;
+			sl.showStatsAt(HAlign.CENTER,VAlign.BOTTOM);
 		}
 		
 		public function StarlingMain() {

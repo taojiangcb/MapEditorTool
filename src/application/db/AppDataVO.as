@@ -40,7 +40,9 @@ package application.db
 		public var editorCityNode:CityNodeTempVO;
 		//feathers ui 皮肤
 		public var skin:StyleNameFunctionTheme;
+		//文字的描边
 		public var GLOW_BLACK:GlowFilter = new GlowFilter(0x000000,1,2,2,8, BitmapFilterQuality.HIGH);
+		
 		public function AppDataVO() {
 		}
 	}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" title="城市属性编辑" right="0" top="50" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="100%">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup width=" 100%" height="100%" paddingTop="10" paddingLeft="10">
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="城市名称:"/>
+			<s:TextInput text="" id="txtName"/>
+		</s:HGroup>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="tempId:"/>
+			<s:TextInput text="" id="txtCityTempId" text="0"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Panel>

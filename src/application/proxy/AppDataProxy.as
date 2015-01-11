@@ -442,10 +442,8 @@ package application.proxy
 		}
 		
 		/**
-		 *  
 		 * @param textureName
 		 * @return 
-		 * 
 		 */		
 		public function getCityNodeTempByName(textureName:String):CityNodeTempVO {
 			var i:int = 0;

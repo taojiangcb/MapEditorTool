@@ -69,16 +69,16 @@ package application.cityNode.ui
 		 * label标签拖拽处理 
 		 */		
 		private function labelDragOver():void {
-			appData.editorCityNode.labelX = ui.txtName.x;
-			appData.editorCityNode.labelY = ui.txtName.y;
+			appData.editorCityNode.labelX = Math.round(ui.txtName.x);
+			appData.editorCityNode.labelY = Math.round(ui.txtName.y);
 		}
 		
 		/**
 		 * 火拖拽处理  
 		 */		
 		private function freeDragOver():void {
-			appData.editorCityNode.freeX = ui.free.x;
-			appData.editorCityNode.freeY = ui.free.y;
+			appData.editorCityNode.freeX = Math.round(ui.free.x);
+			appData.editorCityNode.freeY = Math.round(ui.free.y);
 		}
 		
 		private function closeClickHandler(event:Event):void {
