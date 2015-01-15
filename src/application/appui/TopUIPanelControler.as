@@ -9,6 +9,7 @@ package application.appui
 	import mx.events.FlexEvent;
 	
 	import application.AppReg;
+	import application.proxy.AppDataProxy;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appDataProxy;
 	
@@ -30,18 +31,18 @@ package application.appui
 			super.uiCreateComplete(event);
 			ui.btnNew.addEventListener(MouseEvent.CLICK,newClickHandler,false,0,true);
 			ui.btnOpen.addEventListener(MouseEvent.CLICK,openClickHandler,false,0,true);
-			ui.btnExport.addEventListener(MouseEvent.CLICK,exportClickHandler,false,0,true);
+//			ui.btnExport.addEventListener(MouseEvent.CLICK,exportClickHandler,false,0,true);
 			ui.btnExportTextures.addEventListener(MouseEvent.CLICK,exportTexturesHandler,false,0,true);
 			ui.saveFile.addEventListener(MouseEvent.CLICK,saveClickHandler,false,0,true);
 			ui.QuickSaveFile.addEventListener(MouseEvent.CLICK,quickSaveClickHandler,false,0,true);
 		}
 		
 		private function saveClickHandler(event:MouseEvent):void {
-			appDataProxy.saveMapEditorFile();
+			appDataProxy.saveMapEditorFile(AppDataProxy.SAVE);
 		}
 		
 		private function quickSaveClickHandler(event:MouseEvent):void {
-			appDataProxy.saveMapEditorFile(true);
+			appDataProxy.saveMapEditorFile(AppDataProxy.SAVE_QUICK);
 		}
 		
 		private function newClickHandler(event:Event):void {

@@ -12,6 +12,7 @@ package application
 	
 	import application.cityNode.ui.NodeEditorPanelController;
 	import application.db.CityNodeTempVO;
+	import application.db.MapCityNodeVO;
 	import application.extendsCore.MediatorExpert;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
@@ -45,6 +46,11 @@ package application
 		 */		
 		public static const CHROOSE_MAP_CITY:String = "chrooseMapCity";
 		
+		/**
+		 * 添加一个城市到场景 
+		 */		
+		public static const ADD_CITY_TO_MAP:String = "addCityToMap";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -55,6 +61,7 @@ package application
 			putNotification(UPDATE_MAP_ALL_CITY,updateMapAllCity);
 			putNotification(EDIT_CITY_TEMP,editorCityTemp);
 			putNotification(CHROOSE_MAP_CITY,chrooseMapCity);
+			putNotification(ADD_CITY_TO_MAP,addCityToMap);
 		}
 		
 		private function appNewDataInitComplete(notification:INotification):void {
@@ -65,6 +72,13 @@ package application
 			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 			if(mapEditor) {
 				mapEditor.refreshAllCity();
+			}
+		}
+		
+		private function addCityToMap(notification:INotification):void {
+			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			if(mapEditor) {
+				mapEditor.createMapNode(notification.getBody() as MapCityNodeVO);
 			}
 		}
 		

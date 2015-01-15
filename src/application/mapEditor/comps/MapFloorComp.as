@@ -3,10 +3,13 @@ package application.mapEditor.comps
 	import flash.geom.Rectangle;
 	
 	import application.mapEditor.utils.MapUtils;
+	import application.utils.appData;
+	import application.utils.appDataProxy;
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 	
 	/**
 	 * 世界大地图的地皮 
@@ -15,13 +18,15 @@ package application.mapEditor.comps
 	public class MapFloorComp extends Sprite
 	{
 		private var gridImages:Vector.<Image>;
-		
 		public function MapFloorComp() {
 			super();
 			gridImages = new Vector.<Image>();
 			createGrids();
 		}
 		
+		/**
+		 * 创建地图 
+		 */		
 		private function createGrids():void {
 			var bitGrids:Array = MapUtils.getBitGrids();
 			var gridSize:Rectangle = MapUtils.getMapGridSize();
@@ -41,5 +46,15 @@ package application.mapEditor.comps
 			}
 		}
 		
+		public override function dispose():void{
+			if(gridImages) {
+				var len:int = gridImages.length;
+				while(--len > -1) {
+					gridImages[len].removeFromParent(true);
+					gridImages[len].texture.dispose();
+				}
+			}
+			super.dispose();
+		}
 	}
 }

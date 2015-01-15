@@ -112,8 +112,10 @@ package application.cityNode.ui
 			ui.txtName.x = appData.editorCityNode.labelX;
 			ui.txtName.y = appData.editorCityNode.labelY;
 			
-			ui.btnClose.x = uiSize.width - ui.btnClose.width - 5;
-			ui.btnClose.y = 5;
+			if(uiSize) {
+				ui.btnClose.x = uiSize.width - ui.btnClose.width - 5;
+				ui.btnClose.y = 5;
+			}
 		}
 		
 		public override function close():void {

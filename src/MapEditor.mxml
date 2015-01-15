@@ -29,7 +29,6 @@
 			import gframeWork.uiController.UserInterfaceManager;
 			
 			import org.puremvc.as3.patterns.facade.Facade;
-			
 			import source.feathers.themes.MetalWorksMobileTheme;
 			
 			protected function windowedapplication1_applicationCompleteHandler(event:FlexEvent):void
@@ -47,9 +46,9 @@
 			/*应用程序正式启动*/
 			public function appStart():void {
 				appDataProxy.updateTextureToGPU();
-				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);
-				UserInterfaceManager.open(AppReg.CITY_EDIT_PROPERTIES);
-				UIMoudleManager.openUIByid(AppReg.EDITOR_MAP_PANEL);
+				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);		//打开城市模板栏
+				UserInterfaceManager.open(AppReg.CITY_EDIT_PROPERTIES);		//打开城市信息编辑栏
+				UIMoudleManager.openUIByid(AppReg.EDITOR_MAP_PANEL);		//地图编辑
 				
 			}
 		]]>

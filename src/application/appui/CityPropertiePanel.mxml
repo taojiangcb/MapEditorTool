@@ -12,7 +12,13 @@
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
 			<s:Label text="tempId:"/>
-			<s:TextInput text="" id="txtCityTempId" text="0"/>
+			<s:TextInput id="txtCityTempId" text="0"/>
 		</s:HGroup>
+		<s:Form width="100%" >
+			<s:FormHeading label="效果预览"/>
+			<s:FormItem width="100%">
+				<s:CheckBox label="战火" id="freeCheck"/>
+			</s:FormItem>
+		</s:Form>
 	</s:VGroup>
 </s:Panel>

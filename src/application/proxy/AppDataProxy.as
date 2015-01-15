@@ -1,5 +1,7 @@
 package application.proxy
 {
+	import com.frameWork.uiControls.UIMoudleManager;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -37,6 +39,10 @@ package application.proxy
 		public static const BITMAP_DATE_FIELD:String = "bitmapData";		//位图数据
 		public static const FILE_STREAM_FIELD:String = "stream";			//文件数据
 
+		public static const SAVE:int = 0;				//另存为
+		public static const SAVE_QUICK:int = 1;		//快速保存
+//		public static const SAVE_EXPORT:int = 2;		//导出 游戏中应用的文件
+		
 		//保存文件
 		private var saveFile:File;		
 
@@ -80,7 +86,8 @@ package application.proxy
 		public function openFileData():void {
 			var openFunc:Function = function(event:Event):void {
 				UserInterfaceManager.close(AppReg.CITY_NODE_TEMP_PANEL);
-				UserInterfaceManager.close(AppReg.EDITOR_MAP_PANEL);
+				UserInterfaceManager.close(AppReg.CITY_EDIT_PROPERTIES);
+				UIMoudleManager.closeUIById(AppReg.EDITOR_MAP_PANEL);
 				clearAppData();
 				
 				var mapFileByte:ByteArray = new ByteArray();
@@ -121,7 +128,9 @@ package application.proxy
 //					mapCityNode.freeX = mapCityNodeData[5];
 //					mapCityNode.freeY = mapCityNodeData[6];
 					mapCityNode.textureName = mapCityNodeData[2];
-					mapCityNode.cityId = mapCityNodeData[3];
+					mapCityNode.templateId = mapCityNodeData[3];
+					mapCityNode.visualFiree = mapCityNodeData[4];
+					mapCityNode.cityName = mapCityNodeData[5];
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
@@ -153,6 +162,7 @@ package application.proxy
 				nowNodeLoadCount = 0;
 				loadNode();
 				
+				openFile.removeEventListener(Event.SELECT,openFunc);
 				//保存文件的句柄引用
 				saveFile = openFile;
 			};
@@ -170,6 +180,12 @@ package application.proxy
 		 * 
 		 */		
 		public function createNewMapData(cityNodesPath:String,mapPath:String):Boolean {
+			
+			UserInterfaceManager.close(AppReg.CITY_NODE_TEMP_PANEL);
+			UserInterfaceManager.close(AppReg.CITY_EDIT_PROPERTIES);
+			UIMoudleManager.closeUIById(AppReg.EDITOR_CITY_NODE_PANEL);
+			UIMoudleManager.closeUIById(AppReg.EDITOR_MAP_PANEL);
+			
 			if(!cityNodesPath) return false;
 			if(!mapPath) return false;
 			clearAppData();
@@ -289,18 +305,22 @@ package application.proxy
 			appData.cityNodeFiles = [];
 			appData.cityNodeTemps = [];
 			
-			appData.mapBit = null;
+			if(appData.mapBit) {
+				appData.mapBit.dispose();
+				appData.mapBit = null;				
+			}
 			appData.mapFileStream = null;
 			appData.mapFileUrl = "";
 			appData.mapCityNodes = [];
+			
 		}
 		
 		/**
 		 * 初始化纹理集上传给gpu
 		 */		
 		public function updateTextureToGPU():void {
-			appData.textureManager.removeTexture("mapTexture");
-			appData.textureManager.removeTextureAtlas("mapTexture");
+			appData.textureManager.removeTexture("mapTexture",true);
+			appData.textureManager.removeTextureAtlas("mapTexture",true);
 			appData.texturepack = ExportTexturesUtils.getTextureAtls(true);
 			
 			var texture:Texture = Texture.fromBitmapData(appData.texturepack.bitData);
@@ -311,17 +331,17 @@ package application.proxy
 		/**
 		 * 保存地图编辑文件 
 		 */		
-		public function saveMapEditorFile(quickSave:Boolean = false):void {
+		public function saveMapEditorFile(saveType:int):void {
 			var saveFunc:Function = function(event:Event):void {
-				saveData();
+				saveData(SAVE);
 			};
 			
 			var cancelFunc:Function = function(event:Event):void {
 				saveFile = null;
 			};
 			
-			if(quickSave) {
-				saveData();
+			if(saveType == SAVE_QUICK) {
+				saveData(SAVE_QUICK);
 			} else {
 				if(!saveFile) saveFile = new File();
 				saveFile.addEventListener(Event.SELECT,saveFunc,false,0,true);
@@ -344,6 +364,7 @@ package application.proxy
 			appData.mapFileStream = mapBytes;
 			
 			var mapLoaderFunc:Function = function(event:Event):void {
+				mapLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,mapLoaderFunc);
 				appData.mapBit = Bitmap(mapLoad.contentLoaderInfo.content).bitmapData;
 				//新建一个数据文件完成
 				sendNotification(ApplicationMediator.NEW_MAP_DATA_INIT);
@@ -357,11 +378,13 @@ package application.proxy
 		/**
 		 * 保存地图数据 
 		 */		
-		private function saveData():void {
+		private function saveData(saveType:int):void {
 			if(!saveFile) return;
 			if(saveFile.name == null || StringUtil.trim(saveFile.name).length == 0) return;
-			if(saveFile.name.indexOf(".bzTmx") == -1) {
-				saveFile.nativePath += ".bzTmx";
+//			var extensionName:String = saveType == SAVE_EXPORT ? ".bzTmx" : ".bzTmx";
+			var extensionName:String = ".bzTmx";
+			if(saveFile.name.indexOf(extensionName) == -1) {
+				saveFile.nativePath += extensionName;
 			}
 			
 			var writeBytes:ByteArray = new ByteArray();
@@ -393,7 +416,6 @@ package application.proxy
 			
 			writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
 			writeBytes.writeBytes(appData.mapFileStream);									//写入大地图文件
-			
 			writeBytes.writeUTF(appData.cityImagesUrl);
 			writeBytes.writeUTF(appData.mapFileUrl);
 			
@@ -435,7 +457,9 @@ package application.proxy
 				var mapCityNodeData:Array = [mapCityNode.worldX,
 					mapCityNode.worldY,
 					mapCityNode.textureName,
-					mapCityNode.cityId];
+					mapCityNode.templateId,
+					mapCityNode.visualFiree,
+					mapCityNode.cityName];
 				mapNodeDatas.push(mapCityNodeData);
 			}
 			return mapNodeDatas;

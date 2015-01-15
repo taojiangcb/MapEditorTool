@@ -4,16 +4,13 @@ package application.db
 	{
 		public var cityName:String = "";
 		
-		public var cityId:int = 0;
+		public var templateId:int = 0;
 		
 		//大地图中的坐标
 		public var worldX:int = 0;
 		public var worldY:int = 0;
-		
 		public var textureName:String;
-		
-		//显示标题
-		public var visualLabel:Boolean = true;
+		//预览战火
 		public var visualFiree:Boolean = false;
 	}
 }

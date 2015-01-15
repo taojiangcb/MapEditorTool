@@ -11,6 +11,7 @@ package application.appui
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
+	import gframeWork.uiController.MainUIControllerBase;
 	import gframeWork.uiController.UserInterfaceManager;
 	import gframeWork.uiController.WindowUIControllerBase;
 	
@@ -19,10 +20,9 @@ package application.appui
 	 * @author JiangTao
 	 * 
 	 */	
-	public class CreateNewMapPanelController extends WindowUIControllerBase
+	public class CreateNewMapPanelController extends MainUIControllerBase
 	{
 		private var selectFile:File;
-		
 		public function CreateNewMapPanelController()
 		{
 			super();

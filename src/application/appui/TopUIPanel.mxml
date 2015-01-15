@@ -16,7 +16,6 @@
 	<s:HGroup width="100%" height="100%" id="btnBar" paddingTop="10" paddingLeft="10">
 		<s:Button label="新建" id="btnNew"/>
 		<s:Button label="打开" id="btnOpen"/>
-		<s:Button label="导出" id="btnExport"/>
 		<s:Button label="导出纹理集" id="btnExportTextures"/>
 		<s:Button label="保存" id="QuickSaveFile"/>
 		<s:Button label="另存为" id="saveFile"/>

@@ -4,6 +4,8 @@ package application.mapEditor.comps
 	import com.frameWork.gestures.DragGestures;
 	import com.frameWork.gestures.TapGestures;
 	
+	import mx.utils.StringUtil;
+	
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
 	import application.db.MapCityNodeVO;
@@ -35,9 +37,6 @@ package application.mapEditor.comps
 		private var ctImage:Image;
 		private var free:MovieClip;
 		private var txtName:TextField;
-		
-		private var cityName:String = "";
-		private var cityTempId:int = 0;
 		
 		private var mapNodeInfo:MapCityNodeVO;
 		
@@ -74,7 +73,8 @@ package application.mapEditor.comps
 			}
 			addChild(free);
 			
-			txtName = new TextField(150,20,"名称标签",BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
+			var cityName:String = StringUtil.trim(mapNodeInfo.cityName).length ? mapNodeInfo.cityName : "名称标签";
+			txtName = new TextField(150,20,cityName,BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
 			txtName.fontName = BaseMetalWorksMobileTheme.FONT_NAME;
 			txtName.hAlign = HAlign.CENTER;
 			txtName.vAlign = VAlign.CENTER;
@@ -84,17 +84,17 @@ package application.mapEditor.comps
 			ctImage.readjustSize();
 			setSize(ctImage.width,ctImage.height);
 			
+			free.visible = mapNodeInfo.visualFiree;
+			
 			dragGuester = new DragCityGestures(this,dragOverHandler);
 			doubleGuester = new DoubleTapGestures(this,doubleTabHandler);
 			tapGuester = new TapGestures(this,tapGuesterHandler);
 			invalidateUpdateList();
-			
 		}
 		
 		private function tapGuesterHandler(touch:Touch):void {
 			Facade.getInstance().sendNotification(ApplicationMediator.CHROOSE_MAP_CITY,this);
 		}
-	
 		
 		private function doubleTabHandler(event:Touch):void {
 			Facade.getInstance().sendNotification(ApplicationMediator.EDIT_CITY_TEMP,nodeTemp);
@@ -108,7 +108,8 @@ package application.mapEditor.comps
 		
 		protected override function layout():void {
 			super.layout();
-			if(nodeTemp) {
+			if(nodeTemp) 
+			{
 				if(free) {
 					free.x = nodeTemp.freeX;
 					free.y = nodeTemp.freeY;
@@ -124,24 +125,71 @@ package application.mapEditor.comps
 		 * 更新地图上的城市节点信息 
 		 */		
 		public function updateNodeInfo():void {
-			mapNodeInfo.cityId = 0;
-			mapNodeInfo.cityName = "";
-			
 			mapNodeInfo.worldX = Math.round(x);
 			mapNodeInfo.worldY = Math.round(y);
 		}
-		
 		
 		public override function dispose():void {
 			if(free) {
 				Starling.juggler.remove(free);
 				free.removeFromParent(true);
 			}
+			
+			if(dragGuester) {
+				dragGuester.dispose();
+				dragGuester = null;
+			}
+			
+			if(doubleGuester) {
+				doubleGuester.dispose();
+				doubleGuester = null;
+			}
+			
+			if(tapGuester) {
+				tapGuester.dispose();
+				tapGuester = null;
+			}
+			
 			super.dispose();
+		}
+		
+		//==============================================================
+		//城市名称
+		public function set cityName(val:String):void {
+			mapNodeInfo.cityName = val;
+			if(txtName) {
+				txtName.text = mapNodeInfo.cityName;
+			}
+		}
+		
+		public function get cityName():String {
+			return mapNodeInfo.cityName;
+		}
+		
+		//城市模板
+		public function set templateId(id:int):void {
+			mapNodeInfo.templateId = id;
+		}
+		
+		public function get templateId():int {
+			return mapNodeInfo.templateId;
+		}
+		
+		public function set freeVisible(val:Boolean):void {
+			mapNodeInfo.visualFiree = val;
+			if(free) {
+				free.visible = val;
+			}
+		}
+		
+		public function get freeVisible():Boolean {
+			return mapNodeInfo.visualFiree;
 		}
 		
 		public function get nodeTemp():CityNodeTempVO {
 			return appDataProxy.getCityNodeTempByName(mapNodeInfo.textureName);
 		}
+		
+		//===========================================================================
 	}
 }

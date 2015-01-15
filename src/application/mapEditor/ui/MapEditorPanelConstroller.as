@@ -7,6 +7,7 @@ package application.mapEditor.ui
 	import flash.geom.Rectangle;
 	
 	import application.AppReg;
+	import application.appui.CityPropertieController;
 	import application.db.CityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
@@ -23,7 +24,6 @@ package application.mapEditor.ui
 	public class MapEditorPanelConstroller extends UIMoudle
 	{
 		private var sizeRect:Rectangle;
-		
 		/**
 		 * 大地图城市节点信息 
 		 */		
@@ -41,6 +41,7 @@ package application.mapEditor.ui
 		
 		public function MapEditorPanelConstroller() {
 			super();
+			gcDelayTime = 0.01;
 			smartClose = false;
 			mapCitys = new Vector.<MapCityNodeComp>();
 		}
@@ -55,6 +56,13 @@ package application.mapEditor.ui
 			mapMove = new DragScrollGestures(ui.uiContent,mapDragHandler);
 			mapMove.setDragRectangle(ui.clipRect,ui.uiContent.width,ui.uiContent.height);
 			AppDragMgr.addEventListener(AppDragEvent.DRAG,onDragHandler);
+			
+			var len:int = appData.mapCityNodes.length;
+			while(--len > -1) {
+				var mapCityInfo:MapCityNodeVO = appData.mapCityNodes[len];
+				var city:MapCityNodeComp = createMapNode(mapCityInfo);
+				mapCitys.push(city);
+			}
 		}
 		
 		//拖拽
@@ -67,7 +75,12 @@ package application.mapEditor.ui
 				cityInfo.textureName = CityNodeTempVO(event.itemData).textureName;
 				cityInfo.worldX = localPt.x - event.offPoint.x;
 				cityInfo.worldY = localPt.y - event.offPoint.y;
-				createMapNode(cityInfo);
+			
+				var city:MapCityNodeComp = createMapNode(cityInfo);
+				appData.mapCityNodes.push(cityInfo);
+				
+				mapCitys.push(city);
+				setChrooseCity(city);
 			}
 		}
 		
@@ -79,12 +92,8 @@ package application.mapEditor.ui
 		public function createMapNode(mapNodeInfo:MapCityNodeVO):MapCityNodeComp {
 			var city:MapCityNodeComp = new MapCityNodeComp(mapNodeInfo);
 			ui.citySpace.addChild(city);
-			
 			city.x = Math.round(mapNodeInfo.worldX);
 			city.y = Math.round(mapNodeInfo.worldY);
-			
-			mapCitys.push(city);
-			appData.mapCityNodes.push(mapNodeInfo);
 			return city;
 		}
 		
@@ -101,12 +110,17 @@ package application.mapEditor.ui
 			while(--i > -1) mapCitys[i].invalidateUpdateList();
 		}
 		
+		/**
+		 * 当前选中的城市 
+		 * @param cityComp
+		 */		
 		public function setChrooseCity(cityComp:MapCityNodeComp):void {
 			if(crtSelectCity) {
 				crtSelectCity.filter = null;
 			}
 			crtSelectCity = cityComp;
 			crtSelectCity.filter = BlurFilter.createGlow();
+			propertsPanel.commitData();
 		}
 		
 		public function getChrroseCity():MapCityNodeComp {
@@ -114,7 +128,23 @@ package application.mapEditor.ui
 		}
 		
 		public override function dispose():void {
-			crtSelectCity.filter = null;
+			if(crtSelectCity) {
+				crtSelectCity.filter = null;
+			}
+			
+			if(mapMove) {
+				mapMove.dispose();
+				mapMove = null;
+			}
+			
+			if(mapCitys) {
+				var i:int = mapCitys.length;
+				while(--i > -1) {
+					mapCitys[i].removeFromParent(true);
+				}
+				mapCitys = null;
+			}
+			
 			super.dispose();
 		}
 		
@@ -130,6 +160,10 @@ package application.mapEditor.ui
 		
 		private function get ui():MapEditorPanel {
 			return uiContent as MapEditorPanel
+		}
+		
+		private function get propertsPanel():CityPropertieController {
+			return UserInterfaceManager.getUIByID(AppReg.CITY_EDIT_PROPERTIES) as CityPropertieController
 		}
 		
 		private function get right():int {
