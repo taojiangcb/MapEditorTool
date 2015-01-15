@@ -1,11 +1,10 @@
-package application.mapEditor.utils
+package application.utils
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import application.AppGlobal;
-	import application.utils.appData;
 
 	public class MapUtils
 	{
@@ -13,6 +12,10 @@ package application.mapEditor.utils
 			
 		}
 		
+		/**
+		 * 获取地图被2整除之后的大小  
+		 * @return 
+		 */		
 		public static function getMapMINP_rect():Rectangle {
 			if(!appData.mapBit) return null;
 			var w:int = (appData.mapBit.width % 2) > 0 ? appData.mapBit.width - 1 : appData.mapBit.width;
@@ -20,6 +23,10 @@ package application.mapEditor.utils
 			return new Rectangle(0,0,Math.min(AppGlobal.MAP_MAX_W,w),Math.min(AppGlobal.MAX_MAX_H,h));
 		}
 		
+		/**
+		 * 获取地图的底图格子大小 
+		 * @return 
+		 */		
 		public static function getMapGridSize():Rectangle {
 			var minpRect:Rectangle = getMapMINP_rect();
 			return minpRect ? new Rectangle(0,0,minpRect.width / AppGlobal.MAP_COLUMN,minpRect.height / AppGlobal.MAP_ROW) : null;
@@ -39,8 +46,8 @@ package application.mapEditor.utils
 			for(var x:int = 0; x != AppGlobal.MAP_COLUMN; x++) {
 				grids[x] = [];
 				for(var y:int = 0; y != AppGlobal.MAP_ROW; y++) {
-					var bitGrid:BitmapData = new BitmapData(gridSize.width,gridSize.height);
-					bitGrid.copyPixels(cloneBit,new Rectangle(x * gridSize.width,y * gridSize.height,gridSize.width,gridSize.height),new Point(0,0));
+					var bitGrid:BitmapData = new BitmapData(gridSize.width + 8,gridSize.height + 8);
+					bitGrid.copyPixels(cloneBit,new Rectangle(x * gridSize.width,y * gridSize.height,gridSize.width + 8,gridSize.height + 8),new Point(0,0));
 					grids[x][y] = bitGrid; 
 				}
 			}

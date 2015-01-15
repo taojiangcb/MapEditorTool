@@ -45,7 +45,7 @@ package application.proxy
 		
 		//保存文件
 		private var saveFile:File;		
-
+		
 		//默认的城市节点
 		private var defaultCityNodeFile:URLFileReference;
 		private var defaultCityNodeLoad:Loader;
@@ -254,7 +254,7 @@ package application.proxy
 			var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
 			var objData:Object = new Object();
 			objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
-			objData[BITMAP_DATE_FIELD] = Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData;
+			objData[BITMAP_DATE_FIELD] = ExportTexturesUtils.checkMinpBitmapData(Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData);
 			appData.cityNodeBitmapdatas.push(objData);
 			
 			//创建节点模板数据

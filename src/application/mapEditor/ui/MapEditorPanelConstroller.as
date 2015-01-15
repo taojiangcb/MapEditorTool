@@ -144,7 +144,6 @@ package application.mapEditor.ui
 				}
 				mapCitys = null;
 			}
-			
 			super.dispose();
 		}
 		

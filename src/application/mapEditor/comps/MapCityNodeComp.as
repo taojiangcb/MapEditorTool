@@ -3,13 +3,16 @@ package application.mapEditor.comps
 	import com.frameWork.gestures.DoubleTapGestures;
 	import com.frameWork.gestures.DragGestures;
 	import com.frameWork.gestures.TapGestures;
+	import com.frameWork.uiControls.UIMoudleManager;
 	
 	import mx.utils.StringUtil;
 	
+	import application.AppReg;
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.ui.DragCityGestures;
+	import application.mapEditor.ui.MapEditorPanel;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
@@ -23,6 +26,8 @@ package application.mapEditor.comps
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.MovieClip;
+	import starling.display.Quad;
+	import starling.display.QuadBatch;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.extensions.CustomFeathersControls;
@@ -34,7 +39,9 @@ package application.mapEditor.comps
 	
 	public class MapCityNodeComp extends CustomFeathersControls implements IFocusDisplayObject
 	{
-		private var ctImage:Image;
+		/*城市的图片，在MapCitySpaceComp中添加到显示层，添加到同一个QuadBatch*/
+		public var ctImage:Image;
+		
 		private var free:MovieClip;
 		private var txtName:TextField;
 		
@@ -188,6 +195,10 @@ package application.mapEditor.comps
 		
 		public function get nodeTemp():CityNodeTempVO {
 			return appDataProxy.getCityNodeTempByName(mapNodeInfo.textureName);
+		}
+		
+		public function get cityQuadSapce():QuadBatch{
+			return MapEditorPanel(UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL).gui).cityQuadSapce;
 		}
 		
 		//===========================================================================

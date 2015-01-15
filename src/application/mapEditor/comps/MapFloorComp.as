@@ -2,7 +2,7 @@ package application.mapEditor.comps
 {
 	import flash.geom.Rectangle;
 	
-	import application.mapEditor.utils.MapUtils;
+	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	

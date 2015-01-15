@@ -12,10 +12,14 @@ package application.utils
 	
 	import application.proxy.AppDataProxy;
 
+	/**
+	 * 地图的纹理工具导出 
+	 * @author JiangTao
+	 * 
+	 */	
 	public class ExportTexturesUtils
 	{
 		public function ExportTexturesUtils() {
-			
 		}
 		
 		/**
@@ -24,7 +28,7 @@ package application.utils
 		 * @param chrooseMap
 		 * @return 
 		 */		
-		public static function exportTextures(savePath:String,chrooseMap:Boolean = false,chrooseDefaultNode:Boolean = false):Boolean {
+		public static function exportTextures(savePath:String,mergerMap:Boolean = false,mergerDefaultNode:Boolean = false):Boolean {
 			var textureData:Object = appData.texturepack;
 			if(textureData) {
 				saveTextures(savePath + "/mapTexture.png",textureData.bitData);
@@ -58,7 +62,7 @@ package application.utils
 				rectMap[textureName] = new Rectangle(0,0,textureBit.width,textureBit.height);
 			}
 			
-			var textureRect:Rectangle = TextureUtil.packTextures(0,2,rectMap);
+			var textureRect:Rectangle = TextureUtil.packTextures(0,4,rectMap);
 			var elementBit:BitmapData;
 			var elementRect:Rectangle = new Rectangle();
 			var offsetPoint:Point = new Point();
@@ -128,6 +132,23 @@ package application.utils
 			fileStream.open(file,FileMode.WRITE);
 			fileStream.writeUTFBytes('<?xml version="1.0" encoding="UTF-16"?>' + xmlData);
 			fileStream.close();
+		}
+		
+		/**
+		 * 检查城市切图块的高宽能不能被2整除，如果不能则需要重新计算一个bitmapdata
+		 * @param bitmapData
+		 * @return 
+		 * 
+		 */		
+		public static function checkMinpBitmapData(bitmapData:BitmapData):BitmapData {
+			var wFlag:Boolean = bitmapData.width % 2 > 0 ;
+			var hFlag:Boolean = bitmapData.height % 2 > 0;
+			if(wFlag && hFlag) return bitmapData;
+			var nw:int = !wFlag ? bitmapData.width + 1 : bitmapData.width;
+			var nh:int = !hFlag ? bitmapData.height + 1 : bitmapData.height;
+			var nBitData:BitmapData = new BitmapData(nw,nh,true,0);
+			nBitData.copyPixels(bitmapData,new Rectangle(0,0,bitmapData.width,bitmapData.height),new Point(0,0));
+			return nBitData;
 		}
 	}
 }

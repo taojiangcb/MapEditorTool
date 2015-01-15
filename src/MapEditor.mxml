@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
-					   showStatusBar="false"
+					   showStatusBar="false" frameRate="48"
 					   backgroundAlpha="0"
 					   title="BZSG-MapEditor"
 					   width="1224" height="768"
