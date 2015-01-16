@@ -17,7 +17,6 @@
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
-			
 			import mx.events.FlexEvent;
 			
 			import application.AppReg;
@@ -49,7 +48,6 @@
 				UserInterfaceManager.open(AppReg.CITY_NODE_TEMP_PANEL);		//打开城市模板栏
 				UserInterfaceManager.open(AppReg.CITY_EDIT_PROPERTIES);		//打开城市信息编辑栏
 				UIMoudleManager.openUIByid(AppReg.EDITOR_MAP_PANEL);		//地图编辑
-				
 			}
 		]]>
 	</fx:Script>

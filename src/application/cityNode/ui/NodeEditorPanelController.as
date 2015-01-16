@@ -41,7 +41,7 @@ package application.cityNode.ui
 		public function NodeEditorPanelController() {
 			super();
 			smartClose = false;
-			gcDelayTime = 0.01;
+			gcDelayTime = -1;
 		}
 		
 		protected override function uiCreateComplete(event:Event):void {

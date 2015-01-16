@@ -1,6 +1,7 @@
 package application.utils
 {
 	import flash.display.BitmapData;
+	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
@@ -20,6 +21,7 @@ package application.utils
 	public class ExportTexturesUtils
 	{
 		public function ExportTexturesUtils() {
+			
 		}
 		
 		/**
@@ -138,7 +140,6 @@ package application.utils
 		 * 检查城市切图块的高宽能不能被2整除，如果不能则需要重新计算一个bitmapdata
 		 * @param bitmapData
 		 * @return 
-		 * 
 		 */		
 		public static function checkMinpBitmapData(bitmapData:BitmapData):BitmapData {
 			var wFlag:Boolean = bitmapData.width % 2 > 0 ;
@@ -149,6 +150,60 @@ package application.utils
 			var nBitData:BitmapData = new BitmapData(nw,nh,true,0);
 			nBitData.copyPixels(bitmapData,new Rectangle(0,0,bitmapData.width,bitmapData.height),new Point(0,0));
 			return nBitData;
+		}
+		
+		/**
+		 * 导出游戏中要用到的数据 
+		 */		
+		public static function exportToGameFile():void {
+			var exportFile:File = new File();
+			var selectHandler:Function = function(event:Event):void {
+				exportFile.removeEventListener(Event.SELECT,selectHandler);
+				
+				var extensionName:String = ".bzMap";
+				if(exportFile.name.indexOf(extensionName) == -1) {
+					exportFile.nativePath += extensionName;
+				}
+				
+				var writeBytes:ByteArray = new ByteArray();
+				var writeFile:FileStream = new FileStream();
+				writeFile.open(exportFile,FileMode.WRITE);
+				
+				//写入城市节点的模板数据
+				var nodeTempList:Array = appDataProxy.getWriteNodeTemps();
+				writeBytes.writeObject(nodeTempList);
+				
+				//写入地图上的城市节点实例数据
+				var mapNodeDatas:Array = appDataProxy.getWriteMapNodes();
+				writeBytes.writeObject(mapNodeDatas);
+				
+				//写入大地图文件
+				writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
+				writeBytes.writeBytes(appData.mapFileStream);
+				
+				var cityTexture:BitmapData = appData.texturepack.bitData;
+				var cityTextureXml:XML = appData.texturepack.atls;
+				
+				//写入city纹理贴图png文件
+				var pngCode:PNGEncoder = new PNGEncoder();
+				var pngFileBytes:ByteArray = pngCode.encode(cityTexture);
+				writeBytes.writeDouble(pngFileBytes.bytesAvailable);
+				writeBytes.writeBytes(pngFileBytes);
+				
+				//写入city纹理贴图数据
+				var pngAtls:String = '<?xml version="1.0" encoding="UTF-16"?>' + cityTextureXml.toXMLString();
+				writeBytes.writeInt(pngAtls.length);
+				writeBytes.writeUTFBytes(pngAtls);
+				
+				//压缩文件流
+				writeBytes.compress();
+				
+				//写入文件
+				writeFile.writeBytes(writeBytes);
+				writeFile.close();
+			};
+			exportFile.addEventListener(Event.SELECT,selectHandler);
+			exportFile.browseForSave("导出文件");
 		}
 	}
 }

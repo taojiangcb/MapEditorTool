@@ -41,7 +41,7 @@ package application.mapEditor.ui
 		
 		public function MapEditorPanelConstroller() {
 			super();
-			gcDelayTime = 0.01;
+			gcDelayTime = -1;
 			smartClose = false;
 			mapCitys = new Vector.<MapCityNodeComp>();
 		}

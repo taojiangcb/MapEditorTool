@@ -115,6 +115,14 @@ package application.mapEditor.comps
 		
 		protected override function layout():void {
 			super.layout();
+			
+			var imageTexture:Texture = appData.textureManager.getTexture(mapNodeInfo.textureName);
+			if(ctImage && imageTexture) {
+				ctImage.texture = imageTexture;
+				ctImage.readjustSize();
+				setSize(ctImage.width,ctImage.height);
+			}
+			
 			if(nodeTemp) 
 			{
 				if(free) {

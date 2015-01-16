@@ -10,6 +10,7 @@ package application
 	
 	import spark.components.Application;
 	
+	import application.appui.CityNodeLibaryPanelController;
 	import application.cityNode.ui.NodeEditorPanelController;
 	import application.db.CityNodeTempVO;
 	import application.db.MapCityNodeVO;
@@ -51,6 +52,11 @@ package application
 		 */		
 		public static const ADD_CITY_TO_MAP:String = "addCityToMap";
 		
+		/**
+		 * 刷新城市库 
+		 */		
+		public static const UPDATE_CITY_LIBY:String = "updateCityLiby";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -62,6 +68,19 @@ package application
 			putNotification(EDIT_CITY_TEMP,editorCityTemp);
 			putNotification(CHROOSE_MAP_CITY,chrooseMapCity);
 			putNotification(ADD_CITY_TO_MAP,addCityToMap);
+			putNotification(UPDATE_CITY_LIBY,updateCityLibyary);
+		}
+		
+		/**
+		 * 刷新城市库 
+		 * @param notification
+		 */		
+		private function updateCityLibyary(notification:INotification):void {
+			var cityNodelibary:CityNodeLibaryPanelController = UserInterfaceManager.getUIByID(AppReg.CITY_NODE_TEMP_PANEL) as CityNodeLibaryPanelController;
+			if(cityNodelibary) {
+				cityNodelibary.updateDataProvider();
+				updateMapAllCity(notification);
+			}
 		}
 		
 		private function appNewDataInitComplete(notification:INotification):void {

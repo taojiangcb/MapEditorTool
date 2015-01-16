@@ -23,6 +23,9 @@ package application.proxy
 	import application.db.MapCityNodeVO;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
+	import application.utils.appDataProxy;
+	
+	import feathers.controls.Alert;
 	
 	import gframeWork.uiController.UserInterfaceManager;
 	import gframeWork.url.URLFileReference;
@@ -190,30 +193,7 @@ package application.proxy
 			if(!mapPath) return false;
 			clearAppData();
 			appData.mapFileUrl = mapPath;
-			
-			var fileStream:FileStream;
-			var ansyslizerCityNode:Function = function(rootFile:File):void {
-				var nodeFiles:Array = rootFile.getDirectoryListing();
-				var nf:File = null;
-				for each(nf in nodeFiles) {
-					if(nf.isDirectory) {
-						ansyslizerCityNode(nf);
-					} else {
-						var fileBytes:ByteArray = new ByteArray();
-						if		(!fileStream) fileStream = new FileStream();
-						else	fileStream.close();
-						fileStream.open(nf,FileMode.READ);
-						fileStream.readBytes(fileBytes);
-						
-						trace("cityNodeFile:",nf.nativePath);
-						var objData:Object = new Object();
-						objData[TEXTURE_NAME_FIELD] = nf.name;
-						objData[FILE_STREAM_FIELD] = fileBytes;
-						appData.cityNodeFiles.push(objData);
-					}
-				}
-			};
-			
+			appData.cityImagesUrl = cityNodesPath;
 			var nodesRoot:File = new File(cityNodesPath);
 			trace("begin load cityNodeImages");
 			trace("===================================");
@@ -225,10 +205,63 @@ package application.proxy
 			return false;
 		}
 		
+		private function ansyslizerCityNode(rootFile:File):void {
+			var fileStream:FileStream;
+			var nodeFiles:Array = rootFile.getDirectoryListing();
+			var nf:File = null;
+			for each(nf in nodeFiles) {
+				if(nf.isDirectory) {
+					ansyslizerCityNode(nf);
+				} else {
+					
+					var fileBytes:ByteArray = new ByteArray();
+					if		(!fileStream) fileStream = new FileStream();
+					else	fileStream.close();
+					fileStream.open(nf,FileMode.READ);
+					fileStream.readBytes(fileBytes);
+					
+					trace("cityNodeFile:",nf.nativePath);
+					var objData:Object = new Object();
+					objData[TEXTURE_NAME_FIELD] = nf.name;
+					objData[FILE_STREAM_FIELD] = fileBytes;
+					appData.cityNodeFiles.push(objData);
+				}
+			}
+		}
+		
+		public function refreshCityLibary():void {
+			appData.cityNodeBitmapdatas = [];
+			appData.cityNodeFiles = [];
+			appData.cityNodeTemps = [];
+			
+			var nodesRoot:File = new File(appData.cityImagesUrl);
+			ansyslizerCityNode(nodesRoot);
+			nowNodeLoadCount = 0;
+			loadNode(true);
+		}
+		
 		/**
 		 * 加载城市节点图片 
 		 */		
-		private function loadNode():void {
+		private function loadNode(updateCitylibary:Boolean = false):void {
+			
+			var nodeLoadComplete:Function = function(event:Event):void {
+				defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
+				//缓存位图数据
+				var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
+				var objData:Object = new Object();
+				objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
+				objData[BITMAP_DATE_FIELD] = ExportTexturesUtils.checkMinpBitmapData(Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData);
+				appData.cityNodeBitmapdatas.push(objData);
+				
+				//创建节点模板数据
+				var cityNodeTemp:CityNodeTempVO = new CityNodeTempVO();
+				cityNodeTemp.textureName = fileData.textureName;
+				appData.cityNodeTemps.push(cityNodeTemp);
+				
+				nowNodeLoadCount++;
+				loadNode(updateCitylibary);
+			}
 			
 			if(nowNodeLoadCount < appData.cityNodeFiles.length) {
 				clearNodeLoad();
@@ -237,9 +270,16 @@ package application.proxy
 				var node_fs:ByteArray = appData.cityNodeFiles[nowNodeLoadCount][FILE_STREAM_FIELD];
 				defaultCityNodeLoad.loadBytes(node_fs);
 			} else {
-				clearNodeLoad();
-				//装载大地图数据
-				installMapFile();
+				if(!updateCitylibary) {
+					clearNodeLoad();
+					//装载大地图数据
+					installMapFile();		
+				} else {
+					//重新上传GPU
+					appDataProxy.updateTextureToGPU();
+					//刷新库
+					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);
+				}
 			}
 		}
 		
@@ -247,31 +287,31 @@ package application.proxy
 		 * 城市节点装载完成 
 		 * @param event
 		 */		
-		private function nodeLoadComplete(event:Event):void {
-			
-			defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
-			//缓存位图数据
-			var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
-			var objData:Object = new Object();
-			objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
-			objData[BITMAP_DATE_FIELD] = ExportTexturesUtils.checkMinpBitmapData(Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData);
-			appData.cityNodeBitmapdatas.push(objData);
-			
-			//创建节点模板数据
-			var cityNodeTemp:CityNodeTempVO = new CityNodeTempVO();
-			cityNodeTemp.textureName = fileData.textureName;
-			appData.cityNodeTemps.push(cityNodeTemp);
-			
-			nowNodeLoadCount++;
-			loadNode();
-		}
+//		private function nodeLoadComplete(event:Event):void {
+//			
+//			defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
+//			//缓存位图数据
+//			var fileData:Object = appData.cityNodeFiles[nowNodeLoadCount];
+//			var objData:Object = new Object();
+//			objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
+//			objData[BITMAP_DATE_FIELD] = ExportTexturesUtils.checkMinpBitmapData(Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData);
+//			appData.cityNodeBitmapdatas.push(objData);
+//			
+//			//创建节点模板数据
+//			var cityNodeTemp:CityNodeTempVO = new CityNodeTempVO();
+//			cityNodeTemp.textureName = fileData.textureName;
+//			appData.cityNodeTemps.push(cityNodeTemp);
+//			
+//			nowNodeLoadCount++;
+//			loadNode();
+//		}
 		
 		/**
 		 * 清除节点装载 
 		 */		
 		private function clearNodeLoad():void {
 			if(defaultCityNodeLoad) {
-				defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
+//				defaultCityNodeLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,nodeLoadComplete);
 				defaultCityNodeLoad.unloadAndStop(false);
 				defaultCityNodeLoad = null;
 			}
@@ -381,7 +421,6 @@ package application.proxy
 		private function saveData(saveType:int):void {
 			if(!saveFile) return;
 			if(saveFile.name == null || StringUtil.trim(saveFile.name).length == 0) return;
-//			var extensionName:String = saveType == SAVE_EXPORT ? ".bzTmx" : ".bzTmx";
 			var extensionName:String = ".bzTmx";
 			if(saveFile.name.indexOf(extensionName) == -1) {
 				saveFile.nativePath += extensionName;

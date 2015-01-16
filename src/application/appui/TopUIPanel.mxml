@@ -19,5 +19,6 @@
 		<s:Button label="导出纹理集" id="btnExportTextures"/>
 		<s:Button label="保存" id="QuickSaveFile"/>
 		<s:Button label="另存为" id="saveFile"/>
+		<s:Button label="导出游戏数据" id="exportFile"/>
 	</s:HGroup>
 </s:Group>
