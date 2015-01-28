@@ -18,7 +18,7 @@ package application.mapEditor.ui
 	{
 		public var friction:Number = 0.9;
 		
-		public var minScale:Number = 1;	//可以缩放的最小值
+		public var minScale:Number = 0.3;	//可以缩放的最小值
 		public var maxScale:Number = 1.5;	//可以缩放的最大值
 		
 		protected var _downPoint:Point = null;//点击在target的什么位置

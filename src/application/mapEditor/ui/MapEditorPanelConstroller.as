@@ -2,6 +2,7 @@ package application.mapEditor.ui
 {
 	import com.frameWork.gestures.DragGestures;
 	import com.frameWork.uiControls.UIMoudle;
+	import com.gskinner.motion.GTweener;
 	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;

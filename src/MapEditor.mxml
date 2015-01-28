@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   showStatusBar="false" frameRate="48"
 					   backgroundAlpha="0"
 					   title="BZSG-MapEditor"
-					   width="1224" height="768"
+					   width="1224" height="768" resizeForSoftKeyboard="false"
+					   skinClass="spark.skins.spark.WindowedApplicationSkin"
 					   applicationComplete="windowedapplication1_applicationCompleteHandler(event)"
 					   xmlns:mx="library://ns.adobe.com/flex/mx">
-	<fx:Style>
-		@namespace s "library://ns.adobe.com/flex/spark";
-		@namespace mx "library://ns.adobe.com/flex/mx";
-		s|Application {
-			fontSize:12;
-		}
-	</fx:Style>
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
@@ -54,4 +48,5 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
+	<fx:Style source="assets/Style.css"/>
 </s:WindowedApplication>

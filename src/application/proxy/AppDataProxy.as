@@ -17,6 +17,8 @@ package application.proxy
 	
 	import mx.utils.StringUtil;
 	
+	import spark.components.Alert;
+	
 	import application.AppReg;
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
@@ -44,7 +46,6 @@ package application.proxy
 
 		public static const SAVE:int = 0;				//另存为
 		public static const SAVE_QUICK:int = 1;		//快速保存
-//		public static const SAVE_EXPORT:int = 2;		//导出 游戏中应用的文件
 		
 		//保存文件
 		private var saveFile:File;		
@@ -460,6 +461,7 @@ package application.proxy
 			
 			writeFile.writeBytes(writeBytes);												//写入文件
 			writeFile.close();
+			spark.components.Alert.show("保存成功");
 		}
 		
 		/**

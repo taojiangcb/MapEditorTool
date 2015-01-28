@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" title="城市属性编辑" right="0" top="50" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="100%" xmlns:itemRenderer="application.appui.itemRenderer.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -14,6 +14,20 @@
 			<s:Label text="tempId:"/>
 			<s:TextInput id="txtCityTempId" text="0"/>
 		</s:HGroup>
+		<s:VGroup width="100%">
+			<s:Label text="路径:" fontWeight="bold"/>
+			<s:Line width="100%" height="1">
+				<s:stroke>
+					<s:Stroke color="0xCCCCCC" weight="1"/>
+				</s:stroke>
+			</s:Line>
+			<s:VGroup id="roadListContent" width="100%">
+				<itemRenderer:RoadEditItem id="abc"/>
+			</s:VGroup>
+			<s:HGroup width="100%" horizontalAlign="center">
+				<s:Button id="btnAddRoad" label="添加"/>
+			</s:HGroup>
+		</s:VGroup>
 		<s:Form width="100%" >
 			<s:FormHeading label="效果预览"/>
 			<s:FormItem width="100%">

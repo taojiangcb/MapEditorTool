@@ -29,24 +29,41 @@ package application.appui
 		
 		public function commitData():void {
 			if(chrooseCityComp && ui.initialized) {
+				ui.enabled = true;
 				ui.txtName.text = chrooseCityComp.cityName;
 				ui.txtCityTempId.text = chrooseCityComp.templateId.toString();
 				ui.freeCheck.selected = chrooseCityComp.freeVisible;
+			} else {
+				ui.enabled = false;
 			}
 		}
 		
+		/**
+		 * 编辑城市名称 
+		 * @param event
+		 * 
+		 */		
 		private function txtNameChangeHandler(event:Event):void {
 			if(chrooseCityComp) {
 				chrooseCityComp.cityName = ui.txtName.text;
 			}
 		}
 		
+		/**
+		 * 编辑城市Id 
+		 * @param event
+		 * 
+		 */		
 		private function tempIdChangeHandler(event:Event):void {
 			if(chrooseCityComp) {
 				chrooseCityComp.templateId = int(ui.txtCityTempId.text);
 			}
 		}
 		
+		/**
+		 * 预览城市点火状态 
+		 * @param event
+		 */		
 		private function freeChangelHandler(event:Event):void {
 			if(chrooseCityComp) {
 				chrooseCityComp.freeVisible = !chrooseCityComp.freeVisible; 
@@ -65,6 +82,10 @@ package application.appui
 			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller
 		}
 		
+		/**
+		 * 当前选中的城市节点 
+		 * @return 
+		 */		
 		private function get chrooseCityComp():MapCityNodeComp {
 			return mapEditor.getChrroseCity();
 		}

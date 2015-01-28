@@ -11,6 +11,8 @@ package application.utils
 	
 	import mx.graphics.codec.PNGEncoder;
 	
+	import spark.components.Alert;
+	
 	import application.proxy.AppDataProxy;
 
 	/**
@@ -201,6 +203,9 @@ package application.utils
 				//写入文件
 				writeFile.writeBytes(writeBytes);
 				writeFile.close();
+				
+				Alert.show("导出成功");
+				
 			};
 			exportFile.addEventListener(Event.SELECT,selectHandler);
 			exportFile.browseForSave("导出文件");

@@ -40,10 +40,9 @@ package application.mapEditor.comps
 	public class MapCityNodeComp extends CustomFeathersControls implements IFocusDisplayObject
 	{
 		/*城市的图片，在MapCitySpaceComp中添加到显示层，添加到同一个QuadBatch*/
-		public var ctImage:Image;
-		
-		private var free:MovieClip;
-		private var txtName:TextField;
+		public var ctImage:Image;						//城市图片
+		private var free:MovieClip;					//点火状态
+		private var txtName:TextField;					//城市名称
 		
 		private var mapNodeInfo:MapCityNodeVO;
 		
