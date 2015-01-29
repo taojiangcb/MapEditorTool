@@ -44,6 +44,8 @@ package application.mapEditor.comps
 		private var free:MovieClip;					//点火状态
 		private var txtName:TextField;					//城市名称
 		
+		private var txtId:TextField;					//模板Id显示
+		
 		private var mapNodeInfo:MapCityNodeVO;
 		
 		/**
@@ -86,6 +88,13 @@ package application.mapEditor.comps
 			txtName.vAlign = VAlign.CENTER;
 			txtName.nativeFilters = [appData.GLOW_BLACK];
 			addChild(txtName);
+			
+			txtId = new TextField(150,20,cityName,BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
+			txtId.fontName = BaseMetalWorksMobileTheme.FONT_NAME;
+			txtId.nativeFilters = [appData.GLOW_BLACK];
+			txtId.fontSize = 11;
+			txtId.text = mapNodeInfo.templateId.toString();
+			addChild(txtId);
 			
 			ctImage.readjustSize();
 			setSize(ctImage.width,ctImage.height);
@@ -171,9 +180,7 @@ package application.mapEditor.comps
 		//城市名称
 		public function set cityName(val:String):void {
 			mapNodeInfo.cityName = val;
-			if(txtName) {
-				txtName.text = mapNodeInfo.cityName;
-			}
+			if(txtName) txtName.text = mapNodeInfo.cityName;
 		}
 		
 		public function get cityName():String {
@@ -181,23 +188,30 @@ package application.mapEditor.comps
 		}
 		
 		//城市模板
-		public function set templateId(id:int):void {
+		public function set templateId(id:Number):void {
 			mapNodeInfo.templateId = id;
+			if(txtId) txtId.text = mapNodeInfo.templateId.toString();
 		}
 		
-		public function get templateId():int {
+		public function get templateId():Number {
 			return mapNodeInfo.templateId;
 		}
 		
 		public function set freeVisible(val:Boolean):void {
 			mapNodeInfo.visualFiree = val;
-			if(free) {
-				free.visible = val;
-			}
+			if(free) free.visible = val;
 		}
 		
 		public function get freeVisible():Boolean {
 			return mapNodeInfo.visualFiree;
+		}
+		
+		/**
+		 * 获取城市信息 
+		 * @return 
+		 */		
+		public function get cityNodeInfo():MapCityNodeVO {
+			return mapNodeInfo;
 		}
 		
 		public function get nodeTemp():CityNodeTempVO {

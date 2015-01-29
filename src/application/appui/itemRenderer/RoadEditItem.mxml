@@ -1,9 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" implements="gframeWork.IDisposable"
 		  xmlns:s="library://ns.adobe.com/flex/spark" verticalAlign="middle"
 		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="30">
 	<s:Label text="toId:"/>
 	<s:TextInput id="txtToCity" width="50"/>
-	<s:Button id="btnBind" label="绑定" width="45"/>
-	<s:Button id="btnDel" label="删除" width="45"/>
+	<s:Button id="btnBind" label="绑定" width="45" click="btnBind_clickHandler(event)"/>
+	<s:Button id="btnDel" label="删除" width="45" click="btnDel_clickHandler(event)"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.components.Alert;
+			
+			import application.AppReg;
+			import application.appui.CityPropertieController;
+			import application.appui.CityPropertiePanel;
+			import application.db.MapCityNodeVO;
+			import application.mapEditor.comps.MapCityNodeComp;
+			import application.utils.appDataProxy;
+			
+			import gframeWork.uiController.UserInterfaceManager;
+			
+			/*下个节点城市Id*/
+			private var $toCityId:int = 0;
+			
+			protected override function commitProperties():void {
+				super.commitProperties();
+				if($toCityId > 0) {
+					txtToCity.text = $toCityId.toString();
+					btnBind.label = "更新";
+				}
+			}
+			
+			protected function btnBind_clickHandler(event:MouseEvent):void {
+				if(cityPropertie.chrooseCityComp) {
+					var curCityInfo:MapCityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
+					
+					var curCityId:int = curCityInfo.templateId;
+					var newCityId:int = int(txtToCity.text);
+					//没有发生改变
+					if(newCityId == $toCityId) return;
+					
+					//当前的反向的城市
+					var oldTargetCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId($toCityId);
+					//要绑定的反向的城市
+					var newTargetCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);
+					var existIndex:int = 0;
+					
+					if(!newTargetCityInfo) {
+						Alert.show("绑定的对向城市不存在");
+						return;
+					}
+					
+					existIndex = curCityInfo.toCityIds.indexOf(newCityId);
+					if(existIndex == -1) {
+						var oldIndex:int = curCityInfo.toCityIds.indexOf($toCityId);
+						if(oldIndex == -1)	curCityInfo.toCityIds.push(newCityId);			//添加新的Id
+						else 				curCityInfo.toCityIds[oldIndex] = newCityId;	//修改Id	
+						setCityId(int(txtToCity.text));
+						btnBind.label = "更新";
+					} else {
+						Alert.show("不能指定重复的Id");
+						return;
+					}
+					
+					//断开旧的线路
+					if(oldTargetCityInfo) {
+						existIndex = oldTargetCityInfo.toCityIds.indexOf(curCityId);
+						if(existIndex > -1) {
+							oldTargetCityInfo.toCityIds.splice(existIndex,1);
+						}
+					}
+					
+					//反向绑定
+					if(newTargetCityInfo) {
+						existIndex = newTargetCityInfo.toCityIds.indexOf(curCityId);
+						if(existIndex == -1) {
+							newTargetCityInfo.toCityIds.push(curCityId);
+						}
+					}
+				}
+			}
+			
+			protected function btnDel_clickHandler(event:MouseEvent):void {
+				// TODO Auto-generated method stub
+				cityPropertie.roadEditor.removeRoad(this);
+			}
+			
+			public function dispose():void {
+				
+			}
+			
+			public function setCityId(val:int):void {
+				if($toCityId == val) return;
+				$toCityId = val;	
+				invalidateProperties();
+			}
+			
+			public function getCityId():int {
+				return $toCityId;
+			}
+			
+			private function get cityPropertie():CityPropertieController {
+				return UserInterfaceManager.getUIByID(AppReg.CITY_EDIT_PROPERTIES) as CityPropertieController;
+			}
+			
+			private function get propertiesUI():CityPropertiePanel {
+				return cityPropertie.ui;
+			}
+			
+		]]>
+	</fx:Script>
 </s:HGroup>

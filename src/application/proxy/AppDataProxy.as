@@ -135,6 +135,7 @@ package application.proxy
 					mapCityNode.templateId = mapCityNodeData[3];
 					mapCityNode.visualFiree = mapCityNodeData[4];
 					mapCityNode.cityName = mapCityNodeData[5];
+					mapCityNode.toCityIds = mapCityNodeData[6] ? mapCityNodeData[6] : [];
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
@@ -337,6 +338,22 @@ package application.proxy
 		}
 		
 		/**
+		 * 获取一个城市节点信息 
+		 * @param templateId
+		 * @return 
+		 * 
+		 */		
+		public function getCityNodeInfoByTemplateId(templateId:Number):MapCityNodeVO {
+			var i:int = appData.mapCityNodes.length;
+			while(--i > -1) {
+				if(appData.mapCityNodes[i].templateId == templateId && templateId != 0) {
+					return appData.mapCityNodes[i];
+				}
+			}
+			return null;
+		}
+		
+		/**
 		 * 清理数据 
 		 */		
 		private function clearAppData():void {
@@ -500,7 +517,8 @@ package application.proxy
 					mapCityNode.textureName,
 					mapCityNode.templateId,
 					mapCityNode.visualFiree,
-					mapCityNode.cityName];
+					mapCityNode.cityName,
+					mapCityNode.toCityIds];
 				mapNodeDatas.push(mapCityNodeData);
 			}
 			return mapNodeDatas;

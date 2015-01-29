@@ -116,11 +116,10 @@ package application.mapEditor.ui
 		 * @param cityComp
 		 */		
 		public function setChrooseCity(cityComp:MapCityNodeComp):void {
-			if(crtSelectCity) {
-				crtSelectCity.filter = null;
-			}
+			if(crtSelectCity) crtSelectCity.filter = null;
 			crtSelectCity = cityComp;
 			crtSelectCity.filter = BlurFilter.createGlow();
+			propertsPanel.setChrooseCity(cityComp);
 			propertsPanel.commitData();
 		}
 		
@@ -129,9 +128,7 @@ package application.mapEditor.ui
 		}
 		
 		public override function dispose():void {
-			if(crtSelectCity) {
-				crtSelectCity.filter = null;
-			}
+			if(crtSelectCity) crtSelectCity.filter = null;
 			
 			if(mapMove) {
 				mapMove.dispose();

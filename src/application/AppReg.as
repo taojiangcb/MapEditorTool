@@ -7,6 +7,8 @@ package application
 	import application.appui.CityNodeLibaryPanelController;
 	import application.appui.CityPropertieController;
 	import application.appui.CityPropertiePanel;
+	import application.appui.CityRoadPanel;
+	import application.appui.CityRoadPanelController;
 	import application.appui.CreateNewMapPanel;
 	import application.appui.CreateNewMapPanelController;
 	import application.appui.TopUIPanel;
@@ -46,6 +48,11 @@ package application
 		public static const CREATE_NEW_MAP:int = 201;
 		
 		/**
+		 * 道路数据输出 
+		 */		
+		public static const ROAD_OUTPUT:int = 202;
+		
+		/**
 		 * 编辑城市节点的面板 
 		 */		
 		public static const EDITOR_CITY_NODE_PANEL:int = 301;
@@ -70,6 +77,7 @@ package application
 			UserInterfaceManager.registerGUI(CREATE_NEW_MAP,CreateNewMapPanel,CreateNewMapPanelController);
 			UserInterfaceManager.registerGUI(CITY_NODE_TEMP_PANEL,CityNodeLibaryPanel,CityNodeLibaryPanelController);
 			UserInterfaceManager.registerGUI(CITY_EDIT_PROPERTIES,CityPropertiePanel,CityPropertieController);
+			UserInterfaceManager.registerGUI(ROAD_OUTPUT,CityRoadPanel,CityRoadPanelController);
 			
 			UIMoudleManager.registerUIMoudle(EDITOR_CITY_NODE_PANEL,NodeEditorPanelController,NodeEditorPanel);
 			UIMoudleManager.registerUIMoudle(EDITOR_MAP_PANEL,MapEditorPanelConstroller,MapEditorPanel);

@@ -35,6 +35,11 @@ package application.appui
 			ui.btnExportTextures.addEventListener(MouseEvent.CLICK,exportTexturesHandler,false,0,true);
 			ui.saveFile.addEventListener(MouseEvent.CLICK,saveClickHandler,false,0,true);
 			ui.QuickSaveFile.addEventListener(MouseEvent.CLICK,quickSaveClickHandler,false,0,true);
+			ui.outputRoad.addEventListener(MouseEvent.CLICK,outputRoadHandler,false,0,true);
+		}
+		
+		private function outputRoadHandler(event:MouseEvent):void {
+			UserInterfaceManager.open(AppReg.ROAD_OUTPUT);
 		}
 		
 		private function saveClickHandler(event:MouseEvent):void {

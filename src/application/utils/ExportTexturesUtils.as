@@ -22,10 +22,7 @@ package application.utils
 	 */	
 	public class ExportTexturesUtils
 	{
-		public function ExportTexturesUtils() {
-			
-		}
-		
+		public function ExportTexturesUtils() { }
 		/**
 		 * 导出地图的纹理集
 		 * @param toPath
@@ -205,7 +202,6 @@ package application.utils
 				writeFile.close();
 				
 				Alert.show("导出成功");
-				
 			};
 			exportFile.addEventListener(Event.SELECT,selectHandler);
 			exportFile.browseForSave("导出文件");
