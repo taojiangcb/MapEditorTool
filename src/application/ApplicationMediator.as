@@ -57,6 +57,11 @@ package application
 		 */		
 		public static const UPDATE_CITY_LIBY:String = "updateCityLiby";
 		
+		/**
+		 * 道路 
+		 */		
+		public static const DRAW_ROAD:String = "drawRoad";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -69,6 +74,7 @@ package application
 			putNotification(CHROOSE_MAP_CITY,chrooseMapCity);
 			putNotification(ADD_CITY_TO_MAP,addCityToMap);
 			putNotification(UPDATE_CITY_LIBY,updateCityLibyary);
+			putNotification(DRAW_ROAD,mapDrawRoad);
 		}
 		
 		/**
@@ -80,6 +86,13 @@ package application
 			if(cityNodelibary) {
 				cityNodelibary.updateDataProvider();
 				updateMapAllCity(notification);
+			}
+		}
+		
+		private function mapDrawRoad(notification:INotification):void {
+			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			if(mapEditor) {
+				mapEditor.drawRoad();
 			}
 		}
 		

@@ -8,10 +8,15 @@ package application.mapEditor.comps
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.extensions.graphicPack.Graphics;
 	
 	public class MapCitySpaceComp extends Sprite implements IAnimatable
 	{
 		public var cityQuadBatch:QuadBatch;
+		
+		public var roadGraphics:Graphics;
+		
+		private var roadSpace:Sprite;
 		
 		public function MapCitySpaceComp() {
 			super();
@@ -19,6 +24,11 @@ package application.mapEditor.comps
 			addChild(cityQuadBatch);
 			addEventListener(Event.ADDED_TO_STAGE,addToStageHandler);
 			addEventListener(Event.REMOVED_FROM_STAGE,removeToStageHandler);
+			
+			roadSpace = new Sprite();
+			addChild(roadSpace);
+			
+			roadGraphics = new Graphics(roadSpace);
 		}
 		
 		private function addToStageHandler(event:Event):void {

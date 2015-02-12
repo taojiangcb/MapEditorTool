@@ -19,5 +19,7 @@ package application.db
 		public var textureName:String;
 		//预览战火
 		public var visualFiree:Boolean = false;
+		//显示道路
+		public var visualRaod:Boolean = false;
 	}
 }

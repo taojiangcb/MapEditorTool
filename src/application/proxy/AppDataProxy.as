@@ -136,6 +136,7 @@ package application.proxy
 					mapCityNode.visualFiree = mapCityNodeData[4];
 					mapCityNode.cityName = mapCityNodeData[5];
 					mapCityNode.toCityIds = mapCityNodeData[6] ? mapCityNodeData[6] : [];
+					mapCityNode.visualRaod = mapCityNodeData[7];
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
@@ -158,10 +159,13 @@ package application.proxy
 				
 				var mapLen:Number = mapFileByte.readDouble();
 				var mapFile:ByteArray = new ByteArray();
-				mapFileByte.readBytes(mapFile,mapFileByte.position,mapLen);
+				mapFileByte.readBytes(mapFile,0,mapLen);
 				appData.mapFileStream = mapFile;
 				appData.cityImagesUrl = mapFileByte.readUTF();
 				appData.mapFileUrl = mapFileByte.readUTF();
+				
+				trace(appData.cityImagesUrl);
+				trace(appData.mapFileUrl);
 				
 				//当前装载的城市节点图片
 				nowNodeLoadCount = 0;
@@ -412,14 +416,17 @@ package application.proxy
 		 * 装载大地图文件数据 
 		 */		
 		private function installMapFile():void {
-			//大地图的文件数据
-			var mapFile:File = new File(appData.mapFileUrl);
-			var mapBytes:ByteArray = new ByteArray();
-			var fileStream:FileStream = new FileStream();
 			
-			fileStream.open(mapFile,FileMode.READ);
-			fileStream.readBytes(mapBytes);
-			appData.mapFileStream = mapBytes;
+			if(!appData.mapFileStream) {
+				//大地图的文件数据
+				var mapFile:File = new File(appData.mapFileUrl);
+				var mapBytes:ByteArray = new ByteArray();
+				var fileStream:FileStream = new FileStream();
+				
+				fileStream.open(mapFile,FileMode.READ);
+				fileStream.readBytes(mapBytes);
+				appData.mapFileStream = mapBytes;
+			}
 			
 			var mapLoaderFunc:Function = function(event:Event):void {
 				mapLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,mapLoaderFunc);
@@ -430,7 +437,7 @@ package application.proxy
 			
 			var mapLoad:Loader = new Loader();
 			mapLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,mapLoaderFunc);
-			mapLoad.loadBytes(mapBytes);
+			mapLoad.loadBytes(appData.mapFileStream);
 		}
 		
 		/**
@@ -471,7 +478,7 @@ package application.proxy
 				writeBytes.writeBytes(nodeFileData[FILE_STREAM_FIELD]);						//写入文件
 			}
 			
-			writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
+			writeBytes.writeDouble(appData.mapFileStream.length);					//写入大地文件数据长度
 			writeBytes.writeBytes(appData.mapFileStream);									//写入大地图文件
 			writeBytes.writeUTF(appData.cityImagesUrl);
 			writeBytes.writeUTF(appData.mapFileUrl);
@@ -518,7 +525,8 @@ package application.proxy
 					mapCityNode.templateId,
 					mapCityNode.visualFiree,
 					mapCityNode.cityName,
-					mapCityNode.toCityIds];
+					mapCityNode.toCityIds,
+					mapCityNode.visualRaod];
 				mapNodeDatas.push(mapCityNodeData);
 			}
 			return mapNodeDatas;

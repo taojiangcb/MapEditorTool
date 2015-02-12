@@ -43,7 +43,6 @@ package application.mapEditor.comps
 		public var ctImage:Image;						//城市图片
 		private var free:MovieClip;					//点火状态
 		private var txtName:TextField;					//城市名称
-		
 		private var txtId:TextField;					//模板Id显示
 		
 		private var mapNodeInfo:MapCityNodeVO;
@@ -98,7 +97,6 @@ package application.mapEditor.comps
 			
 			ctImage.readjustSize();
 			setSize(ctImage.width,ctImage.height);
-			
 			free.visible = mapNodeInfo.visualFiree;
 			
 			dragGuester = new DragCityGestures(this,dragOverHandler);
@@ -119,11 +117,12 @@ package application.mapEditor.comps
 			updateNodeInfo();
 			x = Math.round(x);
 			y = Math.round(y);
+			
+			Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
 		}
 		
 		protected override function layout():void {
 			super.layout();
-			
 			var imageTexture:Texture = appData.textureManager.getTexture(mapNodeInfo.textureName);
 			if(ctImage && imageTexture) {
 				ctImage.texture = imageTexture;
@@ -172,7 +171,6 @@ package application.mapEditor.comps
 				tapGuester.dispose();
 				tapGuester = null;
 			}
-			
 			super.dispose();
 		}
 		
@@ -206,6 +204,13 @@ package application.mapEditor.comps
 			return mapNodeInfo.visualFiree;
 		}
 		
+		public function set roadVisible(val:Boolean):void {
+			mapNodeInfo.visualRaod = val;
+		}
+		
+		public function get roadVisible():Boolean {
+			return mapNodeInfo.visualRaod;
+		}
 		/**
 		 * 获取城市信息 
 		 * @return 
@@ -221,7 +226,6 @@ package application.mapEditor.comps
 		public function get cityQuadSapce():QuadBatch{
 			return MapEditorPanel(UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL).gui).cityQuadSapce;
 		}
-		
 		//===========================================================================
 	}
 }

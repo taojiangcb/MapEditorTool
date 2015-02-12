@@ -27,18 +27,16 @@ package application.appui
 		
 		protected override function uiCreateComplete(event:FlexEvent):void {
 			super.uiCreateComplete(event);
-			//ui.txtCityTempId.addEventListener(Event.CHANGE,tempIdChangeHandler,false,0,true);
-			//ui.txtName.addEventListener(Event.CHANGE,txtNameChangeHandler,false,0,true);
 			ui.btnUpdateCityNode.addEventListener(MouseEvent.CLICK,updateCityNodeInfo,false,0,true);
 			ui.freeCheck.addEventListener(Event.CHANGE,freeChangelHandler,false,0,true);
+			ui.roadCheck.addEventListener(Event.CHANGE,roadCheckHandler,false,0,true);
 			ui.btnAddRoad.addEventListener(MouseEvent.CLICK,addRoadHandler,false,0,true);
 			commitData();
-			
 			roadEditor = new RoadEditor(mapEditor);
 		}
 		
 		public function setChrooseCity(cityComp:MapCityNodeComp):void {
-			if(roadEditor) roadEditor.setCurCity(cityComp);
+			if(roadEditor)	roadEditor.setCurCity(cityComp);
 		}
 		
 		public function commitData():void {
@@ -47,9 +45,16 @@ package application.appui
 				ui.txtName.text = chrooseCityComp.cityName;
 				ui.txtCityTempId.text = chrooseCityComp.templateId.toString();
 				ui.freeCheck.selected = chrooseCityComp.freeVisible;
+				ui.roadCheck.selected = chrooseCityComp.roadVisible;
 			} else {
 				ui.enabled = false;
 			}
+		}
+		
+		private function roadCheckHandler(event:Event):void {
+			chrooseCityComp.roadVisible = ui.roadCheck.selected;
+			if(ui.roadCheck.selected)	mapEditor.drawRoad();
+			else						mapEditor.clearRoad();
 		}
 		
 		/**
@@ -66,7 +71,7 @@ package application.appui
 			var cityTemplateId:Number = Number(ui.txtCityTempId.text);
 			
 			var existMapNodeInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(cityTemplateId);
-			if(existMapNodeInfo) {
+			if(existMapNodeInfo && existMapNodeInfo != chrooseCityComp.cityNodeInfo) {
 				Alert.show("此城市id已经被其他城市占用了，请换一个id");
 			} else {
 				chrooseCityComp.cityName = ui.txtName.text;
@@ -118,13 +123,11 @@ import application.db.MapCityNodeVO;
 import application.mapEditor.comps.MapCityNodeComp;
 import application.mapEditor.ui.MapEditorPanelConstroller;
 import application.utils.appDataProxy;
-
 import gframeWork.uiController.UserInterfaceManager;
 
 /**
  * 道路编辑管理 
  * @author JiangTao
- * 
  */
 class RoadEditor {
 	

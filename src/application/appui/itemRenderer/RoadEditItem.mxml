@@ -12,6 +12,7 @@
 			import spark.components.Alert;
 			
 			import application.AppReg;
+			import application.ApplicationMediator;
 			import application.appui.CityPropertieController;
 			import application.appui.CityPropertiePanel;
 			import application.db.MapCityNodeVO;
@@ -19,6 +20,8 @@
 			import application.utils.appDataProxy;
 			
 			import gframeWork.uiController.UserInterfaceManager;
+			
+			import org.puremvc.as3.patterns.facade.Facade;
 			
 			/*下个节点城市Id*/
 			private var $toCityId:int = 0;
@@ -39,6 +42,11 @@
 					var newCityId:int = int(txtToCity.text);
 					//没有发生改变
 					if(newCityId == $toCityId) return;
+					
+					if(newCityId == curCityId) {
+						Alert.show("道路不能绑定当前相同的城市");
+						return;
+					}
 					
 					//当前的反向的城市
 					var oldTargetCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId($toCityId);
@@ -78,12 +86,18 @@
 							newTargetCityInfo.toCityIds.push(curCityId);
 						}
 					}
+					
+					Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+					
 				}
 			}
 			
 			protected function btnDel_clickHandler(event:MouseEvent):void {
 				// TODO Auto-generated method stub
 				cityPropertie.roadEditor.removeRoad(this);
+				
+				Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+				
 			}
 			
 			public function dispose():void {

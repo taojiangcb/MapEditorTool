@@ -33,6 +33,7 @@
 			<s:FormHeading label="效果预览"/>
 			<s:FormItem width="100%">
 				<s:CheckBox label="战火" id="freeCheck"/>
+				<s:CheckBox label="道路" id="roadCheck"/>
 			</s:FormItem>
 		</s:Form>
 	</s:VGroup>

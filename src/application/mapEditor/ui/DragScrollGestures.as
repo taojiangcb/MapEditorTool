@@ -67,7 +67,7 @@ package application.mapEditor.ui
 				
 				_downPoint = movePoint;
 				_isDrag = true;
-			}else if(touch.phase == TouchPhase.ENDED) {
+			} else if(touch.phase == TouchPhase.ENDED) {
 				
 				Starling.juggler.add(this);
 				
@@ -174,14 +174,12 @@ package application.mapEditor.ui
 			_target.scaleX *= sizeDiff;
 			_target.scaleY *= sizeDiff;
 			
-			if(!isNaN(minScale))
-			{
+			if(!isNaN(minScale)) {
 				if(_target.scaleX < minScale) _target.scaleX = minScale;
 				if(_target.scaleY < minScale) _target.scaleY = minScale;
 			}
 			
-			if(!isNaN(maxScale))
-			{
+			if(!isNaN(maxScale)) {
 				if(_target.scaleX > maxScale) _target.scaleX = maxScale;
 				if(_target.scaleY > maxScale) _target.scaleY = maxScale;
 			}

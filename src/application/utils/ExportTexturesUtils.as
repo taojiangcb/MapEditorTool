@@ -176,23 +176,23 @@ package application.utils
 				var mapNodeDatas:Array = appDataProxy.getWriteMapNodes();
 				writeBytes.writeObject(mapNodeDatas);
 				
-				//写入大地图文件
-				writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
-				writeBytes.writeBytes(appData.mapFileStream);
-				
-				var cityTexture:BitmapData = appData.texturepack.bitData;
-				var cityTextureXml:XML = appData.texturepack.atls;
-				
-				//写入city纹理贴图png文件
-				var pngCode:PNGEncoder = new PNGEncoder();
-				var pngFileBytes:ByteArray = pngCode.encode(cityTexture);
-				writeBytes.writeDouble(pngFileBytes.bytesAvailable);
-				writeBytes.writeBytes(pngFileBytes);
-				
-				//写入city纹理贴图数据
-				var pngAtls:String = '<?xml version="1.0" encoding="UTF-16"?>' + cityTextureXml.toXMLString();
-				writeBytes.writeInt(pngAtls.length);
-				writeBytes.writeUTFBytes(pngAtls);
+//				//写入大地图文件
+//				writeBytes.writeDouble(appData.mapFileStream.bytesAvailable);					//写入大地文件数据长度
+//				writeBytes.writeBytes(appData.mapFileStream);
+//				
+//				var cityTexture:BitmapData = appData.texturepack.bitData;
+//				var cityTextureXml:XML = appData.texturepack.atls;
+//				
+//				//写入city纹理贴图png文件
+//				var pngCode:PNGEncoder = new PNGEncoder();
+//				var pngFileBytes:ByteArray = pngCode.encode(cityTexture);
+//				writeBytes.writeDouble(pngFileBytes.bytesAvailable);
+//				writeBytes.writeBytes(pngFileBytes);
+//				
+//				//写入city纹理贴图数据
+//				var pngAtls:String = '<?xml version="1.0" encoding="UTF-16"?>' + cityTextureXml.toXMLString();
+//				writeBytes.writeInt(pngAtls.length);
+//				writeBytes.writeUTFBytes(pngAtls);
 				
 				//压缩文件流
 				writeBytes.compress();

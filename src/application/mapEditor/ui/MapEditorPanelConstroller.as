@@ -13,6 +13,7 @@ package application.mapEditor.ui
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.utils.appData;
+	import application.utils.appDataProxy;
 	
 	import gframeWork.appDrag.AppDragEvent;
 	import gframeWork.appDrag.AppDragMgr;
@@ -116,11 +117,49 @@ package application.mapEditor.ui
 		 * @param cityComp
 		 */		
 		public function setChrooseCity(cityComp:MapCityNodeComp):void {
-			if(crtSelectCity) crtSelectCity.filter = null;
+
+			if(crtSelectCity == cityComp) return;
+			
+			if(crtSelectCity){
+				crtSelectCity.filter = null;
+				clearRoad();
+			}
+			
 			crtSelectCity = cityComp;
 			crtSelectCity.filter = BlurFilter.createGlow();
 			propertsPanel.setChrooseCity(cityComp);
 			propertsPanel.commitData();
+			
+			drawRoad();
+		}
+		
+		public function drawRoad():void {
+			if(propertsPanel.ui.roadCheck.selected)	drawingRoad();
+			else									clearRoad();
+		}
+		
+		private function drawingRoad():void {
+			if(!crtSelectCity) return;
+			ui.citySpace.roadGraphics.clear();
+			var toCity:MapCityNodeComp;
+			var cityIds:Array = crtSelectCity.cityNodeInfo.toCityIds;
+			var i:int = cityIds.length;
+			while(--i > -1) {
+				toCity = getCityCompById(cityIds[i]);
+				var moveX:int = crtSelectCity.x + crtSelectCity.ctImage.x + crtSelectCity.ctImage.width / 2;
+				var moveY:int = crtSelectCity.y + crtSelectCity.ctImage.y + crtSelectCity.ctImage.height / 2;
+				
+				var lineToX:int = toCity.cityNodeInfo.worldX + toCity.ctImage.x + toCity.ctImage.width / 2;
+				var lineToY:int = toCity.cityNodeInfo.worldY + toCity.ctImage.y + toCity.ctImage.height / 2;
+				
+				ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
+				ui.citySpace.roadGraphics.moveTo(moveX,moveY);
+				ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+			}
+		}
+		
+		public function clearRoad():void {
+			ui.citySpace.roadGraphics.clear();
 		}
 		
 		public function getChrroseCity():MapCityNodeComp {
@@ -137,12 +176,20 @@ package application.mapEditor.ui
 			
 			if(mapCitys) {
 				var i:int = mapCitys.length;
-				while(--i > -1) {
-					mapCitys[i].removeFromParent(true);
-				}
+				while(--i > -1) mapCitys[i].removeFromParent(true);
 				mapCitys = null;
 			}
 			super.dispose();
+		}
+		
+		private function getCityCompById(templateId:int):MapCityNodeComp {
+			var i:int = mapCitys.length;
+			while(--i > -1) {
+				if(mapCitys[i].cityNodeInfo.templateId == templateId) {
+					return mapCitys[i];
+				}
+			}
+			return  null;
 		}
 		
 		/**
