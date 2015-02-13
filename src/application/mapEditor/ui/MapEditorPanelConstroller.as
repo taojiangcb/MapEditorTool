@@ -117,27 +117,34 @@ package application.mapEditor.ui
 		 * @param cityComp
 		 */		
 		public function setChrooseCity(cityComp:MapCityNodeComp):void {
-
-			if(crtSelectCity == cityComp) return;
 			
+			if(crtSelectCity == cityComp) return;
 			if(crtSelectCity){
 				crtSelectCity.filter = null;
 				clearRoad();
 			}
 			
 			crtSelectCity = cityComp;
-			crtSelectCity.filter = BlurFilter.createGlow();
+			if(crtSelectCity) {
+				crtSelectCity.filter = BlurFilter.createGlow();
+			}
+			
 			propertsPanel.setChrooseCity(cityComp);
 			propertsPanel.commitData();
-			
 			drawRoad();
 		}
 		
+		/**
+		 * 绘制道路的连接线，能画线的画线，不能画线的则清除当前连接线 
+		 */		
 		public function drawRoad():void {
 			if(propertsPanel.ui.roadCheck.selected)	drawingRoad();
 			else									clearRoad();
 		}
 		
+		/**
+		 * 确定缓制线条 
+		 */		
 		private function drawingRoad():void {
 			if(!crtSelectCity) return;
 			ui.citySpace.roadGraphics.clear();
@@ -158,6 +165,41 @@ package application.mapEditor.ui
 			}
 		}
 		
+		/**
+		 * 删除一个城市 
+		 * @param cityId
+		 * @return 
+		 * 
+		 */		
+		public function delCityComp(cityId:int):void {
+			var delCity:MapCityNodeComp = getCityCompById(cityId);
+			var i:int = 0;
+			var len:int = mapCitys.length;
+			var itCityComp:MapCityNodeComp;			
+			for(i= 0; i != len;) {
+				itCityComp = null;
+				if(mapCitys[i] == delCity) {
+					itCityComp = mapCitys[i];
+					mapCitys.splice(i,1);
+					appDataProxy.removeCityInfoById(itCityComp.cityNodeInfo.templateId);
+					itCityComp.removeFromParent(true);
+					len = mapCitys.length;
+					i++;
+				} else {
+					i++;
+				}
+			}
+			
+			if(crtSelectCity && crtSelectCity == delCity) {
+				setChrooseCity(null);
+			} else {
+				drawRoad();
+			}
+		}
+		
+		/**
+		 * 清除道路的连接线条 
+		 */		
 		public function clearRoad():void {
 			ui.citySpace.roadGraphics.clear();
 		}

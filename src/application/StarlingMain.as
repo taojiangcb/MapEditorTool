@@ -4,6 +4,7 @@ package application
 	
 	import flash.display.Stage;
 	
+	import application.cfg.CfgKeyTest;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
@@ -29,6 +30,8 @@ package application
 		/*功能模块快速注册*/
 		private static var app:AppReg;
 		
+		private static var cfgKey:CfgKeyTest;
+		
 		private static var appBeginFunc:Function;
 		public static function init(stage:Stage,onCompleteHandler:Function):void
 		{
@@ -37,12 +40,13 @@ package application
 			var stage3dComplete:Function = function(event:Event):void {
 				GTween.staticInit();	//启动GT
 				internalInit();
+				
+				cfgKey = new CfgKeyTest();
 			};
 			
-			Starling.multitouchEnabled = true;
+			//Starling.multitouchEnabled = true;
 			//启动starling
 			sl = new Starling(StarlingMain,stage);
-			sl.simulateMultitouch = true;
 			sl.addEventListener(Event.ROOT_CREATED,stage3dComplete);
 			sl.start();
 			sl.showStats = true;

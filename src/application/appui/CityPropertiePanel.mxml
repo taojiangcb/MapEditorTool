@@ -36,5 +36,6 @@
 				<s:CheckBox label="道路" id="roadCheck"/>
 			</s:FormItem>
 		</s:Form>
+		<s:Button label="删除城市" id="delCity"/>
 	</s:VGroup>
 </s:Panel>

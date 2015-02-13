@@ -547,6 +547,28 @@ package application.proxy
 			return null;
 		}
 		
+		/**
+		 * 删除当前城市的信息 
+		 * @param cityId
+		 */		
+		public function removeCityInfoById(cityId:int):void {
+			var i:int = 0;
+			var len:int = appData.mapCityNodes.length;
+			var crtCityNode:MapCityNodeVO;
+			for(i = 0; i < len;) {
+				crtCityNode = appData.mapCityNodes[i];
+				if(crtCityNode.templateId == cityId) {
+					appData.mapCityNodes.splice(i,1);
+					len = appData.mapCityNodes.length;
+					i++;
+				} else {
+					var toIndex:int = crtCityNode.toCityIds.indexOf(cityId);
+					if(toIndex > -1) crtCityNode.toCityIds.splice(toIndex);
+					i++;
+				}
+			}
+		}
+		
 		public static function get NAME():String{
 			return getQualifiedClassName(AppDataProxy);
 		}

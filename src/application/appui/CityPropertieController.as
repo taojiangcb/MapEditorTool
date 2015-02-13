@@ -5,6 +5,7 @@ package application.appui
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.events.CloseEvent;
 	import mx.events.FlexEvent;
 	
 	import spark.components.Alert;
@@ -31,6 +32,7 @@ package application.appui
 			ui.freeCheck.addEventListener(Event.CHANGE,freeChangelHandler,false,0,true);
 			ui.roadCheck.addEventListener(Event.CHANGE,roadCheckHandler,false,0,true);
 			ui.btnAddRoad.addEventListener(MouseEvent.CLICK,addRoadHandler,false,0,true);
+			ui.delCity.addEventListener(MouseEvent.CLICK,delCityHandler,false,0,true);
 			commitData();
 			roadEditor = new RoadEditor(mapEditor);
 		}
@@ -89,6 +91,20 @@ package application.appui
 			}
 		}
 		
+		private function delCityHandler(event:MouseEvent):void {
+			Alert.show("你确定要删除当前选定的城市吗？将会删除一切关联的道路数据!","删除城驰",Alert.YES|Alert.NO,null,onCloseHandler);
+		}
+		
+		/**
+		 * 确定删除城市 
+		 * @param event
+		 */	
+		private function onCloseHandler(event:CloseEvent):void {
+			if(event.detail == Alert.YES) {
+				mapEditor.delCityComp(mapEditor.getChrroseCity().cityNodeInfo.templateId);
+			}
+		}
+		
 		public override function dispose():void {
 			super.dispose();
 			ui.btnAddRoad.removeEventListener(MouseEvent.CLICK,addRoadHandler);
@@ -115,6 +131,12 @@ package application.appui
 		}
 	}
 }
+import flash.events.MouseEvent;
+
+import mx.events.CloseEvent;
+
+import spark.components.Alert;
+
 import application.AppReg;
 import application.appui.CityPropertieController;
 import application.appui.CityPropertiePanel;
@@ -123,6 +145,7 @@ import application.db.MapCityNodeVO;
 import application.mapEditor.comps.MapCityNodeComp;
 import application.mapEditor.ui.MapEditorPanelConstroller;
 import application.utils.appDataProxy;
+
 import gframeWork.uiController.UserInterfaceManager;
 
 /**
