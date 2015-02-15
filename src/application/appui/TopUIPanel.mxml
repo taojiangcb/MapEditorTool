@@ -21,5 +21,6 @@
 		<s:Button label="另存为" id="saveFile"/>
 		<s:Button label="导出游戏数据" id="exportFile"/>
 		<s:Button label="导出道路数据" id="outputRoad"/>
+		<s:CheckBox label="显示所有道路" id="checkVisualAllRoad"/>
 	</s:HGroup>
 </s:Group>

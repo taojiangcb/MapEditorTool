@@ -92,7 +92,7 @@ package application
 		private function mapDrawRoad(notification:INotification):void {
 			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 			if(mapEditor) {
-				mapEditor.drawRoad();
+				mapEditor.smartDrawroad();
 			}
 		}
 		

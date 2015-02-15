@@ -3,6 +3,8 @@ package application.mapEditor.ui
 	import application.mapEditor.comps.MapCitySpaceComp;
 	import application.mapEditor.comps.MapFloorComp;
 	
+	import feathers.core.FeathersControl;
+	
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
@@ -16,8 +18,8 @@ package application.mapEditor.ui
 		public var citySpace:MapCitySpaceComp;
 		public var mapFloor:MapFloorComp;
 		
-		public function MapEditorPanel(listenCreateComplete:Boolean=false) {
-			super(true);
+		public function MapEditorPanel() {
+			super();
 		}
 		
 		protected override function initialize():void {
@@ -30,10 +32,6 @@ package application.mapEditor.ui
 			
 			citySpace = new MapCitySpaceComp();
 			uiContent.addChild(citySpace);
-		}
-		
-		protected override function createCompleteHandler(event:Event):void {
-			super.createCompleteHandler(event);
 		}
 	}
 }

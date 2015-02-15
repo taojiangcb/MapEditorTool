@@ -7,14 +7,20 @@
 					   width="1224" height="768" resizeForSoftKeyboard="false"
 					   skinClass="spark.skins.spark.WindowedApplicationSkin"
 					   applicationComplete="windowedapplication1_applicationCompleteHandler(event)"
-					   xmlns:mx="library://ns.adobe.com/flex/mx">
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   resize="windowedapplication1_resizingHandler(event)"> 
 	<fx:Script>
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
+			import com.frameWork.utils.ssetTimeout;
+			
+			import flash.utils.setTimeout;
+			
 			import mx.events.FlexEvent;
 			
 			import application.AppReg;
 			import application.StarlingMain;
+			import application.mapEditor.ui.MapEditorPanelConstroller;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
 			
@@ -22,7 +28,13 @@
 			import gframeWork.uiController.UserInterfaceManager;
 			
 			import org.puremvc.as3.patterns.facade.Facade;
+			
 			import source.feathers.themes.MetalWorksMobileTheme;
+			
+			import starling.core.Starling;
+			import starling.utils.HAlign;
+			import starling.utils.RectangleUtil;
+			import starling.utils.VAlign;
 			
 			protected function windowedapplication1_applicationCompleteHandler(event:FlexEvent):void
 			{
@@ -43,6 +55,28 @@
 				UserInterfaceManager.open(AppReg.CITY_EDIT_PROPERTIES);		//打开城市信息编辑栏
 				UIMoudleManager.openUIByid(AppReg.EDITOR_MAP_PANEL);		//地图编辑
 			}
+			
+			protected function windowedapplication1_resizingHandler(event:Event):void
+			{
+				if(Starling.current) {
+					Starling.current.stage.stageWidth = width;
+					Starling.current.stage.stageHeight = height;
+					
+					Starling.current.showStatsAt(HAlign.CENTER,VAlign.BOTTOM);
+					
+					var viewPort:Rectangle = new Rectangle(0,0,width,height);
+					try {
+						Starling.current.viewPort = viewPort;
+					} catch(error:Event) {}
+					
+					if(mapEditor) mapEditor.resizeHandler();
+				}  
+			}
+			
+			private function get mapEditor():MapEditorPanelConstroller {
+				return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>

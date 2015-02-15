@@ -7,6 +7,9 @@ package application.mapEditor.ui
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.core.Application;
+	import mx.core.FlexGlobals;
+	
 	import application.AppReg;
 	import application.appui.CityPropertieController;
 	import application.db.CityNodeTempVO;
@@ -20,6 +23,7 @@ package application.mapEditor.ui
 	import gframeWork.uiController.UserInterfaceManager;
 	
 	import starling.core.Starling;
+	import starling.display.DisplayObject;
 	import starling.events.Event;
 	import starling.filters.BlurFilter;
 	
@@ -53,10 +57,10 @@ package application.mapEditor.ui
 			sizeRect = getSize();
 			ui.x = left;
 			ui.y = top;
-			ui.setSize(sizeRect.width,sizeRect.height);
 			ui.clipRect = new Rectangle(0,0,sizeRect.width,sizeRect.height);
+			ui.setSize(sizeRect.width,sizeRect.height);
 			mapMove = new DragScrollGestures(ui.uiContent,mapDragHandler);
-			mapMove.setDragRectangle(ui.clipRect,ui.uiContent.width,ui.uiContent.height);
+			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),ui.uiContent.width,ui.uiContent.height);
 			AppDragMgr.addEventListener(AppDragEvent.DRAG,onDragHandler);
 			
 			var len:int = appData.mapCityNodes.length;
@@ -65,6 +69,13 @@ package application.mapEditor.ui
 				var city:MapCityNodeComp = createMapNode(mapCityInfo);
 				mapCitys.push(city);
 			}
+		}
+		
+		public function resizeHandler():void {
+			sizeRect = getSize();
+			ui.setSize(sizeRect.width,sizeRect.height);
+			ui.clipRect = new Rectangle(0,0,sizeRect.width,sizeRect.height);
+			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),ui.uiContent.width,ui.uiContent.height);
 		}
 		
 		//拖拽
@@ -131,15 +142,14 @@ package application.mapEditor.ui
 			
 			propertsPanel.setChrooseCity(cityComp);
 			propertsPanel.commitData();
-			drawRoad();
+			smartDrawroad();
 		}
 		
 		/**
 		 * 绘制道路的连接线，能画线的画线，不能画线的则清除当前连接线 
 		 */		
-		public function drawRoad():void {
-			if(propertsPanel.ui.roadCheck.selected)	drawingRoad();
-			else									clearRoad();
+		public function smartDrawroad():void {
+			visualAllRaod(appData.IS_DRAW_ALL_ROAD);
 		}
 		
 		/**
@@ -193,7 +203,7 @@ package application.mapEditor.ui
 			if(crtSelectCity && crtSelectCity == delCity) {
 				setChrooseCity(null);
 			} else {
-				drawRoad();
+				smartDrawroad();
 			}
 		}
 		
@@ -209,6 +219,11 @@ package application.mapEditor.ui
 		}
 		
 		public override function dispose():void {
+			
+			if(ui.stage) {
+				ui.stage.removeEventListeners(Event.RESIZE);
+			}
+			
 			if(crtSelectCity) crtSelectCity.filter = null;
 			
 			if(mapMove) {
@@ -235,16 +250,54 @@ package application.mapEditor.ui
 		}
 		
 		/**
+		 * 是否会制全地图路径  
+		 * @param val	val = true 绘制全地图路径 false 绘制当前选中的城市路径，没有城市选中时不绘制
+		 */		
+		private function visualAllRaod(val:Boolean):void {
+			if(val) {
+				ui.citySpace.roadGraphics.clear();
+				ui.citySpace.roadGraphics.beginFill(0,0.3);
+				ui.citySpace.roadGraphics.drawRect(0,0,appData.mapBit.width,appData.mapBit.height);
+				ui.citySpace.roadGraphics.endFill();
+				
+				var toCity:MapCityNodeComp;
+				var forCity:MapCityNodeComp;
+				var i:int = mapCitys.length;
+				while(--i > -1) {
+					forCity = mapCitys[i];
+					var j:int = forCity.cityNodeInfo.toCityIds.length;
+					while(--j > -1) {
+						toCity = getCityCompById(forCity.cityNodeInfo.toCityIds[j]);
+						
+						var moveX:int = forCity.x + forCity.ctImage.x + forCity.ctImage.width / 2;
+						var moveY:int = forCity.y + forCity.ctImage.y + forCity.ctImage.height / 2;
+						
+						var lineToX:int = toCity.cityNodeInfo.worldX + toCity.ctImage.x + toCity.ctImage.width / 2;
+						var lineToY:int = toCity.cityNodeInfo.worldY + toCity.ctImage.y + toCity.ctImage.height / 2;
+						
+						ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
+						ui.citySpace.roadGraphics.moveTo(moveX,moveY);
+						ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+					}
+				}
+				
+			} else {
+				if(propertsPanel.ui.roadCheck.selected)	drawingRoad();
+				else									clearRoad();
+			}
+		}
+		
+		/**
 		 * 获取当前编辑场中的大小 
 		 * @return 
 		 */		
 		private function getSize():Rectangle {
-			var w:int = Starling.current.stage.stageWidth - left - right;
-			var h:int = Starling.current.stage.stageHeight - top - bottom;
+			var w:int = MapEditor(FlexGlobals.topLevelApplication).width - left - right;
+			var h:int = MapEditor(FlexGlobals.topLevelApplication).height - top - bottom;
 			return new Rectangle(left,top,w,h);
 		}
 		
-		private function get ui():MapEditorPanel {
+		public function get ui():MapEditorPanel {
 			return uiContent as MapEditorPanel
 		}
 		

@@ -3,8 +3,8 @@ package application
 	import com.gskinner.motion.GTween;
 	
 	import flash.display.Stage;
+	import flash.geom.Rectangle;
 	
-	import application.cfg.CfgKeyTest;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
@@ -30,8 +30,6 @@ package application
 		/*功能模块快速注册*/
 		private static var app:AppReg;
 		
-		private static var cfgKey:CfgKeyTest;
-		
 		private static var appBeginFunc:Function;
 		public static function init(stage:Stage,onCompleteHandler:Function):void
 		{
@@ -40,8 +38,6 @@ package application
 			var stage3dComplete:Function = function(event:Event):void {
 				GTween.staticInit();	//启动GT
 				internalInit();
-				
-				cfgKey = new CfgKeyTest();
 			};
 			
 			//Starling.multitouchEnabled = true;

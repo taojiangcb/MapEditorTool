@@ -14,6 +14,7 @@ package application.appui
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
+	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
 	import gframeWork.uiController.MainUIControllerBase;
@@ -55,7 +56,10 @@ package application.appui
 		
 		private function roadCheckHandler(event:Event):void {
 			chrooseCityComp.roadVisible = ui.roadCheck.selected;
-			if(ui.roadCheck.selected)	mapEditor.drawRoad();
+			
+			if(appData.IS_DRAW_ALL_ROAD) return;		//如果已经显示全图路径了则此处不需要处理
+			
+			if(ui.roadCheck.selected)	mapEditor.smartDrawroad();
 			else						mapEditor.clearRoad();
 		}
 		

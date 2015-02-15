@@ -42,6 +42,8 @@ package application.db
 		public var skin:StyleNameFunctionTheme;
 		//文字的描边
 		public var GLOW_BLACK:GlowFilter = new GlowFilter(0x000000,1,2,2,8, BitmapFilterQuality.HIGH);
+		//是否绘制所有城市的路径
+		public var IS_DRAW_ALL_ROAD:Boolean = false;
 		
 		public function AppDataVO() {
 		}

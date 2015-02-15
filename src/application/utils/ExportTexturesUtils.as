@@ -125,6 +125,7 @@ package application.utils
 			fileStream.open(file,FileMode.WRITE);
 			fileStream.writeBytes(fileBytes);
 			fileStream.close();
+			Alert.show("导出成功");
 		}
 		
 		private static function saveData(path:String,xmlData:String):void {

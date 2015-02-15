@@ -12,6 +12,9 @@ package application.utils
 			
 		}
 		
+		
+		private static const OFF_SET_PIEX:int = 8;
+		
 		/**
 		 * 获取地图被2整除之后的大小  
 		 * @return 
@@ -35,7 +38,6 @@ package application.utils
 		/**
 		 * 获取地图单元格bitmapdata阵列 
 		 * @return 
-		 * 
 		 */		
 		public static function getBitGrids():Array {
 			var grids:Array = [];
@@ -46,8 +48,10 @@ package application.utils
 			for(var x:int = 0; x != AppGlobal.MAP_COLUMN; x++) {
 				grids[x] = [];
 				for(var y:int = 0; y != AppGlobal.MAP_ROW; y++) {
-					var bitGrid:BitmapData = new BitmapData(gridSize.width + 8,gridSize.height + 8);
-					bitGrid.copyPixels(cloneBit,new Rectangle(x * gridSize.width,y * gridSize.height,gridSize.width + 8,gridSize.height + 8),new Point(0,0));
+					var offValueX:int = (x == AppGlobal.MAP_COLUMN - 1) ? 0 : OFF_SET_PIEX;
+					var offValueY:int = (y == AppGlobal.MAP_ROW - 1) ? 0 : OFF_SET_PIEX;
+					var bitGrid:BitmapData = new BitmapData(gridSize.width + offValueX,gridSize.height + offValueY);
+					bitGrid.copyPixels(cloneBit,new Rectangle(x * gridSize.width,y * gridSize.height,gridSize.width + offValueX,gridSize.height + offValueY),new Point(0,0));
 					grids[x][y] = bitGrid; 
 				}
 			}
