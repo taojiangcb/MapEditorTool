@@ -197,7 +197,6 @@ package application.utils
 				
 				//压缩文件流
 				writeBytes.compress();
-				
 				//写入文件
 				writeFile.writeBytes(writeBytes);
 				writeFile.close();

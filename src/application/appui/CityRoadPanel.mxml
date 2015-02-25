@@ -4,6 +4,9 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
 	<s:VGroup width="100%" height="100%" horizontalAlign="center">
 		<s:TextArea width="100%" height="100%" id="txtOutput" editable="false"/>
-		<s:Button label="确定" id="btnClose"/>
+		<s:HGroup >
+			<s:Button label="关闭" id="btnClose"/>
+			<s:Button label="导出" id="btnExportExcel"/>
+		</s:HGroup>
 	</s:VGroup>
 </s:Panel>

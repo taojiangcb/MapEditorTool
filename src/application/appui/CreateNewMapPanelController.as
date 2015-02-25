@@ -15,6 +15,8 @@ package application.appui
 	import gframeWork.uiController.UserInterfaceManager;
 	import gframeWork.uiController.WindowUIControllerBase;
 	
+	import starling.core.Starling;
+	
 	/**
 	 * 新建地图操作面板
 	 * @author JiangTao
@@ -23,10 +25,8 @@ package application.appui
 	public class CreateNewMapPanelController extends MainUIControllerBase
 	{
 		private var selectFile:File;
-		public function CreateNewMapPanelController()
-		{
+		public function CreateNewMapPanelController() {
 			super();
-			mDieTime = 0;
 		}
 		
 		protected override function uiCreateComplete(event:FlexEvent):void {
@@ -56,11 +56,18 @@ package application.appui
 			selectFile.addEventListener(Event.SELECT,selectFunc);
 		}
 		
+		protected override function addToUiSpace():void {
+			super.addToUiSpace();
+			Starling.current.stop();
+		}
+		
 		private function cancelHandler(event:MouseEvent):void {
-			UserInterfaceManager.close(AppReg.CREATE_NEW_MAP);	
+			UserInterfaceManager.close(AppReg.CREATE_NEW_MAP);
+			Starling.current.start();
 		}
 		
 		private function okHandler(event:MouseEvent):void {
+			Starling.current.start();
 			appDataProxy.createNewMapData(ui.txtCityIconPat.text,ui.txtMapPath.text);
 			UserInterfaceManager.close(AppReg.CREATE_NEW_MAP);
 		}
