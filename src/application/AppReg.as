@@ -11,6 +11,8 @@ package application
 	import application.appui.CityRoadPanelController;
 	import application.appui.CreateNewMapPanel;
 	import application.appui.CreateNewMapPanelController;
+	import application.appui.RoadTestPanel;
+	import application.appui.RoadTestPanelController;
 	import application.appui.TopUIPanel;
 	import application.appui.TopUIPanelControler;
 	import application.cityNode.ui.NodeEditorPanel;
@@ -62,6 +64,11 @@ package application
 		 */		
 		public static const EDITOR_MAP_PANEL:int = 302;
 		
+		/**
+		 * 测试寻路 
+		 */		
+		public static const ROAD_SEARCH:int = 303;
+		
 		public function AppReg() {
 			installDataProxy();
 			installUIMoudle(); 
@@ -78,6 +85,7 @@ package application
 			UserInterfaceManager.registerGUI(CITY_NODE_TEMP_PANEL,CityNodeLibaryPanel,CityNodeLibaryPanelController);
 			UserInterfaceManager.registerGUI(CITY_EDIT_PROPERTIES,CityPropertiePanel,CityPropertieController);
 			UserInterfaceManager.registerGUI(ROAD_OUTPUT,CityRoadPanel,CityRoadPanelController);
+			UserInterfaceManager.registerGUI(ROAD_SEARCH,RoadTestPanel,RoadTestPanelController);
 			
 			UIMoudleManager.registerUIMoudle(EDITOR_CITY_NODE_PANEL,NodeEditorPanelController,NodeEditorPanel);
 			UIMoudleManager.registerUIMoudle(EDITOR_MAP_PANEL,MapEditorPanelConstroller,MapEditorPanel);

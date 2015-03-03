@@ -12,7 +12,7 @@ package application
 	
 	import application.appui.CityNodeLibaryPanelController;
 	import application.cityNode.ui.NodeEditorPanelController;
-	import application.db.CityNodeTempVO;
+	import application.db.MapCityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.extendsCore.MediatorExpert;
 	import application.mapEditor.comps.MapCityNodeComp;
@@ -115,7 +115,7 @@ package application
 		}
 		
 		private function editorCityTemp(notification:INotification):void {
-			appData.editorCityNode = notification.getBody() as CityNodeTempVO;
+			appData.editorCityNode = notification.getBody() as MapCityNodeTempVO;
 			var nodeEditorUI:NodeEditorPanelController = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_CITY_NODE_PANEL) as NodeEditorPanelController;
 			if(nodeEditorUI) {
 				if(nodeEditorUI.uiState == UIConstant.OPEN) {

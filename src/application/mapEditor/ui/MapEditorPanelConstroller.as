@@ -12,7 +12,7 @@ package application.mapEditor.ui
 	
 	import application.AppReg;
 	import application.appui.CityPropertieController;
-	import application.db.CityNodeTempVO;
+	import application.db.MapCityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.utils.appData;
@@ -85,7 +85,7 @@ package application.mapEditor.ui
 			if(ui.mapFloor.hitTest(localPt)) {
 				//添加cityInfo
 				var cityInfo:MapCityNodeVO = new MapCityNodeVO();
-				cityInfo.textureName = CityNodeTempVO(event.itemData).textureName;
+				cityInfo.textureName = MapCityNodeTempVO(event.itemData).textureName;
 				cityInfo.worldX = localPt.x - event.offPoint.x;
 				cityInfo.worldY = localPt.y - event.offPoint.y;
 			
@@ -194,7 +194,6 @@ package application.mapEditor.ui
 					appDataProxy.removeCityInfoById(itCityComp.cityNodeInfo.templateId);
 					itCityComp.removeFromParent(true);
 					len = mapCitys.length;
-					i++;
 				} else {
 					i++;
 				}

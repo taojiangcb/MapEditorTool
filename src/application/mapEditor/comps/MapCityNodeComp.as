@@ -9,7 +9,7 @@ package application.mapEditor.comps
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
-	import application.db.CityNodeTempVO;
+	import application.db.MapCityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.mapEditor.ui.DragCityGestures;
 	import application.mapEditor.ui.MapEditorPanel;
@@ -219,7 +219,7 @@ package application.mapEditor.comps
 			return mapNodeInfo;
 		}
 		
-		public function get nodeTemp():CityNodeTempVO {
+		public function get nodeTemp():MapCityNodeTempVO {
 			return appDataProxy.getCityNodeTempByName(mapNodeInfo.textureName);
 		}
 		

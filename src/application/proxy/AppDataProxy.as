@@ -21,7 +21,7 @@ package application.proxy
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
-	import application.db.CityNodeTempVO;
+	import application.db.MapCityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
@@ -106,7 +106,7 @@ package application.proxy
 				var len:int = nodeObjTemps.length;
 				var nodeTemps:Array = [];
 				for(i; i != len; i++) {
-					var nodeTemp:CityNodeTempVO = new CityNodeTempVO();
+					var nodeTemp:MapCityNodeTempVO = new MapCityNodeTempVO();
 					nodeTemp.labelX = nodeObjTemps[i][0];
 					nodeTemp.labelY = nodeObjTemps[i][1];
 					nodeTemp.freeX = nodeObjTemps[i][2];
@@ -261,7 +261,7 @@ package application.proxy
 				appData.cityNodeBitmapdatas.push(objData);
 				
 				//创建节点模板数据
-				var cityNodeTemp:CityNodeTempVO = new CityNodeTempVO();
+				var cityNodeTemp:MapCityNodeTempVO = new MapCityNodeTempVO();
 				cityNodeTemp.textureName = fileData.textureName;
 				appData.cityNodeTemps.push(cityNodeTemp);
 				
@@ -495,13 +495,17 @@ package application.proxy
 		public function getWriteNodeTemps():Array {
 			var i:int = 0;
 			var len:int = appData.cityNodeTemps.length;
-			var nodeTemp:CityNodeTempVO;
+			var nodeTemp:MapCityNodeTempVO;
 			var nodeTempList:Array = [];
 			//组织城市模板节点的数据
 			for(i = 0; i != len; i++) {
 				//数据格式  [0 labelX 1 labelY 2 freeX 3 freeY 4 textureName]
 				nodeTemp = appData.cityNodeTemps[i];
-				var nodeData:Array = [nodeTemp.labelX,nodeTemp.labelY,nodeTemp.freeX,nodeTemp.freeY,nodeTemp.textureName];
+				var nodeData:Array = [nodeTemp.labelX,
+					nodeTemp.labelY,
+					nodeTemp.freeX,
+					nodeTemp.freeY,
+					nodeTemp.textureName];
 				nodeTempList.push(nodeData);
 			}
 			return nodeTempList;
@@ -536,11 +540,11 @@ package application.proxy
 		 * @param textureName
 		 * @return 
 		 */		
-		public function getCityNodeTempByName(textureName:String):CityNodeTempVO {
+		public function getCityNodeTempByName(textureName:String):MapCityNodeTempVO {
 			var i:int = 0;
 			var len:int = appData.cityNodeTemps.length;
 			for(i = 0; i != len; i++) {
-				if(CityNodeTempVO(appData.cityNodeTemps[i]).textureName == textureName) {
+				if(MapCityNodeTempVO(appData.cityNodeTemps[i]).textureName == textureName) {
 					return appData.cityNodeTemps[i];
 				}
 			}

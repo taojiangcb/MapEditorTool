@@ -40,6 +40,7 @@ package application.appui
 			ui.QuickSaveFile.addEventListener(MouseEvent.CLICK,quickSaveClickHandler,false,0,true);
 			ui.outputRoad.addEventListener(MouseEvent.CLICK,outputRoadHandler,false,0,true);
 			ui.checkVisualAllRoad.addEventListener(Event.CHANGE,visualAllRoad,false,0,true);
+			ui.btnTestRoad.addEventListener(MouseEvent.CLICK,roadTestHandler,false,0,true);
 		}
 		
 		//是否显示全部路径
@@ -48,6 +49,10 @@ package application.appui
 			if(mapEditor && mapEditor.ui) {
 				mapEditor.smartDrawroad();
 			}
+		}
+		
+		private function roadTestHandler(event:MouseEvent):void {
+			UserInterfaceManager.open(AppReg.ROAD_SEARCH);
 		}
 		
 		private function outputRoadHandler(event:MouseEvent):void {

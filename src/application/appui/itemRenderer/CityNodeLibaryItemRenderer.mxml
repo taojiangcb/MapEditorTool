@@ -15,7 +15,7 @@
 			import application.AppReg;
 			import application.ApplicationMediator;
 			import application.cityNode.ui.NodeEditorPanelController;
-			import application.db.CityNodeTempVO;
+			import application.db.MapCityNodeTempVO;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
 			
@@ -39,7 +39,7 @@
 			protected override function commitProperties():void {
 				super.commitProperties();
 				if(data) {
-					var cityNodeTemp:CityNodeTempVO = CityNodeTempVO(data);
+					var cityNodeTemp:MapCityNodeTempVO = MapCityNodeTempVO(data);
 					var bitData:BitmapData = appDataProxy.getCityNodeBitDataByName(cityNodeTemp.textureName);
 					nodeImage.source = bitData;
 					txtTextureName.text = cityNodeTemp.textureName;

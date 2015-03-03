@@ -24,6 +24,8 @@ package application.appui
 	public class CityRoadPanelController extends WindowUIControllerBase
 	{
 		
+		public static const defaultDisatnce:int = 100;
+		
 		//excel文件
 		private var excel:ExcelFile;
 		private var sheel:Sheet;
@@ -61,8 +63,6 @@ package application.appui
 		 * 
 		 */		
 		private function exportExcelHandler(event:MouseEvent):void {
-			
-			const defaultDisatnce:int = 100;
 			
 			excel = new ExcelFile();
 			sheel = new Sheet();
