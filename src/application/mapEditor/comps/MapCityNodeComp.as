@@ -10,7 +10,7 @@ package application.mapEditor.comps
 	import application.AppReg;
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.mapEditor.ui.DragCityGestures;
 	import application.mapEditor.ui.MapEditorPanel;
 	import application.utils.appData;
@@ -45,7 +45,7 @@ package application.mapEditor.comps
 		private var txtName:TextField;					//城市名称
 		private var txtId:TextField;					//模板Id显示
 		
-		private var mapNodeInfo:MapCityNodeVO;
+		private var mapNodeInfo:CityNodeVO;
 		
 		/**
 		 * 拖拽处理 
@@ -62,7 +62,7 @@ package application.mapEditor.comps
 		 */		
 		private var tapGuester:TapGestures;
 		
-		public function MapCityNodeComp(cityNode:MapCityNodeVO) {
+		public function MapCityNodeComp(cityNode:CityNodeVO) {
 			super(true);
 			mapNodeInfo = cityNode;
 		}
@@ -215,7 +215,7 @@ package application.mapEditor.comps
 		 * 获取城市信息 
 		 * @return 
 		 */		
-		public function get cityNodeInfo():MapCityNodeVO {
+		public function get cityNodeInfo():CityNodeVO {
 			return mapNodeInfo;
 		}
 		

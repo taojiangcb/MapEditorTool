@@ -13,7 +13,7 @@ package application
 	import application.appui.CityNodeLibaryPanelController;
 	import application.cityNode.ui.NodeEditorPanelController;
 	import application.db.CityNodeTempVO;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.extendsCore.MediatorExpert;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
@@ -110,7 +110,7 @@ package application
 		private function addCityToMap(notification:INotification):void {
 			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 			if(mapEditor) {
-				mapEditor.createMapNode(notification.getBody() as MapCityNodeVO);
+				mapEditor.createMapNode(notification.getBody() as CityNodeVO);
 			}
 		}
 		

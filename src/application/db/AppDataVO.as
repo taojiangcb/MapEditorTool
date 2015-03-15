@@ -44,6 +44,12 @@ package application.db
 		public var GLOW_BLACK:GlowFilter = new GlowFilter(0x000000,1,2,2,8, BitmapFilterQuality.HIGH);
 		//是否绘制所有城市的路径
 		public var IS_DRAW_ALL_ROAD:Boolean = false;
+		//编辑道路的自增长Id
+		public var GLOBAL_ROAD_GROWTH_ID:Number = 0;
+		//当前编辑的道路Id
+		public var EDIT_ROAD_ID:Number = 0;
+		//所有的道路节点
+		public var roads:Array = [];
 		
 		public function AppDataVO() {
 		}

@@ -1,6 +1,6 @@
 package application.db
 {
-	public class MapCityNodeVO
+	public class CityNodeVO
 	{
 		//预览的城市名称
 		public var cityName:String = "";

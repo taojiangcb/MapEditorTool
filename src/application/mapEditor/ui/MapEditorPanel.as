@@ -10,7 +10,10 @@ package application.mapEditor.ui
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.extensions.CustomFeathersControls;
-	
+	/**
+	 * 地图编辑面板 
+	 * @author taojiang
+	 */	
 	public class MapEditorPanel extends CustomFeathersControls
 	{
 		public var uiContent:Sprite;

@@ -22,7 +22,7 @@ package application.proxy
 	import application.AppReg;
 	import application.ApplicationMediator;
 	import application.db.CityNodeTempVO;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
@@ -123,7 +123,7 @@ package application.proxy
 				len = mapNodeObjs.length;
 				for(i = 0; i != len; i++) {
 					mapCityNodeData = mapNodeObjs[i];
-					var mapCityNode:MapCityNodeVO = new MapCityNodeVO();
+					var mapCityNode:CityNodeVO = new CityNodeVO();
 					mapCityNode.worldX = mapCityNodeData[0];
 					mapCityNode.worldY = mapCityNodeData[1];
 //					mapCityNode.faction = mapCityNodeData[2];
@@ -203,7 +203,7 @@ package application.proxy
 			var nodesRoot:File = new File(cityNodesPath);
 			trace("begin load cityNodeImages");
 			trace("===================================");
-			ansyslizerCityNode(nodesRoot);
+			ansyslizerCityDirector(nodesRoot);
 			trace("===================================");
 			//当前装载的城市节点图片
 			nowNodeLoadCount = 0;
@@ -211,15 +211,19 @@ package application.proxy
 			return false;
 		}
 		
-		private function ansyslizerCityNode(rootFile:File):void {
+		/**
+		 * 解析城市图片目录将节点图片转换成节点文件数据 
+		 * @param rootFile
+		 * 
+		 */		
+		private function ansyslizerCityDirector(rootFile:File):void {
 			var fileStream:FileStream;
 			var nodeFiles:Array = rootFile.getDirectoryListing();
 			var nf:File = null;
 			for each(nf in nodeFiles) {
 				if(nf.isDirectory) {
-					ansyslizerCityNode(nf);
+					ansyslizerCityDirector(nf);
 				} else {
-					
 					var fileBytes:ByteArray = new ByteArray();
 					if		(!fileStream) fileStream = new FileStream();
 					else	fileStream.close();
@@ -235,13 +239,16 @@ package application.proxy
 			}
 		}
 		
+		/**
+		 * 刷新节点模板库 
+		 */		
 		public function refreshCityLibary():void {
 			appData.cityNodeBitmapdatas = [];
 			appData.cityNodeFiles = [];
 			appData.cityNodeTemps = [];
 			
 			var nodesRoot:File = new File(appData.cityImagesUrl);
-			ansyslizerCityNode(nodesRoot);
+			ansyslizerCityDirector(nodesRoot);
 			nowNodeLoadCount = 0;
 			loadNode(true);
 		}
@@ -278,13 +285,10 @@ package application.proxy
 			} else {
 				if(!updateCitylibary) {
 					clearNodeLoad();
-					//装载大地图数据
-					installMapFile();		
+					installMapFile();										//装载大地图数据		
 				} else {
-					//重新上传GPU
-					appDataProxy.updateTextureToGPU();
-					//刷新库
-					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);
+					appDataProxy.updateTextureToGPU();						//重新上传GPU
+					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);	//刷新库
 				}
 			}
 		}
@@ -347,7 +351,7 @@ package application.proxy
 		 * @return 
 		 * 
 		 */		
-		public function getCityNodeInfoByTemplateId(templateId:Number):MapCityNodeVO {
+		public function getCityNodeInfoByTemplateId(templateId:Number):CityNodeVO {
 			var i:int = appData.mapCityNodes.length;
 			while(--i > -1) {
 				if(appData.mapCityNodes[i].templateId == templateId && templateId != 0) {
@@ -514,7 +518,7 @@ package application.proxy
 		public function getWriteMapNodes():Array {
 			var i:int = 0
 			var len:int = appData.mapCityNodes.length;
-			var mapCityNode:MapCityNodeVO;
+			var mapCityNode:CityNodeVO;
 			var mapNodeDatas:Array = [];
 			for(i = 0; i != len; i++) {
 				mapCityNode = appData.mapCityNodes[i];
@@ -554,7 +558,7 @@ package application.proxy
 		public function removeCityInfoById(cityId:int):void {
 			var i:int = 0;
 			var len:int = appData.mapCityNodes.length;
-			var crtCityNode:MapCityNodeVO;
+			var crtCityNode:CityNodeVO;
 			for(i = 0; i < len;) {
 				crtCityNode = appData.mapCityNodes[i];
 				if(crtCityNode.templateId == cityId) {

@@ -11,7 +11,7 @@ package application.appui
 	import spark.components.Alert;
 	
 	import application.AppReg;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.utils.appData;
@@ -76,7 +76,7 @@ package application.appui
 			var cityName:String = ui.txtName.text;
 			var cityTemplateId:Number = Number(ui.txtCityTempId.text);
 			
-			var existMapNodeInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(cityTemplateId);
+			var existMapNodeInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(cityTemplateId);
 			if(existMapNodeInfo && existMapNodeInfo != chrooseCityComp.cityNodeInfo) {
 				Alert.show("此城市id已经被其他城市占用了，请换一个id");
 			} else {
@@ -144,8 +144,8 @@ import spark.components.Alert;
 import application.AppReg;
 import application.appui.CityPropertieController;
 import application.appui.CityPropertiePanel;
-import application.appui.itemRenderer.RoadEditItem;
-import application.db.MapCityNodeVO;
+import application.appui.itemRenderer.RoadEditItemRenderer;
+import application.db.CityNodeVO;
 import application.mapEditor.comps.MapCityNodeComp;
 import application.mapEditor.ui.MapEditorPanelConstroller;
 import application.utils.appDataProxy;
@@ -161,11 +161,11 @@ class RoadEditor {
 	private var mapEdit:MapEditorPanelConstroller;
 	private var curCityComp:MapCityNodeComp;
 	
-	private var roadComps:Vector.<RoadEditItem>;
+	private var roadComps:Vector.<RoadEditItemRenderer>;
 	
 	public function RoadEditor(mapEditor:MapEditorPanelConstroller):void {
 		mapEdit = mapEditor;
-		roadComps = new Vector.<RoadEditItem>();
+		roadComps = new Vector.<RoadEditItemRenderer>();
 	}
 	
 	public function setCurCity(cityComp:MapCityNodeComp):void {
@@ -187,7 +187,7 @@ class RoadEditor {
 			var toCityids:Array = curCityComp.cityNodeInfo.toCityIds;
 			var i:int = toCityids.length;
 			while(--i > -1) {
-				var roadEditorItem:RoadEditItem = new RoadEditItem();
+				var roadEditorItem:RoadEditItemRenderer = new RoadEditItemRenderer();
 				roadEditorItem.setCityId(toCityids[i]);
 				propertiesUI.roadListContent.addElement(roadEditorItem);
 				roadComps.push(roadEditorItem);
@@ -197,7 +197,7 @@ class RoadEditor {
 	
 	public function clearRoad():void {
 		var i:int = roadComps.length;
-		var roadEdit:RoadEditItem;
+		var roadEdit:RoadEditItemRenderer;
 		while(--i > -1) {
 			roadEdit = roadComps[i];
 			if(roadEdit.parent) {
@@ -205,7 +205,7 @@ class RoadEditor {
 				roadEdit.dispose();
 			}
 		}
-		roadComps = new Vector.<RoadEditItem>();
+		roadComps = new Vector.<RoadEditItemRenderer>();
 	}
 	
 	/**
@@ -213,7 +213,7 @@ class RoadEditor {
 	 */	
 	public function addRoad():void {
 		if(curCityComp) {
-			var roadEditorItem:RoadEditItem = new RoadEditItem();
+			var roadEditorItem:RoadEditItemRenderer = new RoadEditItemRenderer();
 			propertiesUI.roadListContent.addElement(roadEditorItem);
 			roadComps.push(roadEditorItem);
 		}
@@ -223,7 +223,7 @@ class RoadEditor {
 	 * 删除一条道路 
 	 * @param roadComp
 	 */	
-	public function removeRoad(roadComp:RoadEditItem):void {
+	public function removeRoad(roadComp:RoadEditItemRenderer):void {
 		var existIndex:int = roadComps.indexOf(roadComp);
 		if(existIndex > -1) {
 			var toCityId:int = -1;
@@ -236,8 +236,8 @@ class RoadEditor {
 			}
 			
 			if(toCityId > 0) {
-				var curCityInfo:MapCityNodeVO = curCityComp.cityNodeInfo;
-				var toCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);
+				var curCityInfo:CityNodeVO = curCityComp.cityNodeInfo;
+				var toCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);
 				var curCityId:int = curCityInfo.templateId;
 				
 				//删除正向道路

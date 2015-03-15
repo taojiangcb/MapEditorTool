@@ -11,7 +11,7 @@ package application.appui
 	import mx.events.FlexEvent;
 	
 	import application.AppReg;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
@@ -41,8 +41,8 @@ package application.appui
 			var title:String = "fromId				toId\n"
 			var lineFormat:String = "{0}:({1})		{2}:({3})\n";
 			var i:int = appData.mapCityNodes.length;
-			var mapCityNode:MapCityNodeVO;
-			var toCityNode:MapCityNodeVO;
+			var mapCityNode:CityNodeVO;
+			var toCityNode:CityNodeVO;
 			var outputContent:String = title;
 			while(--i > -1) {
 				mapCityNode = appData.mapCityNodes[i];
@@ -77,8 +77,8 @@ package application.appui
 			var rows:int = 1;
 			var columns:int = 0;
 			var iLen:int = appData.mapCityNodes.length;
-			var mapCityNode:MapCityNodeVO;
-			var toCityNode:MapCityNodeVO;
+			var mapCityNode:CityNodeVO;
+			var toCityNode:CityNodeVO;
 			
 			var i:int = 0;
 			for(i; i != iLen; i++) {

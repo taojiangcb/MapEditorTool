@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" implements="gframeWork.IDisposable"
 		  xmlns:s="library://ns.adobe.com/flex/spark" verticalAlign="middle"
-		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="30">
+		  xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="hgroup1_creationCompleteHandler(event)"
+		  width="100%" height="30">
 	<s:Label text="toId:"/>
 	<s:TextInput id="txtToCity" width="50"/>
 	<s:Button id="btnBind" label="绑定" width="45" click="btnBind_clickHandler(event)"/>
 	<s:Button id="btnDel" label="删除" width="45" click="btnDel_clickHandler(event)"/>
-	
+	<s:CheckBox id="chkLock" label="编辑" click="chkLock_clickHandler(event)"/>
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import spark.components.Alert;
 			
+			import application.AppGlobal;
 			import application.AppReg;
 			import application.ApplicationMediator;
 			import application.appui.CityPropertieController;
 			import application.appui.CityPropertiePanel;
-			import application.db.MapCityNodeVO;
+			import application.db.CityNodeRoadVO;
+			import application.db.CityNodeVO;
+			import application.events.SelectRoadEvent;
 			import application.mapEditor.comps.MapCityNodeComp;
+			import application.utils.appData;
 			import application.utils.appDataProxy;
-			
 			import gframeWork.uiController.UserInterfaceManager;
-			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
-			/*下个节点城市Id*/
 			private var $toCityId:int = 0;
+			
+			//道路信息
+			private var roadInfo:CityNodeRoadVO;
 			
 			protected override function commitProperties():void {
 				super.commitProperties();
@@ -36,22 +43,21 @@
 			
 			protected function btnBind_clickHandler(event:MouseEvent):void {
 				if(cityPropertie.chrooseCityComp) {
-					var curCityInfo:MapCityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
+					var curCityInfo:CityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
 					
 					var curCityId:int = curCityInfo.templateId;
 					var newCityId:int = int(txtToCity.text);
 					//没有发生改变
 					if(newCityId == $toCityId) return;
-					
 					if(newCityId == curCityId) {
 						Alert.show("道路不能绑定当前相同的城市");
 						return;
 					}
 					
 					//当前的反向的城市
-					var oldTargetCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId($toCityId);
+					var oldTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId($toCityId);
 					//要绑定的反向的城市
-					var newTargetCityInfo:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);
+					var newTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);
 					var existIndex:int = 0;
 					
 					if(!newTargetCityInfo) {
@@ -95,13 +101,11 @@
 			protected function btnDel_clickHandler(event:MouseEvent):void {
 				// TODO Auto-generated method stub
 				cityPropertie.roadEditor.removeRoad(this);
-				
 				Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
-				
 			}
 			
 			public function dispose():void {
-				
+				AppGlobal.GLOBAL_DISPATCH.removeEventListener(SelectRoadEvent.CHROOSE_ROAD,chrooseRoadHandler);
 			}
 			
 			public function setCityId(val:int):void {
@@ -114,6 +118,22 @@
 				return $toCityId;
 			}
 			
+			protected function chkLock_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				AppGlobal.GLOBAL_DISPATCH.addEventListener(SelectRoadEvent.CHROOSE_ROAD,chrooseRoadHandler,false,0,true);
+			}
+			
+			private function chrooseRoadHandler(event:SelectRoadEvent):void {
+				var selectedId:int = appData.EDIT_ROAD_ID;
+			}
+			
 			private function get cityPropertie():CityPropertieController {
 				return UserInterfaceManager.getUIByID(AppReg.CITY_EDIT_PROPERTIES) as CityPropertieController;
 			}
@@ -121,6 +141,8 @@
 			private function get propertiesUI():CityPropertiePanel {
 				return cityPropertie.ui;
 			}
+			
+			
 			
 		]]>
 	</fx:Script>

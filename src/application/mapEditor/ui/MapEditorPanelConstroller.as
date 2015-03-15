@@ -7,13 +7,12 @@ package application.mapEditor.ui
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import mx.core.Application;
 	import mx.core.FlexGlobals;
 	
 	import application.AppReg;
 	import application.appui.CityPropertieController;
 	import application.db.CityNodeTempVO;
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
@@ -65,7 +64,7 @@ package application.mapEditor.ui
 			
 			var len:int = appData.mapCityNodes.length;
 			while(--len > -1) {
-				var mapCityInfo:MapCityNodeVO = appData.mapCityNodes[len];
+				var mapCityInfo:CityNodeVO = appData.mapCityNodes[len];
 				var city:MapCityNodeComp = createMapNode(mapCityInfo);
 				mapCitys.push(city);
 			}
@@ -84,7 +83,7 @@ package application.mapEditor.ui
 			ui.mapFloor.globalToLocal(event.hitPoint,localPt);
 			if(ui.mapFloor.hitTest(localPt)) {
 				//添加cityInfo
-				var cityInfo:MapCityNodeVO = new MapCityNodeVO();
+				var cityInfo:CityNodeVO = new CityNodeVO();
 				cityInfo.textureName = CityNodeTempVO(event.itemData).textureName;
 				cityInfo.worldX = localPt.x - event.offPoint.x;
 				cityInfo.worldY = localPt.y - event.offPoint.y;
@@ -102,7 +101,7 @@ package application.mapEditor.ui
 		 * @param mapNodeInfo
 		 * @return 
 		 */		
-		public function createMapNode(mapNodeInfo:MapCityNodeVO):MapCityNodeComp {
+		public function createMapNode(mapNodeInfo:CityNodeVO):MapCityNodeComp {
 			var city:MapCityNodeComp = new MapCityNodeComp(mapNodeInfo);
 			ui.citySpace.addChild(city);
 			city.x = Math.round(mapNodeInfo.worldX);
