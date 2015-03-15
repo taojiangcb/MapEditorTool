@@ -9,8 +9,13 @@ package application.mapEditor.comps
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
+<<<<<<< HEAD
 	import application.db.CityNodeTempVO;
 	import application.db.CityNodeVO;
+=======
+	import application.db.MapCityNodeTempVO;
+	import application.db.MapCityNodeVO;
+>>>>>>> origin/master
 	import application.mapEditor.ui.DragCityGestures;
 	import application.mapEditor.ui.MapEditorPanel;
 	import application.utils.appData;
@@ -42,6 +47,7 @@ package application.mapEditor.comps
 		/*城市的图片，在MapCitySpaceComp中添加到显示层，添加到同一个QuadBatch*/
 		public var ctImage:Image;						//城市图片
 		private var free:MovieClip;					//点火状态
+		private var flagImg:Image;						//旗子
 		private var txtName:TextField;					//城市名称
 		private var txtId:TextField;					//模板Id显示
 		
@@ -71,7 +77,10 @@ package application.mapEditor.comps
 			super.createCompleteHandler(event);
 			var imageTexture:Texture = appData.textureManager.getTexture(mapNodeInfo.textureName);
 			ctImage = new Image(imageTexture);
+			ctImage.readjustSize();
 			addChild(ctImage);
+			
+			setSize(ctImage.width,ctImage.height);
 			
 			var textureFrames:Vector.<Texture> = appData.textureManager.getTextures("war_firee_");
 			if(textureFrames) {
@@ -79,6 +88,11 @@ package application.mapEditor.comps
 				Starling.juggler.add(free);
 			}
 			addChild(free);
+			free.visible = mapNodeInfo.visualFiree;
+			
+			flagImg = new Image(appData.textureManager.getTexture("FlagMap_han_9"));
+			addChild(flagImg);
+			flagImg.visible = mapNodeInfo.visualFlag;
 			
 			var cityName:String = StringUtil.trim(mapNodeInfo.cityName).length ? mapNodeInfo.cityName : "名称标签";
 			txtName = new TextField(150,20,cityName,BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
@@ -94,10 +108,6 @@ package application.mapEditor.comps
 			txtId.fontSize = 11;
 			txtId.text = mapNodeInfo.templateId.toString();
 			addChild(txtId);
-			
-			ctImage.readjustSize();
-			setSize(ctImage.width,ctImage.height);
-			free.visible = mapNodeInfo.visualFiree;
 			
 			dragGuester = new DragCityGestures(this,dragOverHandler);
 			doubleGuester = new DoubleTapGestures(this,doubleTabHandler);
@@ -139,6 +149,10 @@ package application.mapEditor.comps
 				if(txtName) {
 					txtName.x = nodeTemp.labelX;
 					txtName.y = nodeTemp.labelY;
+				}
+				if(flagImg) {
+					flagImg.x = nodeTemp.flagX;
+					flagImg.y = nodeTemp.flagY;
 				}
 			}
 		}
@@ -211,6 +225,16 @@ package application.mapEditor.comps
 		public function get roadVisible():Boolean {
 			return mapNodeInfo.visualRaod;
 		}
+		
+		public function set flagVisible(val:Boolean):void {
+			mapNodeInfo.visualFlag = val;
+			if(flagImg) flagImg.visible = val;
+		}
+		
+		public function get flagVisible():Boolean {
+			return mapNodeInfo.visualFlag;
+		}
+		
 		/**
 		 * 获取城市信息 
 		 * @return 
@@ -219,7 +243,7 @@ package application.mapEditor.comps
 			return mapNodeInfo;
 		}
 		
-		public function get nodeTemp():CityNodeTempVO {
+		public function get nodeTemp():MapCityNodeTempVO {
 			return appDataProxy.getCityNodeTempByName(mapNodeInfo.textureName);
 		}
 		

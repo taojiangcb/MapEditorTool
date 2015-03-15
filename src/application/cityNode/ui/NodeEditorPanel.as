@@ -6,6 +6,7 @@ package application.cityNode.ui
 	import application.utils.appData;
 	
 	import feathers.controls.Button;
+	import feathers.controls.Check;
 	import feathers.controls.Label;
 	
 	import source.feathers.themes.BaseMetalWorksMobileTheme;
@@ -33,6 +34,7 @@ package application.cityNode.ui
 		private var oldPoint:Point;
 		//==========================================
 		private var graphics:Graphics;
+		
 		private var shape:ShapeEx;
 		//关闭按钮
 		public var btnClose:Button;
@@ -42,8 +44,19 @@ package application.cityNode.ui
 		public var free:MovieClip;
 		//城市节点图片
 		public var nodeImage:Image;
+		//旗子
+		public var nationFlag:Image;
+		//按钮
+		public var menuImg:Image;
+		
 		//内容
 		public var contentSprite:Sprite;
+		
+		//===========================================================================
+		
+		public var checkFree:Check;			//火
+		public var	checkFlag:Check;			//旗子
+		public var checkMenu:Check;			//菜单
 		
 		public function NodeEditorPanel() {
 			super();
@@ -56,6 +69,18 @@ package application.cityNode.ui
 			btnClose.width = 30;
 			btnClose.label = "退出";
 			addChild(btnClose);
+			
+			checkFree =new Check();
+			checkFree.label = "火";
+			addChild(checkFree);
+			
+			checkFlag = new Check();
+			checkFlag.label = "旗子";
+			addChild(checkFlag);
+			
+			checkMenu = new Check();
+			checkMenu.label = "菜单";
+			addChild(checkMenu);
 			
 			contentSprite = new Sprite();
 			addChild(contentSprite);
@@ -72,8 +97,21 @@ package application.cityNode.ui
 			textures = atls.getTextures("war_firee_");
 			
 			free = new MovieClip(textures,24);
+			free.visible = false;
 			contentSprite.addChild(free);
 			Starling.juggler.add(free);
+			
+			nationFlag = new Image(appData.textureManager.getTexture("FlagMap_han_9"));
+			nationFlag.visible = false;
+			contentSprite.addChild(nationFlag);
+			
+			menuImg = new Image(appData.textureManager.getTexture("img_city_move"));
+			menuImg.readjustSize();
+			menuImg.pivotX = menuImg.width >> 1;
+			menuImg.pivotY = menuImg.height >> 1;
+			menuImg.scaleX = menuImg.scaleY = 0.3;
+			menuImg.visible = false;
+			contentSprite.addChild(menuImg);
 		}
 		
 		public function drawImage():void {
@@ -96,9 +134,9 @@ package application.cityNode.ui
 			}
 			
 			graphics.clear();
-			graphics.beginFill(0xF9F9F9,1);
+			graphics.beginFill(0x999999,1);
 			graphics.drawRect(0,0,sizeRect.width,sizeRect.height);
-			graphics.lineStyle(1,0,1);
+			graphics.lineStyle(1,0xFFFFFF,1);
 			graphics.moveTo(0,oldPt.y);
 			graphics.lineTo(sizeRect.width,oldPt.y);
 			graphics.moveTo(oldPt.x,0);

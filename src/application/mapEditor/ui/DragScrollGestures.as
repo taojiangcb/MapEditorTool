@@ -2,6 +2,8 @@ package application.mapEditor.ui
 {
 	import com.frameWork.gestures.Gestures;
 	
+	import flash.display.Stage;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -81,10 +83,13 @@ package application.mapEditor.ui
 		}
 		
 		public function advanceTime(time:Number):void {
+			
 			var vx:Number = dx * friction;
 			var vy:Number = dy * friction;
+			
 			_target.x += vx;
 			_target.y += vy;
+			
 			dx = vx;
 			dy = vy;
 			

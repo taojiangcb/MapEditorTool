@@ -34,6 +34,7 @@ package application.appui
 			ui.roadCheck.addEventListener(Event.CHANGE,roadCheckHandler,false,0,true);
 			ui.btnAddRoad.addEventListener(MouseEvent.CLICK,addRoadHandler,false,0,true);
 			ui.delCity.addEventListener(MouseEvent.CLICK,delCityHandler,false,0,true);
+			ui.flagCheck.addEventListener(MouseEvent.CLICK,flagCheckHandler,false,0,true);
 			commitData();
 			roadEditor = new RoadEditor(mapEditor);
 		}
@@ -49,6 +50,7 @@ package application.appui
 				ui.txtCityTempId.text = chrooseCityComp.templateId.toString();
 				ui.freeCheck.selected = chrooseCityComp.freeVisible;
 				ui.roadCheck.selected = chrooseCityComp.roadVisible;
+				ui.flagCheck.selected = chrooseCityComp.flagVisible;
 			} else {
 				ui.enabled = false;
 			}
@@ -92,6 +94,17 @@ package application.appui
 		private function freeChangelHandler(event:Event):void {
 			if(chrooseCityComp) {
 				chrooseCityComp.freeVisible = !chrooseCityComp.freeVisible; 
+			}
+		}
+		
+		/**
+		 * 预览旗子显示的位置 
+		 * @param event
+		 * 
+		 */		
+		private function flagCheckHandler(event:Event):void {
+			if(chrooseCityComp) {
+				chrooseCityComp.flagVisible = !chrooseCityComp.flagVisible; 
 			}
 		}
 		

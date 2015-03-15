@@ -22,6 +22,9 @@ package application.utils
 	 */	
 	public class ExportTexturesUtils
 	{
+		
+		public static const DEF_CITY_NODE:String = "default_city_node";
+		
 		public function ExportTexturesUtils() { }
 		/**
 		 * 导出地图的纹理集
@@ -50,7 +53,7 @@ package application.utils
 			var len:int = appData.cityNodeBitmapdatas.length;
 			//收集默认的城市节点纹理
 			if(chrooseDefaultNode) {
-				rectMap["default_city_node"] = new Rectangle(0,0,appData.defaultNodeBitdata.width,appData.defaultNodeBitdata.height);
+				rectMap[DEF_CITY_NODE] = new Rectangle(0,0,appData.defaultNodeBitdata.width,appData.defaultNodeBitdata.height);
 			}
 			//收集城市节点纹理
 			var tempBitdata:Object;
@@ -77,7 +80,7 @@ package application.utils
 				textureBitmapdata = new BitmapData(textureRect.width,textureRect.height);
 				//合并默认的城市节点纹理
 				if(chrooseDefaultNode) {
-					elementRect = rectMap["default_city_node"];
+					elementRect = rectMap[DEF_CITY_NODE];
 					elementBit = appData.defaultNodeBitdata;
 					tempRect.width = elementBit.width;
 					tempRect.height = elementBit.height;
@@ -85,7 +88,7 @@ package application.utils
 					offsetPoint.y = elementRect.y;
 					
 					childXml = <SubTexture />;
-					childXml.@name = "default_city_node";
+					childXml.@name = DEF_CITY_NODE;
 					childXml.@x = offsetPoint.x;
 					childXml.@y = offsetPoint.y;
 					childXml.@width = tempRect.width;

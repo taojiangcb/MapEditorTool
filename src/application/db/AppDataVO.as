@@ -37,7 +37,7 @@ package application.db
 		//当前上传给gpu和要导出的纹理集数据包
 		public var texturepack:Object = null;
 		//当前正在编辑的城市节点
-		public var editorCityNode:CityNodeTempVO;
+		public var editorCityNode:MapCityNodeTempVO;
 		//feathers ui 皮肤
 		public var skin:StyleNameFunctionTheme;
 		//文字的描边

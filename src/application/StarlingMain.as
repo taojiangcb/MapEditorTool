@@ -40,9 +40,10 @@ package application
 				internalInit();
 			};
 			
-			//Starling.multitouchEnabled = true;
+			Starling.multitouchEnabled = true;
 			//启动starling
 			sl = new Starling(StarlingMain,stage);
+			sl.simulateMultitouch = true;
 			sl.addEventListener(Event.ROOT_CREATED,stage3dComplete);
 			sl.start();
 			sl.showStats = true;
@@ -59,6 +60,8 @@ package application
 			appData.textureManager.enqueue("assets/default_city_node.png");
 			appData.textureManager.enqueue("assets/WarEffect.png");
 			appData.textureManager.enqueue("assets/WarEffect.xml");
+			appData.textureManager.enqueue("assets/FlagMap_han_9.png");
+			appData.textureManager.enqueue("assets/img_city_move.png");
 			appData.textureManager.loadQueue(function(ratio:Number):void{
 				if(ratio == 1) {
 					trace("load textures complete");
