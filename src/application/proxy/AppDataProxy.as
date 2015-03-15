@@ -24,6 +24,7 @@ package application.proxy
 	import application.db.MapCityNodeTempVO;
 	import application.db.MapCityNodeVO;
 	import application.utils.ExportTexturesUtils;
+	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
@@ -112,6 +113,10 @@ package application.proxy
 					nodeTemp.freeX = nodeObjTemps[i][2];
 					nodeTemp.freeY = nodeObjTemps[i][3];
 					nodeTemp.textureName = nodeObjTemps[i][4];
+					nodeTemp.flagX = nodeObjTemps[i][5];
+					nodeTemp.flagY = nodeObjTemps[i][6];
+					nodeTemp.menuX = nodeObjTemps[i][7];
+					nodeTemp.menuY = nodeObjTemps[i][8];
 					nodeTemps.push(nodeTemp);
 				}
 				appData.cityNodeTemps = nodeTemps;
@@ -505,7 +510,11 @@ package application.proxy
 					nodeTemp.labelY,
 					nodeTemp.freeX,
 					nodeTemp.freeY,
-					nodeTemp.textureName];
+					nodeTemp.textureName,
+					nodeTemp.flagX,
+					nodeTemp.flagY,
+					nodeTemp.menuX,
+					nodeTemp.menuY];
 				nodeTempList.push(nodeData);
 			}
 			return nodeTempList;

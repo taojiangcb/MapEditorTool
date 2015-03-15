@@ -35,6 +35,7 @@
 			<s:FormItem width="100%">
 				<s:CheckBox label="战火" id="freeCheck"/>
 				<s:CheckBox label="道路" id="roadCheck"/>
+				<s:CheckBox label="旗子" id="flagCheck"/>
 			</s:FormItem>
 		</s:Form>
 		<s:Button label="删除城市" id="delCity"/>

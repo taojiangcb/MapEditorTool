@@ -19,5 +19,8 @@ package application.db
 		public var visualFiree:Boolean = false;
 		//显示道路
 		public var visualRaod:Boolean = false;
+		//显示旗子
+		public var visualFlag:Boolean = false;
+		
 	}
 }

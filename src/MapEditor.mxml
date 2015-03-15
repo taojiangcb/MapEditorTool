@@ -13,9 +13,7 @@
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
 			import com.frameWork.utils.ssetTimeout;
-			
 			import flash.utils.setTimeout;
-			
 			import mx.events.FlexEvent;
 			
 			import application.AppReg;

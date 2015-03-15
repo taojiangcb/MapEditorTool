@@ -37,6 +37,10 @@ package application.cityNode.ui
 		private var labelMoveGesture:DragGestures;
 		//火拖拽
 		private var freeMoveGesture:DragGestures;
+		//旗子拖拽
+		private var flagMoveGesture:DragGestures;
+		//按钮
+		private var menuMoveGesture:DragGestures;
 		
 		public function NodeEditorPanelController() {
 			super();
@@ -52,11 +56,32 @@ package application.cityNode.ui
 			ui.setSize(uiSize.width,uiSize.height);
 			ui.drawBackground(uiSize,pt);
 			ui.drawImage();
+			
 			ui.btnClose.addEventListener(Event.TRIGGERED,closeClickHandler);
+			
+			ui.checkFlag.addEventListener(Event.CHANGE,visualFlagHandler);
+			ui.checkFree.addEventListener(Event.CHANGE,visualFreeHandler);
+			ui.checkMenu.addEventListener(Event.CHANGE,visualMenHandler);
+			
 			Starling.current.stage.addEventListener(Event.RESIZE,onResizeHandler);
 			layoutUpdate();
+			
 			labelMoveGesture = new DragGestures(ui.txtName,labelDragOver);
 			freeMoveGesture = new DragGestures(ui.free,freeDragOver);
+			flagMoveGesture = new DragGestures(ui.nationFlag,falgDragOver);
+			menuMoveGesture = new DragGestures(ui.menuImg,menuDragOver);
+		}
+		
+		private function visualFlagHandler(event:Event):void {
+			ui.nationFlag.visible = ui.checkFlag.isSelected;
+		}
+		
+		private function visualFreeHandler(event:Event):void {
+			ui.free.visible = ui.checkFree.isSelected;
+		}
+		
+		private function visualMenHandler(event:Event):void {
+			ui.menuImg.visible = ui.checkMenu.isSelected;
 		}
 		
 		//刷新显示
@@ -79,6 +104,16 @@ package application.cityNode.ui
 		private function freeDragOver():void {
 			appData.editorCityNode.freeX = Math.round(ui.free.x);
 			appData.editorCityNode.freeY = Math.round(ui.free.y);
+		}
+		
+		private function falgDragOver():void {
+			appData.editorCityNode.flagX = Math.round(ui.nationFlag.x);
+			appData.editorCityNode.flagY = Math.round(ui.nationFlag.y);
+		}
+		
+		private function menuDragOver():void {
+			appData.editorCityNode.menuX = Math.round(ui.menuImg.x);
+			appData.editorCityNode.menuY = Math.round(ui.menuImg.y);
 		}
 		
 		private function closeClickHandler(event:Event):void {
@@ -112,9 +147,24 @@ package application.cityNode.ui
 			ui.txtName.x = appData.editorCityNode.labelX;
 			ui.txtName.y = appData.editorCityNode.labelY;
 			
+			ui.nationFlag.x = appData.editorCityNode.flagX;
+			ui.nationFlag.y = appData.editorCityNode.flagY;
+			
+			ui.menuImg.x = appData.editorCityNode.menuX;
+			ui.menuImg.y = appData.editorCityNode.menuY;
+			
 			if(uiSize) {
 				ui.btnClose.x = uiSize.width - ui.btnClose.width - 5;
 				ui.btnClose.y = 5;
+				
+				ui.checkFlag.x = ui.btnClose.x - 30;
+				ui.checkFlag.y = ui.btnClose.y + 30;
+				
+				ui.checkFree.x = ui.btnClose.x - 30;
+				ui.checkFree.y = ui.checkFlag.y + 30;
+				
+				ui.checkMenu.x = ui.btnClose.x - 30;
+				ui.checkMenu.y = ui.checkFree.y + 30;
 			}
 		}
 		

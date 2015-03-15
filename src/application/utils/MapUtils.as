@@ -12,6 +12,9 @@ package application.utils
 			
 		}
 		
+		public static function replaceExtension(fileName:String):String {
+			return fileName.replace(/(\.png)+|(\.jpg)+/gi,"");
+		}
 		
 		private static const OFF_SET_PIEX:int = 8;
 		

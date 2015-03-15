@@ -3,21 +3,31 @@ package application.appui
 	import com.frameWork.uiComponent.Alert;
 	import com.frameWork.uiControls.UIMoudleManager;
 	
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	
 	import mx.events.FlexEvent;
+	import mx.graphics.codec.PNGEncoder;
 	
 	import application.AppReg;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.proxy.AppDataProxy;
 	import application.utils.ExportTexturesUtils;
+	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
 	import gframeWork.uiController.MainUIControllerBase;
 	import gframeWork.uiController.UserInterfaceManager;
+	
+	import starling.utils.formatString;
 	
 	/**
 	 * 主界面上的菜单处理栏 
@@ -83,6 +93,28 @@ package application.appui
 			var chrooseFolder:Function = function(event:Event):void {
 				fileSelect.removeEventListener(Event.SELECT,chrooseFolder);
 				if(ExportTexturesUtils.exportTextures(fileSelect.nativePath)) {
+					var mapsDirector:File = new File(fileSelect.nativePath + "\\maps");
+					if(!mapsDirector.exists) {
+						mapsDirector.createDirectory();
+					}
+					
+					var EW:int = appData.mapBit.width >> 1;
+					var EH:int = appData.mapBit.height >> 1;
+					for(var i:int = 0; i != 2; i++) {
+						for(var j:int = 0; j != 2; j++) {
+							var cellBit:BitmapData = new BitmapData(EW,EH);
+							cellBit.copyPixels(appData.mapBit,new Rectangle(j * EW,i * EH,EW,EH),new Point());
+							
+							var fileStream:FileStream = new FileStream();
+							var pngCode:PNGEncoder = new PNGEncoder();
+							var fileBytes:ByteArray = pngCode.encode(cellBit);
+							var file:File = new File(mapsDirector.nativePath + formatString("\\map_{0}_{1}.png",j,i));
+							fileStream.open(file,FileMode.WRITE);
+							fileStream.writeBytes(fileBytes);
+							fileStream.close();
+						}
+					}
+					
 					trace("export succeed");
 				}
 			};
