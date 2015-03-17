@@ -21,22 +21,25 @@
 			import application.appui.CityPropertiePanel;
 			import application.db.CityNodeRoadVO;
 			import application.db.CityNodeVO;
+			import application.db.MapCityNodeRoadVO;
 			import application.events.SelectRoadEvent;
 			import application.mapEditor.comps.MapCityNodeComp;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
+			
 			import gframeWork.uiController.UserInterfaceManager;
+			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
-			private var $toCityId:int = 0;
+			private var toCityId:int = 0;
 			
 			//道路信息
-			private var roadInfo:CityNodeRoadVO;
+			private var roadInfo:MapCityNodeRoadVO;
 			
 			protected override function commitProperties():void {
 				super.commitProperties();
-				if($toCityId > 0) {
-					txtToCity.text = $toCityId.toString();
+				if(toCityId > 0) {
+					txtToCity.text = toCityId.toString();
 					btnBind.label = "更新";
 				}
 			}
@@ -48,14 +51,14 @@
 					var curCityId:int = curCityInfo.templateId;
 					var newCityId:int = int(txtToCity.text);
 					//没有发生改变
-					if(newCityId == $toCityId) return;
+					if(newCityId == toCityId) return;
 					if(newCityId == curCityId) {
 						Alert.show("道路不能绑定当前相同的城市");
 						return;
 					}
 					
 					//当前的反向的城市
-					var oldTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId($toCityId);
+					var oldTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);
 					//要绑定的反向的城市
 					var newTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);
 					var existIndex:int = 0;
@@ -67,7 +70,7 @@
 					
 					existIndex = curCityInfo.toCityIds.indexOf(newCityId);
 					if(existIndex == -1) {
-						var oldIndex:int = curCityInfo.toCityIds.indexOf($toCityId);
+						var oldIndex:int = curCityInfo.toCityIds.indexOf(toCityId);
 						if(oldIndex == -1)	curCityInfo.toCityIds.push(newCityId);			//添加新的Id
 						else 				curCityInfo.toCityIds[oldIndex] = newCityId;	//修改Id	
 						setCityId(int(txtToCity.text));
@@ -109,19 +112,21 @@
 			}
 			
 			public function setCityId(val:int):void {
-				if($toCityId == val) return;
-				$toCityId = val;	
+				if(toCityId == val) return;
+				toCityId = val;	
 				invalidateProperties();
 			}
 			
 			public function getCityId():int {
-				return $toCityId;
+				return toCityId;
 			}
 			
-			protected function chkLock_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
+			public function setRoadInfo(val:MapCityNodeRoadVO):void {
 				
+			}
+			
+			protected function chkLock_clickHandler(event:MouseEvent):void{
+				// TODO Auto-generated method stub
 			}
 			
 			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void

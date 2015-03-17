@@ -3,7 +3,7 @@ package application.road
 	
 	import flash.utils.Dictionary;
 	
-	import application.db.MapCityNodeVO;
+	import application.db.CityNodeVO;
 	import application.db.MapCityNodeRoadVO;
 
 	/**
@@ -18,9 +18,9 @@ package application.road
 		 */		
 		private var cacheDict:Dictionary;
 		
-		public function PlanCourse(nodeList:Vector.<MapCityNodeVO>,originId:Number) {
+		public function PlanCourse(nodeList:Vector.<CityNodeVO>,originId:Number) {
 			cacheDict = new Dictionary();
-			var originNode:MapCityNodeVO;
+			var originNode:CityNodeVO;
 			var i:int = nodeList.length;
 			while(--i > -1) {
 				if (nodeList[i].templateId == originId) {
@@ -42,7 +42,7 @@ package application.road
 		 * 初始原点的距离
 		 * @param node
 		 */		
-		private function initializeWeight(node:MapCityNodeVO): void {
+		private function initializeWeight(node:CityNodeVO): void {
 			var roadList:Vector.<MapCityNodeRoadVO> = node.toRoads;
 			if(!roadList || roadList.length == 0) return;
 			var i:int = roadList.length;

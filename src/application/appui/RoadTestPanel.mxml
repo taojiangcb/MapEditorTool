@@ -5,10 +5,10 @@
 	
 	<s:Rect width="100%" height="100%">
 		<s:fill>
-			<s:SolidColor color="0xFFFFFF"/>
+			<mx:SolidColor color="0xFFFFFF"/>
 		</s:fill>
 		<s:stroke>
-			<s:SolidColorStroke color="0xFFFFFF" weight="1"/>
+			<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 		</s:stroke>
 	</s:Rect>
 	

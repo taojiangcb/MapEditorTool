@@ -4,8 +4,8 @@ package application.appui
 	
 	import mx.events.FlexEvent;
 	
+	import application.db.CityNodeVO;
 	import application.db.MapCityNodeRoadVO;
-	import application.db.MapCityNodeVO;
 	import application.road.PlanCourse;
 	import application.road.RoutePannelResult;
 	import application.road.RoutePanner;
@@ -31,7 +31,7 @@ package application.appui
 		private function searchHandler(event:MouseEvent):void {
 			assignRoad();
 			var i:int = appData.mapCityNodes.length;
-			var nodes:Vector.<MapCityNodeVO> = new Vector.<MapCityNodeVO>();
+			var nodes:Vector.<CityNodeVO> = new Vector.<CityNodeVO>();
 			while(--i > -1) {
 				nodes.push(appData.mapCityNodes[i]);
 			}
@@ -50,7 +50,7 @@ package application.appui
 		
 		private function assignRoad():void {
 			
-			var addRoadFunc:Function = function(node:MapCityNodeVO,road:MapCityNodeRoadVO):void {
+			var addRoadFunc:Function = function(node:CityNodeVO,road:MapCityNodeRoadVO):void {
 				var exist:Boolean = false
 				var len:int = node.toRoads.length;
 				while(--len > -1) {
@@ -61,7 +61,7 @@ package application.appui
 				if(!exist) node.toRoads.push(road);
 			}
 			
-			var mapNode:MapCityNodeVO;
+			var mapNode:CityNodeVO;
 			var mapRoad:MapCityNodeRoadVO;
 			var i:int = appData.mapCityNodes.length;
 			while(--i > -1) {
@@ -80,7 +80,7 @@ package application.appui
 					mapRoad.distance = CityRoadPanelController.defaultDisatnce;
 					addRoadFunc(mapNode,mapRoad);
 					
-					var toCityNode:MapCityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(mapRoad.toCityId);
+					var toCityNode:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(mapRoad.toCityId);
 					if(toCityNode) {
 						mapRoad = new MapCityNodeRoadVO();
 						mapRoad.fromCityId = mapNode.toCityIds[j];

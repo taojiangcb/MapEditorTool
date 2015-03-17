@@ -9,13 +9,8 @@ package application.mapEditor.comps
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
-<<<<<<< HEAD
-	import application.db.CityNodeTempVO;
 	import application.db.CityNodeVO;
-=======
 	import application.db.MapCityNodeTempVO;
-	import application.db.MapCityNodeVO;
->>>>>>> origin/master
 	import application.mapEditor.ui.DragCityGestures;
 	import application.mapEditor.ui.MapEditorPanel;
 	import application.utils.appData;

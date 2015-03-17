@@ -21,13 +21,8 @@ package application.proxy
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
-<<<<<<< HEAD
-	import application.db.CityNodeTempVO;
 	import application.db.CityNodeVO;
-=======
 	import application.db.MapCityNodeTempVO;
-	import application.db.MapCityNodeVO;
->>>>>>> origin/master
 	import application.utils.ExportTexturesUtils;
 	import application.utils.MapUtils;
 	import application.utils.appData;

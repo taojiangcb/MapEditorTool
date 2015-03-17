@@ -12,13 +12,8 @@ package application
 	
 	import application.appui.CityNodeLibaryPanelController;
 	import application.cityNode.ui.NodeEditorPanelController;
-<<<<<<< HEAD
-	import application.db.CityNodeTempVO;
 	import application.db.CityNodeVO;
-=======
 	import application.db.MapCityNodeTempVO;
-	import application.db.MapCityNodeVO;
->>>>>>> origin/master
 	import application.extendsCore.MediatorExpert;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;

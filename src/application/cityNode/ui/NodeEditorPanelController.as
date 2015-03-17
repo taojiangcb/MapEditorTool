@@ -178,7 +178,7 @@ package application.cityNode.ui
 		}
 		
 		private function get right():int {
-			return 200;
+			return 300;
 		}
 		
 		private function get bottom():int {

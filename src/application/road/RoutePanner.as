@@ -1,7 +1,7 @@
 package application.road
 {
+	import application.db.CityNodeVO;
 	import application.db.MapCityNodeRoadVO;
-	import application.db.MapCityNodeVO;
 
 	public class RoutePanner
 	{
@@ -14,10 +14,10 @@ package application.road
 		 * @param destId
 		 * @return 
 		 */		
-		public function planner(nodeList:Vector.<MapCityNodeVO>,originId:Number,destId:Number):RoutePannelResult {
+		public function planner(nodeList:Vector.<CityNodeVO>,originId:Number,destId:Number):RoutePannelResult {
 			if(originId == destId) return null;
 			var panCoures:PlanCourse = new PlanCourse(nodeList,originId);
-			var curNode:MapCityNodeVO = getMinWeightCity(panCoures,nodeList,originId);
+			var curNode:CityNodeVO = getMinWeightCity(panCoures,nodeList,originId);
 			if(curNode) {
 				while(curNode && curNode.templateId != destId) {
 					var curPath:PassedPath = panCoures.pathCache[curNode.templateId];
@@ -71,11 +71,11 @@ package application.road
 		 * @return 
 		 * 
 		 */		
-		public function getMinWeightCity(planCourse:PlanCourse,cityList:Vector.<MapCityNodeVO>, originId:Number):MapCityNodeVO {
+		public function getMinWeightCity(planCourse:PlanCourse,cityList:Vector.<CityNodeVO>, originId:Number):CityNodeVO {
 			var weight:Number = Number.MAX_VALUE;
-			var destNode:MapCityNodeVO = null;
+			var destNode:CityNodeVO = null;
 			var i:int =cityList.length;
-			var node:MapCityNodeVO;
+			var node:CityNodeVO;
 			while(--i > -1) {
 				node = cityList[i];
 				if(node.templateId == originId) continue;
