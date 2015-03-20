@@ -5,9 +5,7 @@ package application.db
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
 	import flash.utils.ByteArray;
-	
 	import feathers.themes.StyleNameFunctionTheme;
-	
 	import starling.utils.AssetManager;
 
 	public class AppDataVO
@@ -49,7 +47,9 @@ package application.db
 		//当前编辑的道路Id
 		public var EDIT_ROAD_ID:Number = 0;
 		//所有的道路节点
-		public var roads:Array = [];
+		public var roads:Vector.<MapCityNodeRoadVO> = new Vector.<MapCityNodeRoadVO>();
+		//道路上所有的节点信息
+		public var roadNodeMaps:Vector.<RoadNodeVO> = new Vector.<RoadNodeVO>();
 		
 		public function AppDataVO() {
 		}

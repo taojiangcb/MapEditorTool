@@ -19,7 +19,6 @@
 			import application.ApplicationMediator;
 			import application.appui.CityPropertieController;
 			import application.appui.CityPropertiePanel;
-			import application.db.CityNodeRoadVO;
 			import application.db.CityNodeVO;
 			import application.db.MapCityNodeRoadVO;
 			import application.events.SelectRoadEvent;
@@ -122,17 +121,18 @@
 			}
 			
 			public function setRoadInfo(val:MapCityNodeRoadVO):void {
+				roadInfo = val;
 				
 			}
 			
-			protected function chkLock_clickHandler(event:MouseEvent):void{
+			protected function chkLock_clickHandler(event:MouseEvent):void {
 				// TODO Auto-generated method stub
 			}
 			
-			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
-			{
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void{
 				// TODO Auto-generated method stub
 				AppGlobal.GLOBAL_DISPATCH.addEventListener(SelectRoadEvent.CHROOSE_ROAD,chrooseRoadHandler,false,0,true);
+				
 			}
 			
 			private function chrooseRoadHandler(event:SelectRoadEvent):void {
@@ -146,9 +146,6 @@
 			private function get propertiesUI():CityPropertiePanel {
 				return cityPropertie.ui;
 			}
-			
-			
-			
 		]]>
 	</fx:Script>
 </s:HGroup>

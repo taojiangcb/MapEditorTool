@@ -58,9 +58,7 @@ package application.appui
 		
 		private function roadCheckHandler(event:Event):void {
 			chrooseCityComp.roadVisible = ui.roadCheck.selected;
-			
 			if(appData.IS_DRAW_ALL_ROAD) return;		//如果已经显示全图路径了则此处不需要处理
-			
 			if(ui.roadCheck.selected)	mapEditor.smartDrawroad();
 			else						mapEditor.clearRoad();
 		}
@@ -149,7 +147,6 @@ package application.appui
 	}
 }
 import flash.events.MouseEvent;
-
 import mx.events.CloseEvent;
 
 import spark.components.Alert;
