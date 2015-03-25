@@ -247,12 +247,30 @@ package application.mapEditor.ui
 			ui.citySpace.roadGraphics.clear();
 		}
 		
+		/**
+		 * 当前选中的城市 
+		 * @return 
+		 */		
 		public function getChrroseCity():MapCityNodeComp {
 			return crtSelectCity;
 		}
 		
+		/**
+		 * 获取城市 
+		 * @param cityTemplateId
+		 * @return 
+		 */		
+		public function getCityComp(cityTemplateId:Number):MapCityNodeComp {
+			var len:int = mapCitys.length;
+			while(--len > -1) {
+				if(mapCitys[len].cityNodeInfo.templateId == cityTemplateId) {
+					return mapCitys[len];
+				}
+			}
+			return null;
+		}
+		
 		public override function dispose():void {
-			
 			if(ui.stage) {
 				ui.stage.removeEventListeners(Event.RESIZE);
 			}

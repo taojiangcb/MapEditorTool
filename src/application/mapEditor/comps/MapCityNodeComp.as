@@ -108,9 +108,10 @@ package application.mapEditor.comps
 			txtId.text = mapNodeInfo.templateId.toString();
 			addChild(txtId);
 			
-			dragGuester = new DragCityGestures(this,dragOverHandler);
 			var area:Rectangle = MapUtils.getMapMINP_rect();
+			dragGuester = new DragCityGestures(this,dragOverHandler);
 			dragGuester.setDragRectangle(new Rectangle(0,0,area.width,area.height),ctImage.width,ctImage.height);
+			
 			doubleGuester = new DoubleTapGestures(this,doubleTabHandler);
 			tapGuester = new TapGestures(this,tapGuesterHandler);
 			invalidateUpdateList();

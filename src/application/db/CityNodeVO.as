@@ -11,7 +11,7 @@ package application.db
 		public var worldY:int = 0;
 		 //道路列表 
 		public var toCityIds:Array = [];
-		//城市道路列表
+		//城市道路列表,在寻路测试和游戏地图数据初始化的时候用到
 		public var toRoads:Vector.<MapCityNodeRoadVO> = new Vector.<MapCityNodeRoadVO>();
 		//城市纹理图片名称
 		public var textureName:String;

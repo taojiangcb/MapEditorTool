@@ -20,6 +20,7 @@ package application
 	import application.mapEditor.ui.MapEditorPanel;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.proxy.AppDataProxy;
+	import application.proxy.RoadDataProxy;
 	import application.utils.appData;
 	
 	import gframeWork.uiController.UserInterfaceManager;
@@ -77,6 +78,7 @@ package application
 		
 		private function installDataProxy():void {
 			Facade.getInstance().registerProxy(new AppDataProxy(AppDataProxy.NAME));
+			Facade.getInstance().registerProxy(new RoadDataProxy(RoadDataProxy.NAME));
 		}
 		
 		private function installUIMoudle():void {
