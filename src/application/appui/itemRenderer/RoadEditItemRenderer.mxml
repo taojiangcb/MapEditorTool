@@ -94,9 +94,7 @@
 							newTargetCityInfo.toCityIds.push(curCityId);
 						}
 					}
-					
 					Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
-					
 				}
 			}
 			

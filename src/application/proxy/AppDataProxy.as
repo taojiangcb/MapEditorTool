@@ -219,7 +219,6 @@ package application.proxy
 		/**
 		 * 解析城市图片目录将节点图片转换成节点文件数据 
 		 * @param rootFile
-		 * 
 		 */		
 		private function ansyslizerCityDirector(rootFile:File):void {
 			var fileStream:FileStream;
@@ -248,14 +247,49 @@ package application.proxy
 		 * 刷新节点模板库 
 		 */		
 		public function refreshCityLibary():void {
-			appData.cityNodeBitmapdatas = [];
-			appData.cityNodeFiles = [];
-			appData.cityNodeTemps = [];
+			var chrooseDir:File = new File();
+			var chrooseHandler:Function = function(event:Event):void {
+				appData.cityNodeBitmapdatas = [];
+				appData.cityNodeFiles = [];
+				appData.cityNodeTemps = [];
+				appData.cityImagesUrl = chrooseDir.nativePath;
+				ansyslizerCityDirector(chrooseDir);
+				nowNodeLoadCount = 0;
+				loadNode(true);
+			}
 			
-			var nodesRoot:File = new File(appData.cityImagesUrl);
-			ansyslizerCityDirector(nodesRoot);
-			nowNodeLoadCount = 0;
-			loadNode(true);
+			chrooseDir.addEventListener(Event.SELECT,chrooseHandler);
+			chrooseDir.browseForDirectory("城市文件夹");
+		}
+		
+		/**
+		 * 更新地皮文件 
+		 * @param mapFile
+		 * 
+		 */		
+		public function updateMapFile(mapFile:File):void {
+			var fileStream:FileStream = new FileStream();
+			fileStream.open(mapFile,FileMode.READ);
+			
+			var mapFileStream:ByteArray = new ByteArray();
+			fileStream.readBytes(mapFileStream);
+			
+			appData.mapFileStream = mapFileStream
+			appData.cityImagesUrl = mapFile.nativePath;
+			
+			var mapLoaderFunc:Function = function(event:Event):void {
+				mapLoad.contentLoaderInfo.removeEventListener(Event.COMPLETE,mapLoaderFunc);
+				appData.mapBit = Bitmap(mapLoad.contentLoaderInfo.content).bitmapData;
+				
+				//刷新地图显示
+				sendNotification(ApplicationMediator.UPDATE_MAP_FILE_AFTER_VISUAL);
+			};
+			
+			var mapLoad:Loader = new Loader();
+			mapLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,mapLoaderFunc);
+			mapLoad.loadBytes(appData.mapFileStream);
+			
+			
 		}
 		
 		/**

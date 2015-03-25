@@ -3,6 +3,7 @@ package application
 	import com.gskinner.motion.GTween;
 	
 	import flash.display.Stage;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
 	import application.utils.ExportTexturesUtils;
@@ -35,19 +36,33 @@ package application
 		{
 			appBeginFunc = onCompleteHandler;
 			//starling成功启动了回调处理
-			var stage3dComplete:Function = function(event:Event):void {
+			var stage3dComplete:Function = function(event:starling.events.Event):void {
 				GTween.staticInit();	//启动GT
 				internalInit();
 			};
 			
-			Starling.multitouchEnabled = true;
 			//启动starling
 			sl = new Starling(StarlingMain,stage);
-			sl.simulateMultitouch = true;
-			sl.addEventListener(Event.ROOT_CREATED,stage3dComplete);
+			sl.addEventListener(starling.events.Event.ROOT_CREATED,stage3dComplete);
 			sl.start();
 			sl.showStats = true;
 			sl.showStatsAt(HAlign.CENTER,VAlign.BOTTOM);
+			
+			sl.addEventListener(flash.events.Event.DEACTIVATE, onDeactivate);
+			sl.addEventListener(flash.events.Event.ACTIVATE, onActivate);
+			
+		}
+		
+		private static function onDeactivate(event:flash.events.Event):void {
+			if (Starling.current) {
+				Starling.current.stop(true);
+			}
+		}
+		
+		private static function onActivate(event:flash.events.Event):void	{
+			if (Starling.current && Starling.current.isStarted == false) {
+				Starling.current.start();
+			}
 		}
 		
 		public function StarlingMain() {

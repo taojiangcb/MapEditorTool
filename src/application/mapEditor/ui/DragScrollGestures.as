@@ -40,6 +40,42 @@ package application.mapEditor.ui
 		
 		public function DragScrollGestures(target:DisplayObject, callBack:Function=null) {
 			super(target, callBack);
+			Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_WHEEL,nativeStage_mouseWheelHandler,false,0,true);
+		}
+		
+		/**
+		 * pc上的滚轮测试 
+		 * @param event
+		 */		
+		private function nativeStage_mouseWheelHandler(event:MouseEvent):void {
+			var scale:Number = _target.scaleX + event.delta * 0.01;
+			
+			var fromLocal:Point = _target.globalToLocal(new Point(event.localX,event.localY));
+			
+			_target.pivotX = fromLocal.x;
+			_target.pivotY = fromLocal.y;
+			
+			_target.scaleX = scale;
+			_target.scaleY = scale;
+			
+			var toLocal:Point = _target.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
+			var dx:int = toLocal.x - fromLocal.x;
+			var dy:int = toLocal.y - fromLocal.y;
+			
+			_target.x += dx * scale;
+			_target.y += dy * scale;
+			
+			checkTargetPosition();
+			
+			if(!isNaN(minScale)) {
+				if(_target.scaleX < minScale) _target.scaleX = minScale;
+				if(_target.scaleY < minScale) _target.scaleY = minScale;
+			}
+			
+			if(!isNaN(maxScale)) {
+				if(_target.scaleX > maxScale) _target.scaleX = maxScale;
+				if(_target.scaleY > maxScale) _target.scaleY = maxScale;
+			}
 		}
 		
 		public override function checkGestures(touch:Touch):void{

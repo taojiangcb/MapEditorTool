@@ -10,6 +10,7 @@
 	</fx:Declarations>
 	<s:VGroup width="100%" height="100%" gap="0">
 		<s:Button label="刷新库" id="btnRefreshLibyary" width="100%" height="25"/>
+		<s:Button label="刷新地图" id="btnRefreshMap" width="100%" height="25"/>
 		<s:List width="300" height="100%" id="nodeList" itemRenderer="application.appui.itemRenderer.CityNodeLibaryItemRenderer"/>
 	</s:VGroup>
 </s:Panel>

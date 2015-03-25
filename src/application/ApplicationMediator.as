@@ -62,6 +62,11 @@ package application
 		 */		
 		public static const DRAW_ROAD:String = "drawRoad";
 		
+		/**
+		 * 更新大地图文件后刷新显示
+		 */		
+		public static const UPDATE_MAP_FILE_AFTER_VISUAL = "updateMapFile";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -75,6 +80,14 @@ package application
 			putNotification(ADD_CITY_TO_MAP,addCityToMap);
 			putNotification(UPDATE_CITY_LIBY,updateCityLibyary);
 			putNotification(DRAW_ROAD,mapDrawRoad);
+			putNotification(UPDATE_MAP_FILE_AFTER_VISUAL,updateMapFileAfterVisual);
+		}
+		
+		private function updateMapFileAfterVisual(notification:INotification):void {
+			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			if(mapEditor) {
+				mapEditor.updateMapImage();
+			}
 		}
 		
 		/**

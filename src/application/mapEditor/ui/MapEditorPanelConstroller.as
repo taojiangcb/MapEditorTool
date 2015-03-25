@@ -14,6 +14,7 @@ package application.mapEditor.ui
 	import application.db.CityNodeVO;
 	import application.db.MapCityNodeTempVO;
 	import application.mapEditor.comps.MapCityNodeComp;
+	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
@@ -51,6 +52,38 @@ package application.mapEditor.ui
 			mapCitys = new Vector.<MapCityNodeComp>();
 		}
 		
+		/**
+		 * 更新图片文件 
+		 */		
+		public function updateMapImage():void {
+			DragScrollGestures.CAN_DRAG = false;
+			ui.uiContent.x = 0;
+			ui.uiContent.y = 0;
+			
+			ui.mapFloor.clearGrids();
+			ui.mapFloor.createGrids();
+			
+			var rect:Rectangle = MapUtils.getMapMINP_rect();
+			
+			var i:int = mapCitys.length;
+			while(--i > -1) {
+				if(mapCitys[i].x + mapCitys[i].ctImage.width > rect.width) {
+					mapCitys[i].x = rect.width - mapCitys[i].ctImage.width;
+				}
+				
+				if(mapCitys[i].y + mapCitys[i].ctImage.height > rect.height) {
+					mapCitys[i].y = rect.height - mapCitys[i].ctImage.height;
+				}
+			}
+			
+			if(mapMove) {
+				var area:Rectangle = MapUtils.getMapMINP_rect();
+				mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),area.width,area.height);
+			}
+			
+			DragScrollGestures.CAN_DRAG = true;
+		}
+		
 		protected override function uiCreateComplete(event:Event):void {
 			super.uiCreateComplete(event);
 			sizeRect = getSize();
@@ -58,8 +91,9 @@ package application.mapEditor.ui
 			ui.y = top;
 			ui.clipRect = new Rectangle(0,0,sizeRect.width,sizeRect.height);
 			ui.setSize(sizeRect.width,sizeRect.height);
+			var area:Rectangle = MapUtils.getMapMINP_rect();
 			mapMove = new DragScrollGestures(ui.uiContent,mapDragHandler);
-			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),ui.uiContent.width,ui.uiContent.height);
+			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),area.width,area.height);
 			AppDragMgr.addEventListener(AppDragEvent.DRAG,onDragHandler);
 			
 			var len:int = appData.mapCityNodes.length;
@@ -72,9 +106,10 @@ package application.mapEditor.ui
 		
 		public function resizeHandler():void {
 			sizeRect = getSize();
+			var area:Rectangle = MapUtils.getMapMINP_rect();
 			ui.setSize(sizeRect.width,sizeRect.height);
 			ui.clipRect = new Rectangle(0,0,sizeRect.width,sizeRect.height);
-			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),ui.uiContent.width,ui.uiContent.height);
+			mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),area.width,area.height);
 		}
 		
 		//拖拽
@@ -289,7 +324,7 @@ package application.mapEditor.ui
 		 * 获取当前编辑场中的大小 
 		 * @return 
 		 */		
-		private function getSize():Rectangle {
+		public function getSize():Rectangle {
 			var w:int = MapEditor(FlexGlobals.topLevelApplication).width - left - right;
 			var h:int = MapEditor(FlexGlobals.topLevelApplication).height - top - bottom;
 			return new Rectangle(left,top,w,h);

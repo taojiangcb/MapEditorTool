@@ -59,14 +59,11 @@
 				if(Starling.current) {
 					Starling.current.stage.stageWidth = width;
 					Starling.current.stage.stageHeight = height;
-					
 					Starling.current.showStatsAt(HAlign.CENTER,VAlign.BOTTOM);
-					
 					var viewPort:Rectangle = new Rectangle(0,0,width,height);
 					try {
 						Starling.current.viewPort = viewPort;
 					} catch(error:Event) {}
-					
 					if(mapEditor) mapEditor.resizeHandler();
 				}  
 			}

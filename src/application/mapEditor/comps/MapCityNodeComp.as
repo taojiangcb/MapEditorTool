@@ -5,6 +5,8 @@ package application.mapEditor.comps
 	import com.frameWork.gestures.TapGestures;
 	import com.frameWork.uiControls.UIMoudleManager;
 	
+	import flash.geom.Rectangle;
+	
 	import mx.utils.StringUtil;
 	
 	import application.AppReg;
@@ -13,6 +15,8 @@ package application.mapEditor.comps
 	import application.db.MapCityNodeTempVO;
 	import application.mapEditor.ui.DragCityGestures;
 	import application.mapEditor.ui.MapEditorPanel;
+	import application.mapEditor.ui.MapEditorPanelConstroller;
+	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
 	
@@ -105,6 +109,8 @@ package application.mapEditor.comps
 			addChild(txtId);
 			
 			dragGuester = new DragCityGestures(this,dragOverHandler);
+			var area:Rectangle = MapUtils.getMapMINP_rect();
+			dragGuester.setDragRectangle(new Rectangle(0,0,area.width,area.height),ctImage.width,ctImage.height);
 			doubleGuester = new DoubleTapGestures(this,doubleTabHandler);
 			tapGuester = new TapGestures(this,tapGuesterHandler);
 			invalidateUpdateList();
@@ -245,6 +251,11 @@ package application.mapEditor.comps
 		public function get cityQuadSapce():QuadBatch{
 			return MapEditorPanel(UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL).gui).cityQuadSapce;
 		}
+		
+		public function get mapEditor():MapEditorPanelConstroller {
+			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller 	
+		}
+		
 		//===========================================================================
 	}
 }

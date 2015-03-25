@@ -10,6 +10,7 @@ package application.mapEditor.comps
 	import starling.display.Sprite;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
+	import starling.utils.formatString;
 	
 	/**
 	 * 世界大地图的地皮 
@@ -27,7 +28,7 @@ package application.mapEditor.comps
 		/**
 		 * 创建地图 
 		 */		
-		private function createGrids():void {
+		public function createGrids():void {
 			var bitGrids:Array = MapUtils.getBitGrids();
 			var gridSize:Rectangle = MapUtils.getMapGridSize();
 			var i:int = 0;
@@ -46,14 +47,19 @@ package application.mapEditor.comps
 			}
 		}
 		
-		public override function dispose():void{
+		public function clearGrids():void {
 			if(gridImages) {
 				var len:int = gridImages.length;
 				while(--len > -1) {
 					gridImages[len].removeFromParent(true);
 					gridImages[len].texture.dispose();
 				}
+				gridImages = new Vector.<Image>();
 			}
+		}
+		
+		public override function dispose():void{
+			clearGrids();
 			super.dispose();
 		}
 	}
