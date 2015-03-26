@@ -21,6 +21,8 @@ package application
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.proxy.AppDataProxy;
 	import application.proxy.RoadDataProxy;
+	import application.roadPathTest.TestPointInLineController;
+	import application.roadPathTest.TestPointInLinePanel;
 	import application.utils.appData;
 	
 	import gframeWork.uiController.UserInterfaceManager;
@@ -70,6 +72,11 @@ package application
 		 */		
 		public static const ROAD_SEARCH:int = 303;
 		
+		/**
+		 * 测试路径 
+		 */		
+		public static const PATH_TEST:int = 304;
+		
 		public function AppReg() {
 			installDataProxy();
 			installUIMoudle(); 
@@ -88,6 +95,7 @@ package application
 			UserInterfaceManager.registerGUI(CITY_EDIT_PROPERTIES,CityPropertiePanel,CityPropertieController);
 			UserInterfaceManager.registerGUI(ROAD_OUTPUT,CityRoadPanel,CityRoadPanelController);
 			UserInterfaceManager.registerGUI(ROAD_SEARCH,RoadTestPanel,RoadTestPanelController);
+			UserInterfaceManager.registerGUI(PATH_TEST,TestPointInLinePanel,TestPointInLineController);
 			
 			UIMoudleManager.registerUIMoudle(EDITOR_CITY_NODE_PANEL,NodeEditorPanelController,NodeEditorPanel);
 			UIMoudleManager.registerUIMoudle(EDITOR_MAP_PANEL,MapEditorPanelConstroller,MapEditorPanel);

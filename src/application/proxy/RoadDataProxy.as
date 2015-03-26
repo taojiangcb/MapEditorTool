@@ -3,6 +3,7 @@ package application.proxy
 	import com.frameWork.uiControls.UIMoudleManager;
 	
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
 	import application.AppReg;
@@ -17,6 +18,22 @@ package application.proxy
 
 	public class RoadDataProxy extends Proxy
 	{
+		
+		private var leftEndPoint:RoadPathNodeVO;					//路径左节点
+		private var rightEndPoint:RoadPathNodeVO;					//路径右节点
+		
+		private var middlePoint:Point = new Point();				//左右节点的中间的位置,跟据半径距离计算得到的。
+		private var radiuDistance:Number = 0;						//左右节点的关径距离
+		
+		private var radian:Number = 0;								//左右节点的弧度								
+		private var theTestRadian:Number = 0;						//当前测试点的左节点的弧度
+		
+		private var leftPoint:Point = new Point();					//左节点的位置
+		private var rightPoint:Point = new Point();				//右节点的位置		
+		private var acceptRadian:Number = 5 * Math.PI / 180;		//可接受新节点的弧度范围 
+		private var theTestPoint:Point = new Point();				//当前测试的点
+		
+		
 		public function RoadDataProxy(proxyName:String=null, data:Object=null){
 			super(proxyName);
 		}
@@ -88,48 +105,91 @@ package application.proxy
 		 * @return 
 		 * 
 		 */		
-		public function addRoadNode(fromid:Number,toid:Number,x:int,y:int):RoadPathNodeVO {
+		public function addRoadNode(fromId:Number,toId:Number,x:int,y:int,sortIndex:int):RoadPathNodeVO {
+			var keys:Array = getRoadKeyAry(fromId,toId);
+			if(keys) {
+				//后结节点全都自增长1
+				updateNodeSort(fromId,toId,sortIndex,1);
+				
+				var roadNode:RoadPathNodeVO = new RoadPathNodeVO();
+				roadNode.fromCityId = keys[0];
+				roadNode.toCityId = keys[1];
+				roadNode.x = x;
+				roadNode.y = y;
+				roadNode.sortIndex = sortIndex;
+				appData.roadPathNodes.push(roadNode);
+				
+				return roadNode;
+			}
 			return null;
 		}
 		
 		/**
-		 * 测试一个点是否在一条路径上 
+		 * 测试一个点是否在一条路径上,并且返回当前节点所在的序列 
 		 * @param fromId
-		 * @param toid
+		 * @param toId
 		 * @param x
 		 * @param y
 		 * @return 
 		 * 
-		 */		
-		public function testPointInLine(fromId:Number,toId:Number,x:int,y:int):Boolean {
+		 */				
+		public function testPointInLine(fromId:Number,toId:Number,x:int,y:int):int {
 			var pathNodes:Array = getRoadNodes(fromId,toId);
 			var len:int = pathNodes.length;
 			var i:int = 0;
-			var node1:RoadPathNodeVO;
-			var node2:RoadPathNodeVO;
-			
-			var pt1:Point = new Point();
-			var pt2:Point = new Point();
-			var pt3:Point = new Point();
+			//当前被检测的点
+			var testPoint:Point = new Point(x,y);
 			
 			for(i = 0; i != len - 1; i++) {
 				if(i == len - 1) break;
 				
-				node1 = pathNodes[i];
-				node2 = pathNodes[i + 1];
+				leftEndPoint = pathNodes[i];
+				rightEndPoint = pathNodes[i + 1];
 				
-				pt1.x = node1.x;
-				pt1.y = node1.y;
+				leftPoint.x = leftEndPoint.x;
+				leftPoint.y = leftEndPoint.y;
 				
-				pt2.x = node2.x;
-				pt2.y = node2.y;
+				rightPoint.x = rightEndPoint.x;
+				rightPoint.y = rightEndPoint.y;
 				
-				var radius:int = Point.distance(pt1,pt2) >> 1;
-				var angle:Number = Math.atan2(pt2.y - pt1.y, pt2.x - pt1.x);
+				radiuDistance = Point.distance(leftPoint,rightPoint) >> 1;					//两个端点之间的半径
+				radian = Math.atan2(rightPoint.y - leftPoint.y, rightPoint.x - leftPoint.x);	//两个端点之间的弧度
 				
-				pt3.x = pt1.x + Math.cos(angle) * radius;
-				pt3.y = pt1.y + Math.sin(angle) * radius;
+				middlePoint.x = leftPoint.x + Math.cos(radian) * radiuDistance;
+				middlePoint.y = leftPoint.y + Math.sin(radian) * radiuDistance;
+				
+				theTestRadian = Math.atan2(testPoint.y - leftPoint.y,testPoint.x - leftPoint.x);
+				
+				var leftLimited:Point = new Point();
+				leftLimited.x = Math.min(leftPoint.x,rightPoint.x) - 15;
+				leftLimited.y = Math.min(leftPoint.y,rightPoint.y) - 15;
+				
+				var rightLimited:Point = new Point();
+				rightLimited.x = Math.max(leftPoint.x,rightPoint.x) + 15;
+				rightLimited.y = Math.max(leftPoint.y,rightPoint.y) + 15;
+				
+				
+				trace(theTestRadian,radian);
+				trace("===",theTestRadian + acceptRadian,theTestRadian + radian)
+//				if(((theTestRadian + acceptRadian <= theTestRadian + radian) || (theTestRadian - radian <= acceptRadian))
+//					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
+//					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
+//					return true;
+//				}
+				
+				if(Math.abs(theTestRadian - radian) <= acceptRadian
+					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
+					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
+					return rightEndPoint.sortIndex;
+				}
+				
+//				if(((theTestRadian - Math.PI * 2 - radian) >= -acceptRadian || (theTestRadian - radian) <= acceptRadian )
+//					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
+//					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
+//					return true;
+//				}
 			}
+			return 0;
 		}
 		
 		/**
@@ -190,14 +250,14 @@ package application.proxy
 			var keys:Array = getRoadKeyAry(fromId,toId);
 			if(keys) {
 				
-				var fromPoint:RoadPathNodeVO = new RoadPathNodeVO();
-				fromPoint.sortIndex = 0;
-				fromPoint.fromCityId = keys[0];
-				fromPoint.toCityId = keys[1];
-				var fromCity:MapCityNodeComp = mapEditor.getCityComp(fromId);
-				fromPoint.x = fromCity.x + fromCity.width / 2;
-				fromPoint.y = fromCity.y + fromCity.height / 2;
-				res.push(fromPoint)
+//				var fromPoint:RoadPathNodeVO = new RoadPathNodeVO();
+//				fromPoint.sortIndex = 0;
+//				fromPoint.fromCityId = keys[0];
+//				fromPoint.toCityId = keys[1];
+//				var fromCity:MapCityNodeComp = mapEditor.getCityComp(fromId);
+//				fromPoint.x = fromCity.x + fromCity.width / 2;
+//				fromPoint.y = fromCity.y + fromCity.height / 2;
+//				res.push(fromPoint)
 				
 				var i:int = appData.roadPathNodes.length;
 				while(--i > -1) {
@@ -206,14 +266,14 @@ package application.proxy
 					}
 				}
 				
-				var toPoint:RoadPathNodeVO = new RoadPathNodeVO();
-				toPoint.fromCityId = keys[0];
-				toPoint.toCityId = keys[1];
-				toPoint.sortIndex = res.length;
-				var toCity:MapCityNodeComp = mapEditor.getCityComp(toId);
-				toPoint.x = toCity.x + toCity.width / 2;
-				toPoint.y = toCity.y + toCity.height / 2;
-				res.push(toPoint);
+//				var toPoint:RoadPathNodeVO = new RoadPathNodeVO();
+//				toPoint.fromCityId = keys[0];
+//				toPoint.toCityId = keys[1];
+//				toPoint.sortIndex = res.length;
+//				var toCity:MapCityNodeComp = mapEditor.getCityComp(toId);
+//				toPoint.x = toCity.x + toCity.width / 2;
+//				toPoint.y = toCity.y + toCity.height / 2;
+//				res.push(toPoint);
 				
 				if(isReverseRoad(fromId,toId)== 1)	res.sortOn("sortIndex",Array.NUMERIC);							//正序排列路径节点		
 				else 								res.sortOn("sortIndex",Array.DESCENDING | Array.NUMERIC);		//反向路径倒序排序路径节点
