@@ -15,9 +15,12 @@ package application.mapEditor.ui
 		}
 		
 		public override function checkGestures(touch:Touch):void{
+			if(DragScrollGestures.ADD_PATH_JOIN) return;
+			if(DragScrollGestures.CAN_DRAG) return;
+			if(DragScrollGestures.DEL_PATH_JOIN) return;
+			
 			if(touch.phase == TouchPhase.BEGAN){
 				_downPoint = touch.getLocation(_target.stage);
-				DragScrollGestures.CAN_DRAG = false;
 			}else if(touch.phase == TouchPhase.MOVED){
 				var movePoint:Point = touch.getLocation(_target.stage);
 				_target.x += movePoint.x - _downPoint.x;
@@ -29,7 +32,6 @@ package application.mapEditor.ui
 			}else if(touch.phase == TouchPhase.ENDED){
 				_downPoint = null;
 				_isDrag = false;
-				DragScrollGestures.CAN_DRAG = true;
 			}
 		}
 	}

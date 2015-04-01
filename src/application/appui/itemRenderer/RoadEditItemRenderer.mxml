@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" implements="gframeWork.IDisposable"
-		  xmlns:s="library://ns.adobe.com/flex/spark" verticalAlign="middle"
-		  xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="hgroup1_creationCompleteHandler(event)"
-		  width="100%" height="30">
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%" height="30" creationComplete="hgroup1_creationCompleteHandler(event)"
+		  implements="gframeWork.IDisposable" verticalAlign="middle">
 	<s:Label text="toId:"/>
-	<s:TextInput id="txtToCity" width="50"/>
-	<s:Button id="btnBind" label="绑定" width="45" click="btnBind_clickHandler(event)"/>
-	<s:Button id="btnDel" label="删除" width="45" click="btnDel_clickHandler(event)"/>
-	<s:CheckBox id="chkLock" label="编辑" click="chkLock_clickHandler(event)"/>
+	<s:TextInput id="txtToCity" width="50" restrict="[0-9]"/>
+	<s:Button id="btnBind" width="45" label="绑定" click="btnBind_clickHandler(event)" focusEnabled="false"/>
+	<s:Button id="btnDel" width="45" label="删除" click="btnDel_clickHandler(event)" focusEnabled="false"/>
+	<s:CheckBox id="chkLock" label="选定" click="chkLock_clickHandler(event)" focusEnabled="false"/>
 	<fx:Script>
 		<![CDATA[
+			import com.frameWork.uiControls.UIMoudleManager;
+			
 			import mx.events.FlexEvent;
 			
 			import spark.components.Alert;
@@ -23,17 +26,16 @@
 			import application.db.MapCityNodeRoadVO;
 			import application.events.SelectRoadEvent;
 			import application.mapEditor.comps.MapCityNodeComp;
+			import application.mapEditor.ui.MapEditorPanelConstroller;
 			import application.utils.appData;
 			import application.utils.appDataProxy;
+			import application.utils.roadDataProxy;
 			
 			import gframeWork.uiController.UserInterfaceManager;
 			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
-			private var toCityId:int = 0;
-			
-			//道路信息
-			private var roadInfo:MapCityNodeRoadVO;
+			private var toCityId:Number = 0;
 			
 			protected override function commitProperties():void {
 				super.commitProperties();
@@ -47,8 +49,9 @@
 				if(cityPropertie.chrooseCityComp) {
 					var curCityInfo:CityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
 					
-					var curCityId:int = curCityInfo.templateId;
-					var newCityId:int = int(txtToCity.text);
+					var curCityId:Number = curCityInfo.templateId;													//当前选中的城市Id									
+					var newCityId:Number = Number(txtToCity.text);													//当前要绑定的城市Id
+					
 					//没有发生改变
 					if(newCityId == toCityId) return;
 					if(newCityId == curCityId) {
@@ -56,22 +59,29 @@
 						return;
 					}
 					
-					//当前的反向的城市
-					var oldTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);
-					//要绑定的反向的城市
-					var newTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);
+					var oldTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);			//当前绑定的城市
+					var newTargetCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(newCityId);			//要绑定的的城市
 					var existIndex:int = 0;
-					
 					if(!newTargetCityInfo) {
 						Alert.show("绑定的对向城市不存在");
 						return;
 					}
 					
-					existIndex = curCityInfo.toCityIds.indexOf(newCityId);
+					//验证城市是否已经被绑定过的
+					existIndex = curCityInfo.toCityIds.indexOf(newCityId);			
 					if(existIndex == -1) {
-						var oldIndex:int = curCityInfo.toCityIds.indexOf(toCityId);
-						if(oldIndex == -1)	curCityInfo.toCityIds.push(newCityId);			//添加新的Id
-						else 				curCityInfo.toCityIds[oldIndex] = newCityId;	//修改Id	
+						
+						//验证当前道是否已经被绑定
+						var oldIndex:int = 	curCityInfo.toCityIds.indexOf(toCityId);
+						if(oldIndex == -1)	{
+							curCityInfo.toCityIds.push(newCityId);									//添加新的Id
+							roadDataProxy.createBindRoad(curCityInfo.templateId,newCityId);			//添加此道路的节点数据
+						} else {
+							curCityInfo.toCityIds[oldIndex] = newCityId;							//修改Id
+							roadDataProxy.updateRoadNodes(curCityInfo.templateId,toCityId,curCityInfo.templateId,newCityId)
+						}
+						
+						//设定当前道路
 						setCityId(int(txtToCity.text));
 						btnBind.label = "更新";
 					} else {
@@ -84,6 +94,9 @@
 						existIndex = oldTargetCityInfo.toCityIds.indexOf(curCityId);
 						if(existIndex > -1) {
 							oldTargetCityInfo.toCityIds.splice(existIndex,1);
+							
+							//删除此道路的路径节点数据
+							mapEditor.ui.roadSpace.delRoad(oldTargetCityInfo.templateId,curCityId);
 						}
 					}
 					
@@ -118,23 +131,44 @@
 				return toCityId;
 			}
 			
-			public function setRoadInfo(val:MapCityNodeRoadVO):void {
-				roadInfo = val;
-				
-			}
-			
 			protected function chkLock_clickHandler(event:MouseEvent):void {
-				// TODO Auto-generated method stub
+				if(chkLock.selected) {
+					var curCityInfo:CityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
+					var fromId:Number = curCityInfo.templateId;
+					if(curCityInfo && toCityId > 0) {
+						appData.EDIT_ROAD_ID = roadDataProxy.getRoadKeyStr(fromId,toCityId);
+					}
+				} else {
+					appData.EDIT_ROAD_ID = "";
+				}
+				//刷新路径
+				Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+				//派发当前选中的事件
+				AppGlobal.GLOBAL_DISPATCH.dispatchEvent(new SelectRoadEvent(SelectRoadEvent.CHROOSE_ROAD));
 			}
 			
 			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void{
 				// TODO Auto-generated method stub
 				AppGlobal.GLOBAL_DISPATCH.addEventListener(SelectRoadEvent.CHROOSE_ROAD,chrooseRoadHandler,false,0,true);
-				
+				autoCheckSelect();
 			}
 			
 			private function chrooseRoadHandler(event:SelectRoadEvent):void {
-				var selectedId:int = appData.EDIT_ROAD_ID;
+				autoCheckSelect();
+			}
+			
+			private function autoCheckSelect():void {
+				var chrooseKey:String = appData.EDIT_ROAD_ID;
+				if(chrooseKey != roadPathkey || chrooseKey == "" || chrooseKey== null) {
+					chkLock.selected = false;
+				} else {
+					chkLock.selected = true; 
+				}
+			}
+			
+			private function get roadPathkey():String {
+				var curCityInfo:CityNodeVO = cityPropertie.chrooseCityComp.cityNodeInfo;
+				return curCityInfo && toCityId > 0 ? roadDataProxy.getRoadKeyStr(curCityInfo.templateId,toCityId) : "";
 			}
 			
 			private function get cityPropertie():CityPropertieController {
@@ -144,6 +178,11 @@
 			private function get propertiesUI():CityPropertiePanel {
 				return cityPropertie.ui;
 			}
+			
+			public function get mapEditor():MapEditorPanelConstroller {
+				return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
+			}
+			
 		]]>
 	</fx:Script>
 </s:HGroup>

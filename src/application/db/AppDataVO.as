@@ -47,11 +47,11 @@ package application.db
 		//编辑道路的自增长Id
 		public var GLOBAL_ROAD_GROWTH_ID:Number = 0;
 		//当前编辑的道路Id
-		public var EDIT_ROAD_ID:Number = 0;
+		public var EDIT_ROAD_ID:String = "";
 		/*所有道路的所引key由起点城市Id和终点城市Id组成 12,34*/
 		public var roadKey:Array = [];
 		//道路上所有的节点信息
-		public var roadPathNodes:Vector.<RoadPathNodeVO> = new Vector.<RoadPathNodeVO>();
+		public var roadPathNodes:Array = [];
 		
 		public function AppDataVO() {
 		}

@@ -14,15 +14,15 @@
 	</s:Rect>
 	
 	<s:HGroup width="100%" height="100%" id="btnBar" paddingTop="10" paddingLeft="10">
-		<s:Button label="新建" id="btnNew"/>
-		<s:Button label="打开" id="btnOpen"/>
-		<s:Button label="导出纹理集" id="btnExportTextures"/>
-		<s:Button label="保存" id="QuickSaveFile"/>
-		<s:Button label="另存为" id="saveFile"/>
-		<s:Button label="导出游戏数据" id="exportFile"/>
-		<s:Button label="导出道路数据" id="outputRoad"/>
-		<s:CheckBox label="显示所有道路" id="checkVisualAllRoad"/>
-		<s:Button label="测试城市寻路" id="btnTestRoad"/>
-		<s:Button label= "模拟路径节点" id="btnTestPathNode"/>
+		<s:Button label="新建" id="btnNew" focusEnabled="false" />
+		<s:Button label="打开" id="btnOpen" focusEnabled="false"/>
+		<s:Button label="导出纹理集" id="btnExportTextures" focusEnabled="false"/>
+		<s:Button label="保存" id="QuickSaveFile" focusEnabled="false"/>
+		<s:Button label="另存为" id="saveFile" focusEnabled="false"/>
+		<s:Button label="导出游戏数据" id="exportFile" focusEnabled="false"/>
+		<s:Button label="导出道路数据" id="outputRoad" focusEnabled="false"/>
+		<s:CheckBox label="显示所有道路" id="checkVisualAllRoad" focusEnabled="false"/>
+		<s:Button label="测试城市寻路" id="btnTestRoad" focusEnabled="false"/>
+		<s:Button label= "模拟路径节点" id="btnTestPathNode" focusEnabled="false"/>
 	</s:HGroup>
 </s:Group>

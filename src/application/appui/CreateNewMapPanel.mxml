@@ -21,7 +21,7 @@
 		<s:FormHeading width="100%" label="指定一张背景:"/>
 		<s:FormItem width="100%">
 			<s:HGroup width="100%" horizontalAlign="left">
-				<s:TextInput id="txtMapPath" prompt="背景地图地址" editable="false" text="E:\SLG_Game2\BZMapEditor\art\worldMap.jpg"/>
+				<s:TextInput id="txtMapPath" prompt="背景地图地址" editable="false" text="E:\SLG_Game2\BZMapEditor\art\worldMapV2.jpg"/>
 				<s:Button label="浏览" id="btnMapbrowser"/>
 			</s:HGroup>
 		</s:FormItem>

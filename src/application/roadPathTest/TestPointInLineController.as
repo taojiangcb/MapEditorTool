@@ -15,10 +15,9 @@ package application.roadPathTest
 	
 	public class TestPointInLineController extends WindowUIControllerBase
 	{
-		
 		private var cirs:Vector.<circle>;
-		
 		private var addCir:circle;
+		private var role:TestRoadRole;
 		
 		public function TestPointInLineController() {
 			super();
@@ -33,9 +32,24 @@ package application.roadPathTest
 			addCir.visible = false;
 			ui.addElement(addCir);
 			
+			ui.run.addEventListener(MouseEvent.CLICK,runHandler,false,0,true);
+			ui.close.addEventListener(MouseEvent.CLICK,closeHandler,false,0,true);
+			
 			ui.addEventListener(MouseEvent.MOUSE_MOVE,moveHandler,false,0,true);
 			ui.addEventListener(MouseEvent.CLICK,clickHandler,false,0,true);
 			ui.addEventListener(Event.ENTER_FRAME,enterFrameHandler,false,0,true);
+			
+			role = new TestRoadRole();
+			ui.addElement(role);
+		}
+		
+		private function runHandler(event:MouseEvent):void {
+			if(ui.resver.selected)	role.run(2,1,20,0);
+			else					role.run(1,2,20,0); 
+		}
+		
+		private function closeHandler(event:MouseEvent):void {
+			
 		}
 		
 		private function initNodes():void {
@@ -91,6 +105,8 @@ package application.roadPathTest
 				cirs.push(cir);
 				ui.abc.addChild(cir);
 			}
+			
+			roadDataProxy.isTest = true;
 		}
 		
 		private function moveHandler(event:MouseEvent):void {

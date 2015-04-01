@@ -26,7 +26,9 @@ package source.feathers.themes
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-
+	
+	import application.utils.appData;
+	
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
@@ -61,6 +63,9 @@ package source.feathers.themes
 			this.atlasTexture.root.onRestore = this.atlasTexture_onRestore;
 			atlasBitmapData.dispose();
 			this.atlas = new TextureAtlas(atlasTexture, XML(new ATLAS_XML()));
+			
+			appData.textureManager.addTextureAtlas("metalworks",atlas);
+			
 
 			super.initialize();
 		}

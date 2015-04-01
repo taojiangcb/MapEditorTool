@@ -8,5 +8,9 @@
 		</s:fill>
 	</s:Rect>
 	<mx:UIComponent id="abc"/>	
-	<s:Button id="行走"/>
+	<s:HGroup>
+		<s:CheckBox id="resver" label="反向"/>
+		<s:Button id="run" label="行走"/>
+		<s:Button id="close" label="关闭"/>
+	</s:HGroup>
 </s:Group>

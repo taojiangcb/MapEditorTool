@@ -16,7 +16,7 @@
 			<s:TextInput text="" id="txtName"/>
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<s:Button label="更新" id="btnUpdateCityNode"/>
+			<s:Button label="更新" id="btnUpdateCityNode" focusEnabled="false"/>
 		</s:HGroup>
 		<s:VGroup width="100%">
 			<s:Label text="路径:" fontWeight="bold"/>
@@ -27,17 +27,17 @@
 			</s:Line>
 			<s:VGroup id="roadListContent" width="100%"/>
 			<s:HGroup width="100%" horizontalAlign="center">
-				<s:Button id="btnAddRoad" label="添加"/>
+				<s:Button id="btnAddRoad" label="添加" focusEnabled="false"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" >
 			<s:FormHeading label="效果预览"/>
 			<s:FormItem width="100%">
-				<s:CheckBox label="战火" id="freeCheck"/>
-				<s:CheckBox label="道路" id="roadCheck"/>
-				<s:CheckBox label="旗子" id="flagCheck"/>
+				<s:CheckBox label="战火" id="freeCheck" focusEnabled="false"/>
+				<s:CheckBox label="道路" id="roadCheck" focusEnabled="false"/>
+				<s:CheckBox label="旗子" id="flagCheck" focusEnabled="false"/>
 			</s:FormItem>
 		</s:Form>
-		<s:Button label="删除城市" id="delCity"/>
+		<s:Button label="删除城市" id="delCity" focusEnabled="false"/>
 	</s:VGroup>
 </s:Panel>

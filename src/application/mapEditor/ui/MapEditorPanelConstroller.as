@@ -13,10 +13,12 @@ package application.mapEditor.ui
 	import application.appui.CityPropertieController;
 	import application.db.CityNodeVO;
 	import application.db.MapCityNodeTempVO;
+	import application.db.RoadPathNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
+	import application.utils.roadDataProxy;
 	
 	import gframeWork.appDrag.AppDragEvent;
 	import gframeWork.appDrag.AppDragMgr;
@@ -56,7 +58,6 @@ package application.mapEditor.ui
 		 * 更新图片文件 
 		 */		
 		public function updateMapImage():void {
-			DragScrollGestures.CAN_DRAG = false;
 			ui.uiContent.x = 0;
 			ui.uiContent.y = 0;
 			
@@ -64,7 +65,6 @@ package application.mapEditor.ui
 			ui.mapFloor.createGrids();
 			
 			var rect:Rectangle = MapUtils.getMapMINP_rect();
-			
 			var i:int = mapCitys.length;
 			while(--i > -1) {
 				if(mapCitys[i].x + mapCitys[i].ctImage.width > rect.width) {
@@ -80,8 +80,6 @@ package application.mapEditor.ui
 				var area:Rectangle = MapUtils.getMapMINP_rect();
 				mapMove.setDragRectangle(new Rectangle(0,0,sizeRect.width,sizeRect.height),area.width,area.height);
 			}
-			
-			DragScrollGestures.CAN_DRAG = true;
 		}
 		
 		protected override function uiCreateComplete(event:Event):void {
@@ -184,6 +182,7 @@ package application.mapEditor.ui
 		 */		
 		public function smartDrawroad():void {
 			visualAllRaod(appData.IS_DRAW_ALL_ROAD);
+			ui.roadSpace.smartVisualPoint();
 		}
 		
 		/**
@@ -197,15 +196,24 @@ package application.mapEditor.ui
 			var i:int = cityIds.length;
 			while(--i > -1) {
 				toCity = getCityCompById(cityIds[i]);
-				var moveX:int = crtSelectCity.x + crtSelectCity.ctImage.x + crtSelectCity.ctImage.width / 2;
-				var moveY:int = crtSelectCity.y + crtSelectCity.ctImage.y + crtSelectCity.ctImage.height / 2;
-				
-				var lineToX:int = toCity.cityNodeInfo.worldX + toCity.ctImage.x + toCity.ctImage.width / 2;
-				var lineToY:int = toCity.cityNodeInfo.worldY + toCity.ctImage.y + toCity.ctImage.height / 2;
-				
-				ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
-				ui.citySpace.roadGraphics.moveTo(moveX,moveY);
-				ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+				var roadJoinNodes:Array = roadDataProxy.getRoadNodes(crtSelectCity.cityNodeInfo.templateId,toCity.cityNodeInfo.templateId);
+				var roadKey:String = roadDataProxy.getRoadKeyStr(crtSelectCity.cityNodeInfo.templateId,toCity.cityNodeInfo.templateId);
+				if(roadJoinNodes && roadJoinNodes.length > 0) {
+					var n:int = 0;
+					if(roadKey == appData.EDIT_ROAD_ID) {
+						ui.citySpace.roadGraphics.lineStyle(5,0x00FFFF,1);
+					} else {
+						ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
+					}
+					var moveX:int = RoadPathNodeVO(roadJoinNodes[0]).x;
+					var moveY:int = RoadPathNodeVO(roadJoinNodes[0]).y;
+					ui.citySpace.roadGraphics.moveTo(moveX,moveY);
+					for(n = 1; n != roadJoinNodes.length; n++) {
+						var lineToX:int = RoadPathNodeVO(roadJoinNodes[n]).x;
+						var lineToY:int = RoadPathNodeVO(roadJoinNodes[n]).y
+						ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+					}
+				}
 			}
 		}
 		
@@ -223,10 +231,9 @@ package application.mapEditor.ui
 			for(i= 0; i != len;) {
 				itCityComp = null;
 				if(mapCitys[i] == delCity) {
-					itCityComp = mapCitys[i];
 					mapCitys.splice(i,1);
-					appDataProxy.removeCityInfoById(itCityComp.cityNodeInfo.templateId);
-					itCityComp.removeFromParent(true);
+					appDataProxy.removeCityInfoById(delCity.cityNodeInfo.templateId);
+					delCity.removeFromParent(true);
 					len = mapCitys.length;
 				} else {
 					i++;
@@ -319,16 +326,26 @@ package application.mapEditor.ui
 					var j:int = forCity.cityNodeInfo.toCityIds.length;
 					while(--j > -1) {
 						toCity = getCityCompById(forCity.cityNodeInfo.toCityIds[j]);
-						
-						var moveX:int = forCity.x + forCity.ctImage.x + forCity.ctImage.width / 2;
-						var moveY:int = forCity.y + forCity.ctImage.y + forCity.ctImage.height / 2;
-						
-						var lineToX:int = toCity.cityNodeInfo.worldX + toCity.ctImage.x + toCity.ctImage.width / 2;
-						var lineToY:int = toCity.cityNodeInfo.worldY + toCity.ctImage.y + toCity.ctImage.height / 2;
-						
-						ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
-						ui.citySpace.roadGraphics.moveTo(moveX,moveY);
-						ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+						var roadJoinNodes:Array = roadDataProxy.getRoadNodes(forCity.cityNodeInfo.templateId,toCity.cityNodeInfo.templateId);
+						var roadKey:String = roadDataProxy.getRoadKeyStr(forCity.cityNodeInfo.templateId,toCity.cityNodeInfo.templateId);
+						if(roadJoinNodes && roadJoinNodes.length > 0) {
+							var n:int = 0;
+							
+							var moveX:int = RoadPathNodeVO(roadJoinNodes[0]).x;
+							var moveY:int = RoadPathNodeVO(roadJoinNodes[0]).y;
+							
+							if(roadKey == appData.EDIT_ROAD_ID) {
+								ui.citySpace.roadGraphics.lineStyle(5,0x00FFFF,1);
+							} else {
+								ui.citySpace.roadGraphics.lineStyle(1,0xFFFFFF,1);
+							}
+							ui.citySpace.roadGraphics.moveTo(moveX,moveY);
+							for(n = 1; n != roadJoinNodes.length; n++) {
+								var lineToX:int = RoadPathNodeVO(roadJoinNodes[n]).x;
+								var lineToY:int = RoadPathNodeVO(roadJoinNodes[n]).y;
+								ui.citySpace.roadGraphics.lineTo(lineToX,lineToY);
+							}
+						}
 					}
 				}
 				

@@ -11,13 +11,17 @@ package application.appui
 	import spark.components.Alert;
 	
 	import application.AppReg;
+	import application.ApplicationMediator;
 	import application.db.CityNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
 	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
+	import application.utils.roadDataProxy;
 	
 	import gframeWork.uiController.MainUIControllerBase;
+	
+	import org.puremvc.as3.patterns.facade.Facade;
 	
 	public class CityPropertieController extends MainUIControllerBase
 	{
@@ -58,9 +62,7 @@ package application.appui
 		
 		private function roadCheckHandler(event:Event):void {
 			chrooseCityComp.roadVisible = ui.roadCheck.selected;
-			if(appData.IS_DRAW_ALL_ROAD) return;		//如果已经显示全图路径了则此处不需要处理
-			if(ui.roadCheck.selected)	mapEditor.smartDrawroad();
-			else						mapEditor.clearRoad();
+			Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
 		}
 		
 		/**
@@ -80,8 +82,14 @@ package application.appui
 			if(existMapNodeInfo && existMapNodeInfo != chrooseCityComp.cityNodeInfo) {
 				Alert.show("此城市id已经被其他城市占用了，请换一个id");
 			} else {
+				
+				//更新相关的路径和节点
+				roadDataProxy.updateCityId(chrooseCityComp.templateId,cityTemplateId)
+				
 				chrooseCityComp.cityName = ui.txtName.text;
-				chrooseCityComp.templateId = Number(ui.txtCityTempId.text);
+				chrooseCityComp.templateId = cityTemplateId;
+				
+				Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
 			}
 		}
 		
@@ -146,7 +154,10 @@ package application.appui
 		}
 	}
 }
+import com.frameWork.uiControls.UIMoudleManager;
+
 import flash.events.MouseEvent;
+
 import mx.events.CloseEvent;
 
 import spark.components.Alert;
@@ -159,6 +170,7 @@ import application.db.CityNodeVO;
 import application.mapEditor.comps.MapCityNodeComp;
 import application.mapEditor.ui.MapEditorPanelConstroller;
 import application.utils.appDataProxy;
+import application.utils.roadDataProxy;
 
 import gframeWork.uiController.UserInterfaceManager;
 
@@ -236,7 +248,7 @@ class RoadEditor {
 	public function removeRoad(roadComp:RoadEditItemRenderer):void {
 		var existIndex:int = roadComps.indexOf(roadComp);
 		if(existIndex > -1) {
-			var toCityId:int = -1;
+			var toCityId:Number = -1;
 			
 			//删除组件
 			if(roadComp.parent) {
@@ -248,7 +260,7 @@ class RoadEditor {
 			if(toCityId > 0) {
 				var curCityInfo:CityNodeVO = curCityComp.cityNodeInfo;
 				var toCityInfo:CityNodeVO = appDataProxy.getCityNodeInfoByTemplateId(toCityId);
-				var curCityId:int = curCityInfo.templateId;
+				var curCityId:Number = curCityInfo.templateId;
 				
 				//删除正向道路
 				var index:int = curCityInfo.toCityIds.indexOf(toCityId);
@@ -261,6 +273,9 @@ class RoadEditor {
 				if(index > -1) {
 					toCityInfo.toCityIds.splice(index,1);
 				}
+				
+				//删除当前的道路
+				mapEditor.ui.roadSpace.delRoad(curCityId,toCityId);
 			}
 		}
 	}
@@ -271,5 +286,9 @@ class RoadEditor {
 	
 	private function get propertiesUI():CityPropertiePanel {
 		return cityPropertie.ui;
+	}
+	
+	public function get mapEditor():MapEditorPanelConstroller {
+		return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 	}
 }

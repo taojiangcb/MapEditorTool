@@ -23,8 +23,6 @@ package application.utils
 	public class ExportTexturesUtils
 	{
 		
-		public static const DEF_CITY_NODE:String = "default_city_node";
-		
 		public function ExportTexturesUtils() { }
 		/**
 		 * 导出地图的纹理集
@@ -47,14 +45,14 @@ package application.utils
 		 * @param chrooseDefaultNode
 		 * @return 
 		 */		
-		public static function getTextureAtls(chrooseDefaultNode:Boolean):Object {
+		public static function getTextureAtls():Object {
 			var rectMap:Object = {};
 			var i:int = 0;
 			var len:int = appData.cityNodeBitmapdatas.length;
 			//收集默认的城市节点纹理
-			if(chrooseDefaultNode) {
-				rectMap[DEF_CITY_NODE] = new Rectangle(0,0,appData.defaultNodeBitdata.width,appData.defaultNodeBitdata.height);
-			}
+//			if(chrooseDefaultNode) {
+//				rectMap[DEF_CITY_NODE] = new Rectangle(0,0,appData.defaultNodeBitdata.width,appData.defaultNodeBitdata.height);
+//			}
 			//收集城市节点纹理
 			var tempBitdata:Object;
 			var textureName:String = "";
@@ -78,24 +76,24 @@ package application.utils
 			
 			if(textureRect) {
 				textureBitmapdata = new BitmapData(textureRect.width,textureRect.height);
-				//合并默认的城市节点纹理
-				if(chrooseDefaultNode) {
-					elementRect = rectMap[DEF_CITY_NODE];
-					elementBit = appData.defaultNodeBitdata;
-					tempRect.width = elementBit.width;
-					tempRect.height = elementBit.height;
-					offsetPoint.x = elementRect.x;
-					offsetPoint.y = elementRect.y;
-					
-					childXml = <SubTexture />;
-					childXml.@name = DEF_CITY_NODE;
-					childXml.@x = offsetPoint.x;
-					childXml.@y = offsetPoint.y;
-					childXml.@width = tempRect.width;
-					childXml.@height = tempRect.height;
-					xml.appendChild(childXml);
-					textureBitmapdata.copyPixels(elementBit,tempRect,offsetPoint);
-				}
+//				//合并默认的城市节点纹理
+//				if(chrooseDefaultNode) {
+//					elementRect = rectMap[DEF_CITY_NODE];
+//					elementBit = appData.defaultNodeBitdata;
+//					tempRect.width = elementBit.width;
+//					tempRect.height = elementBit.height;
+//					offsetPoint.x = elementRect.x;
+//					offsetPoint.y = elementRect.y;
+//					
+//					childXml = <SubTexture />;
+//					childXml.@name = DEF_CITY_NODE;
+//					childXml.@x = offsetPoint.x;
+//					childXml.@y = offsetPoint.y;
+//					childXml.@width = tempRect.width;
+//					childXml.@height = tempRect.height;
+//					xml.appendChild(childXml);
+//					textureBitmapdata.copyPixels(elementBit,tempRect,offsetPoint);
+//				}
 				for(i = 0; i != len; i++ ) {
 					tempBitdata = appData.cityNodeBitmapdatas[i];
 					textureName = tempBitdata[AppDataProxy.TEXTURE_NAME_FIELD];
@@ -197,6 +195,14 @@ package application.utils
 //				var pngAtls:String = '<?xml version="1.0" encoding="UTF-16"?>' + cityTextureXml.toXMLString();
 //				writeBytes.writeInt(pngAtls.length);
 //				writeBytes.writeUTFBytes(pngAtls);
+				
+				//写入路径的key列表
+				var roadKeys:Array = appData.roadKey;
+				writeBytes.writeObject(roadKeys);
+				
+				//写入路径的节点列表数据
+				var roadNodes:Array = appDataProxy.getRoadPathNodes();
+				writeBytes.writeObject(roadNodes);
 				
 				//压缩文件流
 				writeBytes.compress();

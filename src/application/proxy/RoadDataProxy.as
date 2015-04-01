@@ -33,23 +33,13 @@ package application.proxy
 		private var acceptRadian:Number = 5 * Math.PI / 180;		//可接受新节点的弧度范围 
 		private var theTestPoint:Point = new Point();				//当前测试的点
 		
+		private var checkGAP:int = 15; 							//检测的边距		
+		
+		public var isTest:Boolean = false;							//
+		
 		
 		public function RoadDataProxy(proxyName:String=null, data:Object=null){
 			super(proxyName);
-		}
-		
-		public function initRoadNodes(lines:Array):void {
-			appData.roadPathNodes = new Vector.<RoadPathNodeVO>();
-			var len:int = lines.length = 0;
-			while(--len > -1) {
-				var nodeDb:RoadPathNodeVO = new RoadPathNodeVO();
-				nodeDb.fromCityId = lines[len][0];
-				nodeDb.toCityId = lines[len][1];
-				nodeDb.sortIndex = lines[len][2];
-				nodeDb.x = lines[len][3];
-				nodeDb.y = lines[len][4];
-				appData.roadPathNodes.push(nodeDb);
-			}
 		}
 		
 		/**
@@ -66,6 +56,65 @@ package application.proxy
 		}
 		
 		/**
+		 * 更新所有节点的关联城市 
+		 * @param oldCityId
+		 * @param newCityId
+		 * 
+		 */		
+		public function updateCityId(oldCityId:Number,newCityId:Number):void {
+			var i:int = appData.roadKey.length;
+			while(--i > -1) {
+				var key:String = appData.roadKey[i];
+				var keys:Array = key.split(",");
+				
+				if(Number(keys[0]) == oldCityId) 		keys[0] = newCityId;
+				else if(Number(keys[1]) == oldCityId)	keys[1] = newCityId;
+				
+				appData.roadKey[i] = keys.join(",");
+			}
+			
+			i = appData.roadPathNodes.length;
+			while(--i > -1) {
+				var roadPathNodeInfo:RoadPathNodeVO = RoadPathNodeVO(appData.roadPathNodes[i]);
+				if(roadPathNodeInfo.fromCityId == oldCityId)		roadPathNodeInfo.fromCityId = newCityId;
+				else if(roadPathNodeInfo.toCityId == oldCityId)		roadPathNodeInfo.toCityId = newCityId;
+			}
+		}
+		
+		/**
+		 * 更新一条路径上所有的节点 
+		 * @param oldFromId
+		 * @param oldToId
+		 * @param fromId
+		 * @param toId
+		 * 
+		 */		
+		public function updateRoadNodes(oldFromId:Number,oldToId:Number,fromId:Number,toId:Number):void {
+			var oldRoadKey:Array = getRoadKeyAry(oldFromId,oldToId);
+			if(oldRoadKey) {
+				
+				var roadKeyStr:String = getRoadKeyStr(oldFromId,oldToId);
+				var existIndex:int = appData.roadKey.indexOf(roadKeyStr);
+				
+				var newRoadKey:Array = oldRoadKey.concat();
+				
+				if(oldRoadKey[0] == fromId)			newRoadKey[1] = toId;
+				else if(oldRoadKey[0] == toId)		newRoadKey[1] = fromId;
+				else if(oldRoadKey[1] == toId)		newRoadKey[0] = fromId;
+				else if(oldRoadKey[1] == fromId)	newRoadKey[0] = toId;
+				
+				var roadNodes:Array = getRoadNodes(oldFromId,oldToId);
+				var i:int = roadNodes.length;
+				while(--i > -1) {
+					RoadPathNodeVO(roadNodes[i]).fromCityId = newRoadKey[0];
+					RoadPathNodeVO(roadNodes[i]).toCityId = newRoadKey[1];
+				}
+				appData.roadKey[existIndex] = newRoadKey.join(",");
+			}
+		}
+		
+		
+		/**
 		 * 删除一整条路径啊 
 		 * @param fromId
 		 * @param toId
@@ -74,13 +123,16 @@ package application.proxy
 			var keys:Array = getRoadKeyAry(fromId,toId);
 			var existIndex:int = -1;
 			if(keys) {
+				
+				if(appData.EDIT_ROAD_ID == getRoadKeyStr(fromId,toId)) appData.EDIT_ROAD_ID = "";
+				
 				var keystr:String = keys.join(",");
 				existIndex = appData.roadKey.indexOf(keystr);
 				if(existIndex > -1) appData.roadKey.splice(existIndex);
 				
 				var i:int = appData.roadPathNodes.length;
 				var node:RoadPathNodeVO = null;
-				var clears:Array;
+				var clears:Array = [];
 				while(--i > -1) {
 					node = appData.roadPathNodes[i];
 					if(node.fromCityId == keys[0] && node.toCityId == keys[1]) {
@@ -161,33 +213,18 @@ package application.proxy
 				theTestRadian = Math.atan2(testPoint.y - leftPoint.y,testPoint.x - leftPoint.x);
 				
 				var leftLimited:Point = new Point();
-				leftLimited.x = Math.min(leftPoint.x,rightPoint.x) - 15;
-				leftLimited.y = Math.min(leftPoint.y,rightPoint.y) - 15;
+				leftLimited.x = Math.min(leftPoint.x,rightPoint.x) - checkGAP;
+				leftLimited.y = Math.min(leftPoint.y,rightPoint.y) - checkGAP;
 				
 				var rightLimited:Point = new Point();
-				rightLimited.x = Math.max(leftPoint.x,rightPoint.x) + 15;
-				rightLimited.y = Math.max(leftPoint.y,rightPoint.y) + 15;
-				
-				
-				trace(theTestRadian,radian);
-				trace("===",theTestRadian + acceptRadian,theTestRadian + radian)
-//				if(((theTestRadian + acceptRadian <= theTestRadian + radian) || (theTestRadian - radian <= acceptRadian))
-//					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
-//					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
-//					return true;
-//				}
+				rightLimited.x = Math.max(leftPoint.x,rightPoint.x) + checkGAP;
+				rightLimited.y = Math.max(leftPoint.y,rightPoint.y) + checkGAP;
 				
 				if(Math.abs(theTestRadian - radian) <= acceptRadian
 					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
 					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
 					return rightEndPoint.sortIndex;
 				}
-				
-//				if(((theTestRadian - Math.PI * 2 - radian) >= -acceptRadian || (theTestRadian - radian) <= acceptRadian )
-//					&& testPoint.x >= leftLimited.x && testPoint.y >= leftLimited.y
-//					&& testPoint.x <= rightLimited.x && testPoint.y <= rightLimited.y) {
-//					return true;
-//				}
 			}
 			return 0;
 		}
@@ -250,14 +287,16 @@ package application.proxy
 			var keys:Array = getRoadKeyAry(fromId,toId);
 			if(keys) {
 				
-//				var fromPoint:RoadPathNodeVO = new RoadPathNodeVO();
-//				fromPoint.sortIndex = 0;
-//				fromPoint.fromCityId = keys[0];
-//				fromPoint.toCityId = keys[1];
-//				var fromCity:MapCityNodeComp = mapEditor.getCityComp(fromId);
-//				fromPoint.x = fromCity.x + fromCity.width / 2;
-//				fromPoint.y = fromCity.y + fromCity.height / 2;
-//				res.push(fromPoint)
+				if(!isTest) {
+					var fromPoint:RoadPathNodeVO = new RoadPathNodeVO();
+					fromPoint.sortIndex = 0;
+					fromPoint.fromCityId = keys[0];
+					fromPoint.toCityId = keys[1];
+					var fromCity:MapCityNodeComp = mapEditor.getCityComp(keys[0]);
+					fromPoint.x = fromCity.x + fromCity.width / 2;
+					fromPoint.y = fromCity.y + fromCity.height / 2;
+					res.push(fromPoint)
+				}
 				
 				var i:int = appData.roadPathNodes.length;
 				while(--i > -1) {
@@ -266,14 +305,16 @@ package application.proxy
 					}
 				}
 				
-//				var toPoint:RoadPathNodeVO = new RoadPathNodeVO();
-//				toPoint.fromCityId = keys[0];
-//				toPoint.toCityId = keys[1];
-//				toPoint.sortIndex = res.length;
-//				var toCity:MapCityNodeComp = mapEditor.getCityComp(toId);
-//				toPoint.x = toCity.x + toCity.width / 2;
-//				toPoint.y = toCity.y + toCity.height / 2;
-//				res.push(toPoint);
+				if(!isTest) {
+					var toPoint:RoadPathNodeVO = new RoadPathNodeVO();
+					toPoint.fromCityId = keys[0];
+					toPoint.toCityId = keys[1];
+					toPoint.sortIndex = res.length;
+					var toCity:MapCityNodeComp = mapEditor.getCityComp(keys[1]);
+					toPoint.x = toCity.x + toCity.width / 2;
+					toPoint.y = toCity.y + toCity.height / 2;
+					res.push(toPoint);
+				}
 				
 				if(isReverseRoad(fromId,toId)== 1)	res.sortOn("sortIndex",Array.NUMERIC);							//正序排列路径节点		
 				else 								res.sortOn("sortIndex",Array.DESCENDING | Array.NUMERIC);		//反向路径倒序排序路径节点

@@ -1,13 +1,19 @@
 package application.mapEditor.ui
 {
 	import com.frameWork.gestures.Gestures;
+	import com.frameWork.uiControls.UIMoudleManager;
 	
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import application.AppReg;
+	import application.db.RoadPathNodeVO;
 	import application.mapEditor.comps.MapCityNodeComp;
+	import application.mapEditor.comps.MapRoadNodeComp;
+	import application.utils.appData;
+	import application.utils.roadDataProxy;
 	
 	import starling.animation.IAnimatable;
 	import starling.core.Starling;
@@ -18,6 +24,12 @@ package application.mapEditor.ui
 	
 	public class DragScrollGestures extends Gestures implements IAnimatable
 	{
+		
+		public static var CAN_DRAG:Boolean = false;
+		
+		public static var ADD_PATH_JOIN:Boolean = false;				//添加节点
+		public static var DEL_PATH_JOIN:Boolean = false;				//删除节点
+		
 		public var friction:Number = 0.9;
 		
 		public var minScale:Number = 0.3;	//可以缩放的最小值
@@ -35,8 +47,6 @@ package application.mapEditor.ui
 		private var dy:Number = 0;
 		
 		private var paressTime:Number = 0;
-		
-		public static var CAN_DRAG:Boolean = true;
 		
 		public function DragScrollGestures(target:DisplayObject, callBack:Function=null) {
 			super(target, callBack);
@@ -78,6 +88,77 @@ package application.mapEditor.ui
 			}
 		}
 		
+		protected override function onTouch(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(_target);
+			if(!touch) return;
+			
+			mapEditor.ui.addImg.visible = false;
+			mapEditor.ui.delImg.visible = false;
+			
+			if(CAN_DRAG)			checkGestures(touch);
+			else if(ADD_PATH_JOIN) 	joinPathNode(touch);
+			else if(DEL_PATH_JOIN)	delJoinNode(e);
+		}
+		
+		/**
+		 * 添加一个节点 
+		 * @param touch
+		 * 
+		 */		
+		private function joinPathNode(touch:Touch):void {
+			var pt:Point = touch.getLocation(_target);
+			if(pt) {
+				mapEditor.ui.delImg.visible = false;
+				var roadKey:Array = appData.EDIT_ROAD_ID.split(",");
+				if(roadKey && roadKey.length == 2) {
+					var sortId:int = roadDataProxy.testPointInLine(roadKey[0],roadKey[1],pt.x,pt.y);
+					if(sortId > 0) {
+						mapEditor.ui.addImg.visible = true;
+						mapEditor.ui.addImg.x = pt.x;
+						mapEditor.ui.addImg.y = pt.y;
+						
+						if(touch.phase == TouchPhase.ENDED) {
+							mapEditor.ui.roadSpace.addNode(roadKey[0],roadKey[1],pt.x,pt.y,sortId);
+							mapEditor.smartDrawroad();
+						}
+					} 
+				}
+			}
+		}
+		
+		/**
+		 * 删除一个节点 
+		 * @param touch
+		 * 
+		 */		
+		private function delJoinNode(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(_target);
+			var pt:Point = touch.getLocation(_target);
+			if(pt) {
+				mapEditor.ui.addImg.visible = false;
+				var roadKey:Array = appData.EDIT_ROAD_ID.split(",");
+				if(roadKey && roadKey.length == 2) {
+					mapEditor.ui.delImg.visible = true;
+					mapEditor.ui.delImg.x = pt.x;
+					mapEditor.ui.delImg.y = pt.y;
+					
+					if(touch.phase == TouchPhase.ENDED) {
+						var delNode:MapRoadNodeComp = null;
+						var roadNodes:Vector.<MapRoadNodeComp> = mapEditor.ui.roadSpace.getRoadNodes;
+						var i:int = roadNodes.length;
+						while(--i > -1) {
+							var hitTouch:Touch = e.getTouch(roadNodes[i]);
+							if(hitTouch) {
+								var roadNodeInfo:RoadPathNodeVO = roadNodes[i].roadPathNodeInfo;
+								mapEditor.ui.roadSpace.delNode(roadNodeInfo.fromCityId,roadNodeInfo.toCityId,roadNodeInfo.sortIndex);
+								mapEditor.smartDrawroad();
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		public override function checkGestures(touch:Touch):void{
 			
 			if(!CAN_DRAG) {
@@ -110,8 +191,8 @@ package application.mapEditor.ui
 				Starling.juggler.add(this);
 				
 				var elpasedtime:Number = Starling.juggler.elapsedTime;
-				dx = dx * Math.max(0,(0.8 - (elpasedtime - paressTime)) * 10);
-				dy = dy * Math.max(0,(0.8 - (elpasedtime - paressTime)) * 10);
+				dx = dx * Math.max(0,(0.2 - (elpasedtime - paressTime)) * 10);
+				dy = dy * Math.max(0,(0.2 - (elpasedtime - paressTime)) * 10);
 				
 				_downPoint  = null;
 				_isDrag = false;
@@ -129,8 +210,8 @@ package application.mapEditor.ui
 			dx = vx;
 			dy = vy;
 			
-			if(_dragRect) checkTargetPosition();
-			if(_callBack) _callBack();
+			if(_dragRect)	checkTargetPosition();
+			if(_callBack)	_callBack();
 			
 			if(Math.abs(dx) <= 0.05 && Math.abs(dy) <= 0.05) {
 				Starling.juggler.remove(this);
@@ -184,6 +265,10 @@ package application.mapEditor.ui
 		public override function dispose():void {
 			Starling.current.juggler.remove(this);
 			super.dispose();
+		}
+		
+		public function get mapEditor():MapEditorPanelConstroller {
+			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 		}
 	}
 }

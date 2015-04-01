@@ -23,10 +23,13 @@ package application.proxy
 	import application.ApplicationMediator;
 	import application.db.CityNodeVO;
 	import application.db.MapCityNodeTempVO;
+	import application.db.RoadPathNodeVO;
+	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.MapUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
+	import application.utils.roadDataProxy;
 	
 	import feathers.controls.Alert;
 	
@@ -145,6 +148,25 @@ package application.proxy
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
+				
+				//读取地图上的所有路径的key
+				var roadKeys:Array = mapFileByte.readObject() as Array;
+				appData.roadKey = roadKeys;
+				
+				var roadNodes:Array = mapFileByte.readObject() as Array;
+				var roadPahtNodes:Array = [];
+				len = roadNodes.length;
+				var roadPathNodeInfo:RoadPathNodeVO;
+				for(i = 0; i != len; i++) {
+					roadPathNodeInfo = new RoadPathNodeVO();
+					roadPathNodeInfo.fromCityId = roadNodes[i][0];
+					roadPathNodeInfo.toCityId = roadNodes[i][1];
+					roadPathNodeInfo.x = roadNodes[i][2];
+					roadPathNodeInfo.y = roadNodes[i][3];
+					roadPathNodeInfo.sortIndex = roadNodes[i][4];
+					roadPahtNodes.push(roadPathNodeInfo);
+				}
+				appData.roadPathNodes = roadPahtNodes;
 				
 				//城市节点纹理文件
 				var nodeTempFileCount:int = mapFileByte.readDouble();
@@ -324,10 +346,10 @@ package application.proxy
 			} else {
 				if(!updateCitylibary) {
 					clearNodeLoad();
-					installMapFile();										//装载大地图数据		
+					installMapFile();											//装载大地图数据		
 				} else {
-					appDataProxy.updateTextureToGPU();						//重新上传GPU
-					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);	//刷新库
+					appDataProxy.updateTextureToGPU();							//重新上传GPU
+					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);		//刷新库
 				}
 			}
 		}
@@ -426,7 +448,7 @@ package application.proxy
 		public function updateTextureToGPU():void {
 			appData.textureManager.removeTexture("mapTexture",true);
 			appData.textureManager.removeTextureAtlas("mapTexture",true);
-			appData.texturepack = ExportTexturesUtils.getTextureAtls(true);
+			appData.texturepack = ExportTexturesUtils.getTextureAtls();
 			
 			var texture:Texture = Texture.fromBitmapData(appData.texturepack.bitData);
 			var textureAtls:TextureAtlas = new TextureAtlas(texture,appData.texturepack.atls);
@@ -506,6 +528,13 @@ package application.proxy
 			var mapNodeDatas:Array = getWriteMapNodes();
 			writeBytes.writeObject(mapNodeDatas);
 			
+			//写入所有路径的key数据
+			writeBytes.writeObject(appData.roadKey);
+			
+			//写入路径的节点数据
+			var roadNodeDatas:Array = getRoadPathNodes();
+			writeBytes.writeObject(roadNodeDatas);
+			
 			var i:int = 0;
 			var len:int = appData.cityNodeFiles.length;
 			var nodeFileData:Object = null;
@@ -521,7 +550,7 @@ package application.proxy
 				writeBytes.writeBytes(nodeFileData[FILE_STREAM_FIELD]);						//写入文件
 			}
 			
-			writeBytes.writeDouble(appData.mapFileStream.length);					//写入大地文件数据长度
+			writeBytes.writeDouble(appData.mapFileStream.length);							//写入大地文件数据长度
 			writeBytes.writeBytes(appData.mapFileStream);									//写入大地图文件
 			writeBytes.writeUTF(appData.cityImagesUrl);
 			writeBytes.writeUTF(appData.mapFileUrl);
@@ -529,6 +558,26 @@ package application.proxy
 			writeFile.writeBytes(writeBytes);												//写入文件
 			writeFile.close();
 			spark.components.Alert.show("保存成功");
+		}
+		
+		/**
+		 * 获取地图上路径的节点数据 
+		 * @return
+		 *  
+		 */		
+		public function getRoadPathNodes():Array {
+			var res:Array = [];
+			var len:int = appData.roadPathNodes.length;
+			while(--len > -1) {
+				var nodeTemp:RoadPathNodeVO = appData.roadPathNodes[len]; 
+				var pathNode:Array = [nodeTemp.fromCityId,
+					nodeTemp.toCityId,
+					nodeTemp.x,
+					nodeTemp.y,
+					nodeTemp.sortIndex];
+				res.push(pathNode);
+			}
+			return res;
 		}
 		
 		/**
@@ -602,19 +651,22 @@ package application.proxy
 		 * 删除当前城市的信息 
 		 * @param cityId
 		 */		
-		public function removeCityInfoById(cityId:int):void {
-			var i:int = 0;
-			var len:int = appData.mapCityNodes.length;
+		public function removeCityInfoById(cityId:Number):void {
+			var i:Number = 0;
+			var len:Number = appData.mapCityNodes.length;
 			var crtCityNode:CityNodeVO;
 			for(i = 0; i < len;) {
 				crtCityNode = appData.mapCityNodes[i];
 				if(crtCityNode.templateId == cityId) {
 					appData.mapCityNodes.splice(i,1);
 					len = appData.mapCityNodes.length;
-					i++;
 				} else {
-					var toIndex:int = crtCityNode.toCityIds.indexOf(cityId);
-					if(toIndex > -1) crtCityNode.toCityIds.splice(toIndex);
+					var toIndex:Number = crtCityNode.toCityIds.indexOf(cityId);
+					if(toIndex > -1) {
+						crtCityNode.toCityIds.splice(toIndex);
+						//删除该城市的道路节点
+						mapEditor.ui.roadSpace.delRoad(crtCityNode.templateId,cityId);
+					}
 					i++;
 				}
 			}
@@ -622,6 +674,10 @@ package application.proxy
 		
 		public static function get NAME():String{
 			return getQualifiedClassName(AppDataProxy);
+		}
+		
+		public function get mapEditor():MapEditorPanelConstroller {
+			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 		}
 	}
 }

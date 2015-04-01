@@ -6,6 +6,7 @@ package application
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
+	import application.cfg.CfgKeyTest;
 	import application.utils.ExportTexturesUtils;
 	import application.utils.appData;
 	import application.utils.appDataProxy;
@@ -30,7 +31,7 @@ package application
 		private static var sl:Starling;
 		/*功能模块快速注册*/
 		private static var app:AppReg;
-		
+		private static var cfgTest:CfgKeyTest;
 		private static var appBeginFunc:Function;
 		public static function init(stage:Stage,onCompleteHandler:Function):void
 		{
@@ -39,6 +40,7 @@ package application
 			var stage3dComplete:Function = function(event:starling.events.Event):void {
 				GTween.staticInit();	//启动GT
 				internalInit();
+				cfgTest = new CfgKeyTest();
 			};
 			
 			//启动starling
@@ -50,7 +52,6 @@ package application
 			
 			sl.addEventListener(flash.events.Event.DEACTIVATE, onDeactivate);
 			sl.addEventListener(flash.events.Event.ACTIVATE, onActivate);
-			
 		}
 		
 		private static function onDeactivate(event:flash.events.Event):void {
@@ -72,11 +73,8 @@ package application
 		private static function internalInit():void {
 			app = new AppReg();
 			appDataProxy.internalInit();
-			appData.textureManager.enqueue("assets/default_city_node.png");
 			appData.textureManager.enqueue("assets/WarEffect.png");
 			appData.textureManager.enqueue("assets/WarEffect.xml");
-			appData.textureManager.enqueue("assets/FlagMap_han_9.png");
-			appData.textureManager.enqueue("assets/img_city_move.png");
 			appData.textureManager.loadQueue(function(ratio:Number):void{
 				if(ratio == 1) {
 					trace("load textures complete");

@@ -6,3 +6,7 @@ s|Application {
 	fontSize:12;
 	fontFamily:"simsun";
 }
+
+s|Button {
+	focusEnable:false;
+}
