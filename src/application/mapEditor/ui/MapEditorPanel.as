@@ -2,8 +2,9 @@ package application.mapEditor.ui
 {
 	import application.mapEditor.comps.MapCitySpaceComp;
 	import application.mapEditor.comps.MapFloorComp;
-	import application.mapEditor.comps.MapRoadSpaceComp;
 	import application.mapEditor.comps.MapRoadNodeComp;
+	import application.mapEditor.comps.MapRoadSpaceComp;
+	import application.mapEditor.comps.MapRoleComp;
 	import application.utils.appData;
 	
 	import feathers.core.FeathersControl;
@@ -27,8 +28,10 @@ package application.mapEditor.ui
 		public var mapFloor:MapFloorComp;
 		public var roadSpace:MapRoadSpaceComp;
 		
-		public var addImg:Image;
-		public var delImg:Image;
+		public var addImg:Image;		//加节点
+		public var delImg:Image;		//删除节点
+		
+		public var marchRole:MapRoleComp;
 		
 		public function MapEditorPanel() {
 			super();
@@ -47,6 +50,9 @@ package application.mapEditor.ui
 			
 			roadSpace = new MapRoadSpaceComp();
 			uiContent.addChild(roadSpace);
+			
+			marchRole = new MapRoleComp();
+			uiContent.addChild(marchRole);
 			
 			addImg = new Image(appData.textureManager.getTexture("page-indicator-selected-skin"));
 			addImg.pivotX = addImg.width >> 1;

@@ -67,6 +67,11 @@ package application
 		 */		
 		public static const UPDATE_MAP_FILE_AFTER_VISUAL = "updateMapFile";
 		
+		/**
+		 * 更新一个皮肤 
+		 */		
+		public static const UPDATE_CHANGE_SKIN:String = "updateChangSkin";
+		
 		public function ApplicationMediator(mediatorName:String=null, viewComponent:Object=null) {
 			super(NAME, viewComponent);
 		}
@@ -81,12 +86,20 @@ package application
 			putNotification(UPDATE_CITY_LIBY,updateCityLibyary);
 			putNotification(DRAW_ROAD,mapDrawRoad);
 			putNotification(UPDATE_MAP_FILE_AFTER_VISUAL,updateMapFileAfterVisual);
+			putNotification(UPDATE_CHANGE_SKIN,updateCitySkin);
 		}
 		
 		private function updateMapFileAfterVisual(notification:INotification):void {
 			var mapEditor:MapEditorPanelConstroller = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 			if(mapEditor) {
 				mapEditor.updateMapImage();
+			}
+		}
+		
+		private function updateCitySkin(notification:INotification):void {
+			var nodeEditor:NodeEditorPanelController = UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_CITY_NODE_PANEL) as NodeEditorPanelController;
+			if(nodeEditor) {
+				nodeEditor.setTexture(notification.getBody() as String);
 			}
 		}
 		

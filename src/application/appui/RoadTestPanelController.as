@@ -1,11 +1,15 @@
 package application.appui
 {
+	import com.frameWork.uiControls.UIMoudleManager;
+	
 	import flash.events.MouseEvent;
 	
 	import mx.events.FlexEvent;
 	
+	import application.AppReg;
 	import application.db.CityNodeVO;
 	import application.db.MapCityNodeRoadVO;
+	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.road.PlanCourse;
 	import application.road.RoutePannelResult;
 	import application.road.RoutePanner;
@@ -36,6 +40,9 @@ package application.appui
 				nodes.push(appData.mapCityNodes[i]);
 			}
 			
+			var sTime:Number = Number(gui.sTime.text);
+			var tTime:Number = Number(gui.tTime.text);
+			
 			var sid:int = int(gui.ts.text);
 			var eid:int = int(gui.es.text);
 			var pc:RoutePanner = new RoutePanner();
@@ -43,6 +50,9 @@ package application.appui
 			if(result) {
 				result.pathNodeIds.push(eid);
 				gui.txtResult.text = result.pathNodeIds.toString() + ",allWeight:" + result.allWeight;
+				
+				mapEditor.ui.marchRole.run(result,sTime,tTime);
+				
 			} else {
 				gui.txtResult.text = "没有寻到路径";
 			}
@@ -90,6 +100,10 @@ package application.appui
 					}
 				}
 			}
+		}
+		
+		private function get mapEditor():MapEditorPanelConstroller {
+			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 		}
 		
 		public function get gui():RoadTestPanel {

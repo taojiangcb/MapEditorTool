@@ -29,11 +29,11 @@
 			protected override function createChildren():void {
 				super.createChildren();
 				doubleClickEnabled = true;
-				addEventListener(MouseEvent.DOUBLE_CLICK,doubleClickHandler,false,0,true);
+				addEventListener(MouseEvent.CLICK,doubleClickHandler,false,0,true);
 			}
 			
 			private function doubleClickHandler(event:Event):void {
-				Facade.getInstance().sendNotification(ApplicationMediator.EDIT_CITY_TEMP,data);
+				Facade.getInstance().sendNotification(ApplicationMediator.UPDATE_CHANGE_SKIN,data.textureName);
 			}
 			
 			protected override function commitProperties():void {

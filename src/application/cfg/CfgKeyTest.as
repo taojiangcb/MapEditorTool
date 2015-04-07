@@ -3,6 +3,8 @@ package application.cfg
 	
 	import flash.ui.Keyboard;
 	
+	import mx.core.FlexGlobals;
+	
 	import application.mapEditor.ui.DragScrollGestures;
 	
 	import gframeWork.cfg.Shortcut;
@@ -56,6 +58,7 @@ package application.cfg
 		
 		private function spaceDown(event:KeyboardEvent):void {
 			DragScrollGestures.CAN_DRAG = true;
+			(FlexGlobals.topLevelApplication as MapEditor).stage.focus = null;
 		}
 		
 		private function spaceUp(event:KeyboardEvent):void {

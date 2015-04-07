@@ -373,19 +373,19 @@ package application.mapEditor.ui
 			return UserInterfaceManager.getUIByID(AppReg.CITY_EDIT_PROPERTIES) as CityPropertieController
 		}
 		
-		private function get right():int {
+		public function get right():int {
 			return 300;
 		}
 		
-		private function get bottom():int {
+		public function get bottom():int {
 			return 0;
 		}
 		
-		private function get left():int {
+		public function get left():int {
 			return UserInterfaceManager.getUIByID(AppReg.CITY_NODE_TEMP_PANEL).getGui().width;
 		}
 		
-		private function get top():int {
+		public function get top():int {
 			return UserInterfaceManager.getUIByID(AppReg.TOP_UI_PANEL).getGui().height;
 		}
 	}

@@ -1753,8 +1753,8 @@ package source.feathers.themes
 			input.paddingTop = 12 * this.scale;
 			input.paddingBottom = 10 * this.scale;
 			input.paddingLeft = input.paddingRight = 14 * this.scale;
-			input.textEditorProperties.fontFamily = "Helvetica";
-			input.textEditorProperties.fontSize = 24 * this.scale;
+			input.textEditorProperties.fontFamily = FONT_NAME;
+			input.textEditorProperties.fontSize = 12; //* this.scale;
 			input.textEditorProperties.color = LIGHT_TEXT_COLOR;
 
 			input.promptProperties.elementFormat = this.lightElementFormat;

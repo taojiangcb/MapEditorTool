@@ -23,6 +23,6 @@
 		<s:Button label="导出道路数据" id="outputRoad" focusEnabled="false"/>
 		<s:CheckBox label="显示所有道路" id="checkVisualAllRoad" focusEnabled="false"/>
 		<s:Button label="测试城市寻路" id="btnTestRoad" focusEnabled="false"/>
-		<s:Button label= "模拟路径节点" id="btnTestPathNode" focusEnabled="false"/>
+		<s:Button label= "模拟路径节点" id="btnTestPathNode" focusEnabled="false" visible="false"/>
 	</s:HGroup>
 </s:Group>

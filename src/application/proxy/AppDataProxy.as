@@ -104,6 +104,7 @@ package application.proxy
 				fileStream.readBytes(mapFileByte);
 				fileStream.close();
 				
+				appData.cityNodeTemps = [];
 				//解城市节点模板数据
 				var nodeObjTemps:Array = mapFileByte.readObject() as Array;
 				var i:int = 0;
@@ -124,6 +125,7 @@ package application.proxy
 				}
 				appData.cityNodeTemps = nodeTemps;
 				
+				appData.mapCityNodes = [];
 				//解地图上的城市实例数据
 				var mapNodeObjs:Array = mapFileByte.readObject() as Array;
 				var mapCityNodeData:Array = null;
@@ -153,6 +155,7 @@ package application.proxy
 				var roadKeys:Array = mapFileByte.readObject() as Array;
 				appData.roadKey = roadKeys;
 				
+				appData.roadPathNodes = [];
 				var roadNodes:Array = mapFileByte.readObject() as Array;
 				var roadPahtNodes:Array = [];
 				len = roadNodes.length;
@@ -230,6 +233,7 @@ package application.proxy
 			var nodesRoot:File = new File(cityNodesPath);
 			trace("begin load cityNodeImages");
 			trace("===================================");
+			appData.cityNodeFiles = [];
 			ansyslizerCityDirector(nodesRoot);
 			trace("===================================");
 			//当前装载的城市节点图片
@@ -246,6 +250,7 @@ package application.proxy
 			var fileStream:FileStream;
 			var nodeFiles:Array = rootFile.getDirectoryListing();
 			var nf:File = null;
+			
 			for each(nf in nodeFiles) {
 				if(nf.isDirectory) {
 					ansyslizerCityDirector(nf);
@@ -261,6 +266,11 @@ package application.proxy
 					objData[TEXTURE_NAME_FIELD] = nf.name;
 					objData[FILE_STREAM_FIELD] = fileBytes;
 					appData.cityNodeFiles.push(objData);
+					
+					//创建节点模板数据
+					var cityNodeTemp:MapCityNodeTempVO = new MapCityNodeTempVO();
+					cityNodeTemp.textureName = nf.name;
+					appData.cityNodeTemps.push(cityNodeTemp);
 				}
 			}
 		}
@@ -327,11 +337,6 @@ package application.proxy
 				objData[TEXTURE_NAME_FIELD] = fileData[TEXTURE_NAME_FIELD];
 				objData[BITMAP_DATE_FIELD] = ExportTexturesUtils.checkMinpBitmapData(Bitmap(defaultCityNodeLoad.contentLoaderInfo.content).bitmapData);
 				appData.cityNodeBitmapdatas.push(objData);
-				
-				//创建节点模板数据
-				var cityNodeTemp:MapCityNodeTempVO = new MapCityNodeTempVO();
-				cityNodeTemp.textureName = fileData.textureName;
-				appData.cityNodeTemps.push(cityNodeTemp);
 				
 				nowNodeLoadCount++;
 				loadNode(updateCitylibary);

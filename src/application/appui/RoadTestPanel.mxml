@@ -16,7 +16,9 @@
 		<s:HGroup width="100%">
 			<s:TextInput id="ts" width="120" prompt="开始城市" restrict="0-9"/>
 			<s:TextInput id="es" width="120" prompt="结速城市" restrict="0-9"/>
-			<s:Button label="寻路径" id="btnSearch"/>
+			<s:TextInput id="sTime" width="120" prompt="开始时间" restrict="0-9"/>
+			<s:TextInput id="tTime" width="120" prompt="行走总时间" restrict="0-9"/>
+			<s:Button label="寻路径" id="btnSearch" focusEnabled="false"/>
 		</s:HGroup>
 		<s:TextArea id="txtResult" width="100%" height="100%"/>
 	</s:VGroup>

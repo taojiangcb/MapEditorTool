@@ -130,7 +130,9 @@ package application.appui
 		
 		public override function dispose():void {
 			super.dispose();
-			ui.btnAddRoad.removeEventListener(MouseEvent.CLICK,addRoadHandler);
+			if(ui) {
+				ui.btnAddRoad.removeEventListener(MouseEvent.CLICK,addRoadHandler);
+			}
 		}
 	
 		public function get ui():CityPropertiePanel {

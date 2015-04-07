@@ -59,33 +59,38 @@ package application.mapEditor.ui
 		 */		
 		private function nativeStage_mouseWheelHandler(event:MouseEvent):void {
 			var scale:Number = _target.scaleX + event.delta * 0.01;
-			
 			var fromLocal:Point = _target.globalToLocal(new Point(event.localX,event.localY));
 			
-			_target.pivotX = fromLocal.x;
-			_target.pivotY = fromLocal.y;
-			
-			_target.scaleX = scale;
-			_target.scaleY = scale;
-			
-			var toLocal:Point = _target.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
-			var dx:int = toLocal.x - fromLocal.x;
-			var dy:int = toLocal.y - fromLocal.y;
-			
-			_target.x += dx * scale;
-			_target.y += dy * scale;
-			
-			checkTargetPosition();
-			
-			if(!isNaN(minScale)) {
-				if(_target.scaleX < minScale) _target.scaleX = minScale;
-				if(_target.scaleY < minScale) _target.scaleY = minScale;
+			var mapEditSize:Rectangle = mapEditor.getSize();
+			if(event.localX >= mapEditSize.x 
+				&& event.localX <= mapEditSize.x + mapEditSize.width
+				&& event.localY >= mapEditSize.y 
+				&& event.localY <= mapEditSize.y + mapEditSize.height)  {
+				
+				_target.scaleX = scale;
+				_target.scaleY = scale;
+				
+				var toLocal:Point = _target.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
+				var dx:int = toLocal.x - fromLocal.x;
+				var dy:int = toLocal.y - fromLocal.y;
+				
+				_target.x += dx * scale;
+				_target.y += dy * scale;
+				
+				checkTargetPosition();
+				
+				if(!isNaN(minScale)) {
+					if(_target.scaleX < minScale) _target.scaleX = minScale;
+					if(_target.scaleY < minScale) _target.scaleY = minScale;
+				}
+				
+				if(!isNaN(maxScale)) {
+					if(_target.scaleX > maxScale) _target.scaleX = maxScale;
+					if(_target.scaleY > maxScale) _target.scaleY = maxScale;
+				}
 			}
 			
-			if(!isNaN(maxScale)) {
-				if(_target.scaleX > maxScale) _target.scaleX = maxScale;
-				if(_target.scaleY > maxScale) _target.scaleY = maxScale;
-			}
+			
 		}
 		
 		protected override function onTouch(e:TouchEvent):void {
@@ -210,8 +215,8 @@ package application.mapEditor.ui
 			dx = vx;
 			dy = vy;
 			
-			if(_dragRect)	checkTargetPosition();
-			if(_callBack)	_callBack();
+			if(_dragRect)			checkTargetPosition();
+			if(_callBack != null)	_callBack();
 			
 			if(Math.abs(dx) <= 0.05 && Math.abs(dy) <= 0.05) {
 				Starling.juggler.remove(this);

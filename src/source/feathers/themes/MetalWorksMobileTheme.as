@@ -65,8 +65,6 @@ package source.feathers.themes
 			this.atlas = new TextureAtlas(atlasTexture, XML(new ATLAS_XML()));
 			
 			appData.textureManager.addTextureAtlas("metalworks",atlas);
-			
-
 			super.initialize();
 		}
 

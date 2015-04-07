@@ -9,10 +9,13 @@ package application.cityNode.ui
 	import flash.geom.Rectangle;
 	
 	import mx.core.FlexGlobals;
+	import mx.utils.StringUtil;
 	
 	import application.AppReg;
 	import application.ApplicationMediator;
+	import application.mapEditor.ui.MapEditorPanelConstroller;
 	import application.utils.appData;
+	import application.utils.appDataProxy;
 	
 	import gframeWork.uiController.UserInterfaceManager;
 	
@@ -21,6 +24,7 @@ package application.cityNode.ui
 	import starling.core.Starling;
 	import starling.events.Event;
 	import starling.events.Touch;
+	import starling.textures.Texture;
 	
 	/**
 	 * 城市节点编辑控制逻辑 
@@ -62,6 +66,7 @@ package application.cityNode.ui
 			ui.checkFlag.addEventListener(Event.CHANGE,visualFlagHandler);
 			ui.checkFree.addEventListener(Event.CHANGE,visualFreeHandler);
 			ui.checkMenu.addEventListener(Event.CHANGE,visualMenHandler);
+			ui.textureUpdateBtn.addEventListener(Event.TRIGGERED,updateTexture);
 			
 			Starling.current.stage.addEventListener(Event.RESIZE,onResizeHandler);
 			layoutUpdate();
@@ -153,6 +158,8 @@ package application.cityNode.ui
 			ui.menuImg.x = appData.editorCityNode.menuX;
 			ui.menuImg.y = appData.editorCityNode.menuY;
 			
+			ui.textureInput.text = appData.editorCityNode.textureName;
+			
 			if(uiSize) {
 				ui.btnClose.x = uiSize.width - ui.btnClose.width - 5;
 				ui.btnClose.y = 5;
@@ -165,6 +172,30 @@ package application.cityNode.ui
 				
 				ui.checkMenu.x = ui.btnClose.x - 30;
 				ui.checkMenu.y = ui.checkFree.y + 30;
+				
+				ui.textureInput.x = ui.width - 250;
+				ui.textureInput.y = ui.checkMenu.y + 30;
+				
+				ui.textureUpdateBtn.x = ui.textureInput.x + ui.textureInput.width + 10;
+				ui.textureUpdateBtn.y = ui.textureInput.y;
+			}
+		}
+		
+		private function updateTexture(event:Event):void {
+			var newTextureName:String = StringUtil.trim(ui.textureInput.text);
+			setTexture(newTextureName);
+		}
+		
+		public function setTexture(textureName:String):void {
+			var newTextureName:String = StringUtil.trim(textureName);
+			var texture:Texture = appData.textureManager.getTexture(newTextureName);
+			if(ui.nodeImage && texture) {
+				mapEditor.getChrroseCity().cityNodeInfo.textureName = newTextureName;
+				appData.editorCityNode = appDataProxy.getCityNodeTempByName(newTextureName);
+				layoutUpdate();
+				ui.nodeImage.texture = texture;
+				ui.nodeImage.readjustSize();
+				mapEditor.refreshAllCity();
 			}
 		}
 		
@@ -191,6 +222,10 @@ package application.cityNode.ui
 		
 		private function get top():int {
 			return UserInterfaceManager.getUIByID(AppReg.TOP_UI_PANEL).getGui().height;
+		}
+		
+		public function get mapEditor():MapEditorPanelConstroller {
+			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller;
 		}
 	}
 }

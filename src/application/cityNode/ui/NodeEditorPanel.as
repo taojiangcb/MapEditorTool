@@ -8,6 +8,7 @@ package application.cityNode.ui
 	import feathers.controls.Button;
 	import feathers.controls.Check;
 	import feathers.controls.Label;
+	import feathers.controls.TextInput;
 	
 	import source.feathers.themes.BaseMetalWorksMobileTheme;
 	
@@ -48,9 +49,12 @@ package application.cityNode.ui
 		public var nationFlag:Image;
 		//按钮
 		public var menuImg:Image;
-		
 		//内容
 		public var contentSprite:Sprite;
+		//纹理更新
+		public var textureInput:TextInput;
+		//纹理更新
+		public var textureUpdateBtn:Button;
 		
 		//===========================================================================
 		
@@ -81,6 +85,14 @@ package application.cityNode.ui
 			checkMenu = new Check();
 			checkMenu.label = "菜单";
 			addChild(checkMenu);
+			
+			textureInput = new TextInput();
+			textureInput.width = 200;
+			addChild(textureInput);
+			
+			textureUpdateBtn = new Button();
+			textureUpdateBtn.label = "更新";
+			addChild(textureUpdateBtn);
 			
 			contentSprite = new Sprite();
 			addChild(contentSprite);
