@@ -39,6 +39,8 @@ package application.appui
 			ui.btnAddRoad.addEventListener(MouseEvent.CLICK,addRoadHandler,false,0,true);
 			ui.delCity.addEventListener(MouseEvent.CLICK,delCityHandler,false,0,true);
 			ui.flagCheck.addEventListener(MouseEvent.CLICK,flagCheckHandler,false,0,true);
+			ui.reversalCheck.addEventListener(MouseEvent.CLICK,reversalChangeHandler,false,0,true);
+			ui.offsetX.addEventListener(Event.CHANGE,offsetXChangeHandler,false,0,true);
 			commitData();
 			roadEditor = new RoadEditor(mapEditor);
 		}
@@ -55,14 +57,24 @@ package application.appui
 				ui.freeCheck.selected = chrooseCityComp.freeVisible;
 				ui.roadCheck.selected = chrooseCityComp.roadVisible;
 				ui.flagCheck.selected = chrooseCityComp.flagVisible;
+				ui.reversalCheck.selected = chrooseCityComp.reversal;
+				ui.offsetX.value = chrooseCityComp.offsetX;
 			} else {
 				ui.enabled = false;
 			}
 		}
 		
+		private function offsetXChangeHandler(event:Event):void {
+			chrooseCityComp.offsetX = ui.offsetX.value;
+		}
+		
 		private function roadCheckHandler(event:Event):void {
 			chrooseCityComp.roadVisible = ui.roadCheck.selected;
 			Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+		}
+		
+		private function reversalChangeHandler(event:MouseEvent):void {
+			chrooseCityComp.reversal = ui.reversalCheck.selected;
 		}
 		
 		/**
@@ -156,14 +168,11 @@ package application.appui
 		}
 	}
 }
+
 import com.frameWork.uiControls.UIMoudleManager;
-
 import flash.events.MouseEvent;
-
 import mx.events.CloseEvent;
-
 import spark.components.Alert;
-
 import application.AppReg;
 import application.appui.CityPropertieController;
 import application.appui.CityPropertiePanel;

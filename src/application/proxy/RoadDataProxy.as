@@ -123,12 +123,11 @@ package application.proxy
 			var keys:Array = getRoadKeyAry(fromId,toId);
 			var existIndex:int = -1;
 			if(keys) {
-				
 				if(appData.EDIT_ROAD_ID == getRoadKeyStr(fromId,toId)) appData.EDIT_ROAD_ID = "";
 				
 				var keystr:String = keys.join(",");
 				existIndex = appData.roadKey.indexOf(keystr);
-				if(existIndex > -1) appData.roadKey.splice(existIndex);
+				if(existIndex > -1) appData.roadKey.splice(existIndex,1);
 				
 				var i:int = appData.roadPathNodes.length;
 				var node:RoadPathNodeVO = null;
@@ -144,6 +143,7 @@ package application.proxy
 					node = clears.shift();
 					existIndex = appData.roadPathNodes.indexOf(node);
 					if(existIndex > -1) appData.roadPathNodes.splice(existIndex,1);
+					existIndex = -1;
 				}
 			}
 		}

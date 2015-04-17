@@ -97,6 +97,10 @@ package application.cityNode.ui
 			contentSprite = new Sprite();
 			addChild(contentSprite);
 			
+			nationFlag = new Image(appData.textureManager.getTexture("FlagMap_han_9"));
+			nationFlag.visible = false;
+			contentSprite.addChild(nationFlag);
+			
 			txtName = new TextField(150,20,"名称标签",BaseMetalWorksMobileTheme.FONT_NAME,12,0xFFFFFF,true);
 			txtName.fontName = BaseMetalWorksMobileTheme.FONT_NAME;
 			txtName.hAlign = HAlign.CENTER;
@@ -113,9 +117,6 @@ package application.cityNode.ui
 			contentSprite.addChild(free);
 			Starling.juggler.add(free);
 			
-			nationFlag = new Image(appData.textureManager.getTexture("FlagMap_han_9"));
-			nationFlag.visible = false;
-			contentSprite.addChild(nationFlag);
 			
 			menuImg = new Image(appData.textureManager.getTexture("img_city_move"));
 			menuImg.readjustSize();

@@ -147,6 +147,8 @@ package application.proxy
 					mapCityNode.cityName = mapCityNodeData[5];
 					mapCityNode.toCityIds = mapCityNodeData[6] ? mapCityNodeData[6] : [];
 					mapCityNode.visualRaod = mapCityNodeData[7];
+					mapCityNode.reversal = mapCityNodeData[8];
+					mapCityNode.offsetX = mapCityNodeData[9];
 					mapCityNodes.push(mapCityNode);
 				}
 				appData.mapCityNodes = mapCityNodes;
@@ -194,13 +196,9 @@ package application.proxy
 				appData.cityImagesUrl = mapFileByte.readUTF();
 				appData.mapFileUrl = mapFileByte.readUTF();
 				
-				trace(appData.cityImagesUrl);
-				trace(appData.mapFileUrl);
-				
 				//当前装载的城市节点图片
 				nowNodeLoadCount = 0;
 				loadNode();
-				
 				openFile.removeEventListener(Event.SELECT,openFunc);
 				//保存文件的句柄引用
 				saveFile = openFile;
@@ -631,7 +629,9 @@ package application.proxy
 					mapCityNode.visualFiree,
 					mapCityNode.cityName,
 					mapCityNode.toCityIds,
-					mapCityNode.visualRaod];
+					mapCityNode.visualRaod,
+					mapCityNode.reversal,
+					mapCityNode.offsetX];
 				mapNodeDatas.push(mapCityNodeData);
 			}
 			return mapNodeDatas;

@@ -40,7 +40,7 @@ package application.appui
 			super.uiCreateComplete(event);
 			ui.btnClose.addEventListener(MouseEvent.CLICK,closeHandler);
 			ui.btnExportExcel.addEventListener(MouseEvent.CLICK,exportExcelHandler);
-			var title:String = "fromId				toId\n"
+			var title:String = "fromId				toId\n";
 			var lineFormat:String = "{0}:({1})		{2}:({3})\n";
 			var i:int = appData.mapCityNodes.length;
 			var mapCityNode:CityNodeVO;
@@ -96,7 +96,6 @@ package application.appui
 			var fileBytes:ByteArray = excel.saveToByteArray();
 			saveFile = new File();
 			saveFile.save(fileBytes,"road.xls");
-			
 			UserInterfaceManager.close(AppReg.ROAD_OUTPUT);
 		}
 		

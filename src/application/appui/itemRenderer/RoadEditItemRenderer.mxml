@@ -13,7 +13,9 @@
 		<![CDATA[
 			import com.frameWork.uiControls.UIMoudleManager;
 			
+			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
 			
 			import spark.components.Alert;
 			
@@ -112,9 +114,14 @@
 			}
 			
 			protected function btnDel_clickHandler(event:MouseEvent):void {
-				// TODO Auto-generated method stub
-				cityPropertie.roadEditor.removeRoad(this);
-				Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+				var self:RoadEditItemRenderer = this;
+				var closeHandler:Function = function(event:CloseEvent):void {
+					if(event.detail == Alert.YES) {
+						cityPropertie.roadEditor.removeRoad(self);
+						Facade.getInstance().sendNotification(ApplicationMediator.DRAW_ROAD);
+					}
+				};
+				Alert.show(StringUtil.substitute("你确定要删除{0}的道路吗?",roadPathkey),"警告",Alert.YES|Alert.NO,null,closeHandler);
 			}
 			
 			public function dispose():void {

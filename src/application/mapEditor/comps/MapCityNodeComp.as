@@ -78,7 +78,6 @@ package application.mapEditor.comps
 			ctImage = new Image(imageTexture);
 			ctImage.readjustSize();
 			addChild(ctImage);
-			
 			setSize(ctImage.width,ctImage.height);
 			
 			var textureFrames:Vector.<Texture> = appData.textureManager.getTextures("war_firee_");
@@ -140,21 +139,24 @@ package application.mapEditor.comps
 				ctImage.texture = imageTexture;
 				ctImage.readjustSize();
 				setSize(ctImage.width,ctImage.height);
+				setX();
 			}
 			
 			if(nodeTemp) 
 			{
-				if(free) {
-					free.x = nodeTemp.freeX;
-					free.y = nodeTemp.freeY;
+				if(flagImg) {
+					flagImg.x = nodeTemp.flagX;
+					flagImg.y = nodeTemp.flagY; 
 				}
+				
 				if(txtName) {
 					txtName.x = nodeTemp.labelX;
 					txtName.y = nodeTemp.labelY;
 				}
-				if(flagImg) {
-					flagImg.x = nodeTemp.flagX;
-					flagImg.y = nodeTemp.flagY;
+				
+				if(free) {
+					free.x = nodeTemp.freeX;
+					free.y = nodeTemp.freeY;
 				}
 			}
 		}
@@ -190,6 +192,18 @@ package application.mapEditor.comps
 			super.dispose();
 		}
 		
+		private function setX():void {
+			if(ctImage) {
+				if(cityNodeInfo.reversal) {
+					ctImage.scaleX = -1
+					ctImage.x = ctImage.width + cityNodeInfo.offsetX;
+				} else {
+					ctImage.scaleX = 1
+					ctImage.x = cityNodeInfo.offsetX;
+				}
+			}
+		}
+		
 		//==============================================================
 		//城市名称
 		public function set cityName(val:String):void {
@@ -199,6 +213,15 @@ package application.mapEditor.comps
 		
 		public function get cityName():String {
 			return mapNodeInfo.cityName;
+		}
+		
+		public function set offsetX(val:int):void {
+			mapNodeInfo.offsetX = val;
+			setX();
+		}
+		
+		public function get offsetX():int {
+			return mapNodeInfo.offsetX;
 		}
 		
 		//城市模板
@@ -237,6 +260,15 @@ package application.mapEditor.comps
 			return mapNodeInfo.visualFlag;
 		}
 		
+		public function set reversal(val:Boolean):void {
+			mapNodeInfo.reversal = val;
+			setX();
+		}
+		
+		public function get reversal():Boolean {
+			return mapNodeInfo.reversal;
+		}
+		
 		/**
 		 * 获取城市信息 
 		 * @return 
@@ -256,7 +288,6 @@ package application.mapEditor.comps
 		public function get mapEditor():MapEditorPanelConstroller {
 			return UIMoudleManager.getUIMoudleByOpenId(AppReg.EDITOR_MAP_PANEL) as MapEditorPanelConstroller 	
 		}
-		
 		//===========================================================================
 	}
 }

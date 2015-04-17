@@ -121,7 +121,6 @@ package application.mapEditor.comps
 		 * 删除一整条的路径节点 
 		 * @param fromId
 		 * @param toId
-		 * 
 		 */		
 		public function delRoad(fromId:Number,toId:Number):void {
 			var pathKey:Array = roadDataProxy.getRoadKeyAry(fromId,toId);

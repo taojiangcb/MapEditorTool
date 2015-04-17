@@ -21,6 +21,10 @@ package application.db
 		public var visualRaod:Boolean = false;
 		//显示旗子
 		public var visualFlag:Boolean = false;
+		//水平镜像
+		public var reversal:Boolean = false;
+		/*图片水面偏移*/
+		public var offsetX:Number = 0;
 		
 	}
 }

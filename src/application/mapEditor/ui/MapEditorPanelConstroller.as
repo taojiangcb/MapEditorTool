@@ -221,7 +221,6 @@ package application.mapEditor.ui
 		 * 删除一个城市 
 		 * @param cityId
 		 * @return 
-		 * 
 		 */		
 		public function delCityComp(cityId:int):void {
 			var delCity:MapCityNodeComp = getCityCompById(cityId);
