@@ -318,8 +318,6 @@ package application.proxy
 			var mapLoad:Loader = new Loader();
 			mapLoad.contentLoaderInfo.addEventListener(Event.COMPLETE,mapLoaderFunc);
 			mapLoad.loadBytes(appData.mapFileStream);
-			
-			
 		}
 		
 		/**
@@ -354,6 +352,74 @@ package application.proxy
 					appDataProxy.updateTextureToGPU();							//重新上传GPU
 					sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);		//刷新库
 				}
+			}
+		}
+		
+		/**
+		 * 更新单个的城市纹理 
+		 * @param textureName
+		 * 
+		 */		
+		public function updateCityTexture(textureName:String,callBack:Function = null):void {
+			var chrooseFile:File;
+			var fileStream:FileStream;
+			var fileBytes:ByteArray;
+			var fileLoader:Loader;
+			var len:int = 0;
+			
+			var nodeTemplate:MapCityNodeTempVO = getCityNodeTempByName(textureName);
+			
+			var loadComplete:Function = function(event:Event):void {
+				if(fileLoader) fileLoader.removeEventListener(Event.COMPLETE,loadComplete);
+				var objData:Object = null;
+				
+				len = appData.cityNodeFiles.length;
+				while(--len > -1) {
+					objData = appData.cityNodeFiles[len];
+					if(objData[TEXTURE_NAME_FIELD] == textureName) {
+						objData[FILE_STREAM_FIELD] = fileBytes;
+					}
+				}
+				
+				len = appData.cityNodeBitmapdatas.length;
+				while(--len > -1) {
+					objData = appData.cityNodeBitmapdatas[len];
+					if(objData[TEXTURE_NAME_FIELD] == textureName) {
+						objData[BITMAP_DATE_FIELD] = Bitmap(fileLoader.content).bitmapData;
+					}
+				}
+				
+//				len = appData.mapCityNodes.length;
+//				while(--len > -1) {
+//					objData = appData.mapCityNodes[len];
+//					if(objData.textureName == textureName) {
+//						objData.textureName = chrooseFile.name;
+//					}
+//				}
+//				nodeTemplate.textureName = chrooseFile.name;
+				
+				appDataProxy.updateTextureToGPU();							//重新上传GPU
+				sendNotification(ApplicationMediator.UPDATE_CITY_LIBY);		//刷新库
+				
+				if(callBack != null) callBack();
+			}
+			
+			var chrooseFileHandler:Function = function(event:Event):void {
+				
+				fileStream = new FileStream();
+				fileStream.open(chrooseFile,FileMode.READ);
+				fileBytes = new ByteArray();
+				fileStream.readBytes(fileBytes);
+				
+				fileLoader = new Loader();
+				fileLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,loadComplete);
+				fileLoader.loadBytes(fileBytes);
+			};
+			
+			if(nodeTemplate) {
+				chrooseFile = new File();
+				chrooseFile.addEventListener(Event.SELECT,chrooseFileHandler);
+				chrooseFile.browseForOpen("选中一个城市图片",[new FileFilter(".png","*.png")]);
 			}
 		}
 		
@@ -676,6 +742,7 @@ package application.proxy
 				}
 			}
 		}
+		
 		
 		public static function get NAME():String{
 			return getQualifiedClassName(AppDataProxy);

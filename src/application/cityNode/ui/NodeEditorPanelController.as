@@ -67,6 +67,7 @@ package application.cityNode.ui
 			ui.checkFree.addEventListener(Event.CHANGE,visualFreeHandler);
 			ui.checkMenu.addEventListener(Event.CHANGE,visualMenHandler);
 			ui.textureUpdateBtn.addEventListener(Event.TRIGGERED,updateTexture);
+			ui.textureuploadingBtn.addEventListener(Event.TRIGGERED,uploadingHandler);
 			
 			Starling.current.stage.addEventListener(Event.RESIZE,onResizeHandler);
 			layoutUpdate();
@@ -87,6 +88,10 @@ package application.cityNode.ui
 		
 		private function visualMenHandler(event:Event):void {
 			ui.menuImg.visible = ui.checkMenu.isSelected;
+		}
+		
+		private function uploadingHandler(event:Event):void {
+			appDataProxy.updateCityTexture(appData.editorCityNode.textureName,ui.drawImage);
 		}
 		
 		//刷新显示
@@ -178,6 +183,9 @@ package application.cityNode.ui
 				
 				ui.textureUpdateBtn.x = ui.textureInput.x + ui.textureInput.width + 10;
 				ui.textureUpdateBtn.y = ui.textureInput.y;
+				
+				ui.textureuploadingBtn.x = ui.textureUpdateBtn.x;
+				ui.textureuploadingBtn.y = ui.textureUpdateBtn.y + 30;
 			}
 		}
 		

@@ -55,6 +55,8 @@ package application.cityNode.ui
 		public var textureInput:TextInput;
 		//纹理更新
 		public var textureUpdateBtn:Button;
+		//上传
+		public var textureuploadingBtn:Button;
 		
 		//===========================================================================
 		
@@ -93,6 +95,10 @@ package application.cityNode.ui
 			textureUpdateBtn = new Button();
 			textureUpdateBtn.label = "更新";
 			addChild(textureUpdateBtn);
+			
+			textureuploadingBtn = new Button();
+			textureuploadingBtn.label = "上传";
+			addChild(textureuploadingBtn);
 			
 			contentSprite = new Sprite();
 			addChild(contentSprite);
